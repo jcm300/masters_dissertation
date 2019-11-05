@@ -1,0 +1,27 @@
+tema:
+
+título: CLAV: API de dados e Autenticação
+
+título em inglês: CLAV: Data API and Authentication
+
+orientador: José Carlos Leite Ramalho
+
+resumo em inglês:
+
+CLAV is a national project financed by the Portuguese government. The main goal of this project is the classification and evaluation of all documentation of the Portuguese public administration. In this context, CLAV will provide the tools to create and manage information classification and evaluation. Public administration entities will have a tool to help them in the classification and evaluation of documents aiming to preserve what is necessary and eliminating the rest.
+
+In this dissertation, the CLAV API will be documented with Swagger, it will be parametrised, and it will be described with examples and models.
+
+Still, in this dissertation, more exporting possibilities will be added to the API: CSV, XML and RDF, beyond the already present JSON.
+
+Regarding the authentication, is intended to proceed the integration work with the Authentication.gov authentication in the main application. The Authentication.gov was developed by AMA using SAML 2.0 with extensions that AMA considers required. Still, from an authentication standpoint, it is required to protect the data API with multiple access levels.
+
+Another point that will be studied in the context of authentication, is the creation of an API Gateway and verify how if this can help in the simplification of the final application structure.
+
+Finally, another aim is to integrate CLAV with the AMA services backbone designated iAP.
+
+palavras chave: CLAV, Swagger, CSV, XML, RDF, API, Authentication.gov, Documentação, API Gateway, Autenticação
+
+língua: portuguesa
+
+tipo de acesso no Repositorium: acesso aberto

@@ -1,0 +1,162 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[portuges]{babel}
+\usepackage[a4paper]{geometry}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{indentfirst}
+\usepackage[table]{xcolor}
+\usepackage{xcolor}
+\usepackage{csquotes}
+\usepackage{tabularx}
+\usepackage[style=numeric]{biblatex}
+\addbibresource{references.bib}
+
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+
+\begin{document}
+
+{
+\center
+\begin{figure}[H]
+        \centering
+        \includegraphics[width=3cm]{UM_EENG.jpg}
+\end{figure}
+\textsc{\Large Universidade do Minho} \\ [0.5cm]
+\textsc{\Large Mestrado Integrado em Engenharia Informática} \\ [0.5cm]
+\textsc{\large Dissertação} \\ [0.5cm]
+
+{\LARGE \bfseries Plano de trabalhos} \\[0.5cm]
+
+Ano Letivo 2019/2020 \\[0.2cm]
+}
+
+\section*{Identificação}
+
+\textbf{Curso:} Mestrado Integrado em Engenharia Informática
+
+\textbf{Orientando/Aluno:} José Carlos Lima Martins (a78821@alunos.uminho.pt)
+
+\textbf{Orientador:} Professor José Carlos Leite Ramalho, do Departamento de Informática da Universidade do Minho
+
+\textbf{Local de Trabalho:} Departamento de Informática, Universidade do Minho, Braga
+
+\section*{Tema}
+
+CLAV: API de dados e Autenticação
+
+\section*{Resumo}
+
+O CLAV é um projeto nacional financiado pelo \textit{Simplex}. O Objetivo deste projeto é a classificação e a avaliação de toda a documentação circulante na administração pública portuguesa. Desta forma as entidades públicas têm uma ferramenta por forma a saberem quando determinada documentação deve ser eliminada ou arquivada. 
+
+Nesta dissertação, a API do CLAV irá ser documentada em \textit{Swagger}, parametrizando, descrevendo e adicionando exemplos para as várias rotas.
+
+Ainda nesta dissertação, vão ser adicionadas mais possibilidades de exportação à API como o CSV, XML e RDF para além do JSON já existente.
+
+Quanto à autenticação, pretende-se continuar os trabalhos de integração na aplicação principal da autenticação do Authentication.gov desenvolvido pela AMA usando SAML 2.0 com as extensões que a AMA considera obrigatórias. Ainda de um ponto de vista da autenticação, pretende-se também proteger a API de dados com múltiplos níveis de acesso.
+
+Outro ponto que se pretende estudar, no âmbito da autenticação, é o da criação de um API Gateway e verificar se este componente pode auxiliar na simplificação da estrutura final da aplicação.
+
+Por fim, mais tarde, pretende-se integrar o CLAV no backbone de serviços da AMA designado por iAP.
+
+\section*{Enquadramento}
+
+São cada vez mais os governos e organizações que definem políticas e estratégias para a disponibilização de dados abertos nos domínios da ciência e da Administração Pública. Da mesma forma têm sido promovidas políticas para a transformação digital na Administração Pública portuguesa com o objetivo da otimização de processos, a modernização de procedimentos administrativos e a redução do consumo de papel. Esta transformação tem sido conseguida com a desmaterialização de processos, a promoção da adoção de sistemas de gestão documental eletrónica e da digitalização de documentos destinados a ser arquivados~\cite{clav1}.
+
+Com estes objetivos em mente, a DGLAB (Direção-Geral do Livro, dos Arquivos e das Bibliotecas) apresentou a iniciativa da Lista Consolidada para a classificação e avaliação da informação pública. Esta Lista Consolidada serve de referencial para a construção normalizada dos planos de classificação e tabelas de seleção das entidades que executam funções do Estado~\cite{clav1}. 
+
+Por forma a tornar disponível a utilização da Lista Consolidada, a DGLAB em colaboração com a Universidade do Minho (e financiada pelo \textit{Simplex}) procedeu ao desenvolvimento do projeto CLAV (Arquivo Digital: Plataforma modular de classificação e avaliação da informação pública)~\cite{clav2}.
+
+A plataforma CLAV disponibiliza a Lista Consolidada (ontologia com as funções e processos de negócio das entidades que exercem funções públicas) associada a um catálogo de legislação e de organismos. Esta informação é disponibilizada em formato aberto para a integração nos sistemas de informação das entidades promovendo a interoperabilidade através da utilização de uma linguagem comum (Lista Consolidada) usada no registo, na classificação e na avaliação de informação pública. A plataforma também viabiliza a desmaterialização dos procedimentos associados à elaboração de tabelas de seleção tendo como base a Lista Consolidada e ao controlo de eliminação e arquivamento da informação pública através da integração das tabelas de seleção nos sistemas de informação das entidades alertando-as quando determinado documento deve ser arquivado ou eliminado.~\cite{clav2}.
+
+A ontologia está armazenada numa base de dados de triplos RDF (Resource Description Format) e o seu modelo foi descrito em OWL (Ontology Web Language). A ontologia pode ser explorada através da linguagem/protocolo SPARQL (SPARQL Protocol and RDF Query Language) bem como integrada com a LOD (Linked Open Data) ou com a iniciativa do governo português dados.gov.pt~\cite{clav3}. 
+
+Está a ser desenvolvida a API de dados por forma a permitir a processos ou aplicações aceder aos dados sem a intervenção humana para além claro de suportar a plataforma CLAV. Esta interface é desenvolvida seguindo uma metodologia REST. As operações são acessíveis através de URLs e respondem com informação em JSON, onde após o final desta dissertação a mesma informação poderá ser obtida também em CSV, XML e RDF. A ideia da API de dados é no futuro ser possível criar novas aplicações usando a API de dados do CLAV~\cite{clav3}. Para tal é essencial que a API de dados possua uma boa documentação para que futuros programadores/utilizadores consigam compreender bem como utilizar a API. Com esse objetivo em mente, nesta dissertação será realizada a documentação da API em \textit{Swagger} explicando as várias operações possíveis da API.
+
+Apesar de o projeto ter em mente a disponibilização aberta de informação pública é necessário existir algum controlo quanto à alteração, adição e eliminação da informação presente na Lista Consolidada (ontologia) para que a mesma se mantenha consistente e correta. Há, portanto, a necessidade de controlar os acessos à API protegendo as rotas com múltiplos níveis de acesso restringindo as operações que o utilizador pode realizar consoante o seu nível. Desta forma garante-se que apenas pessoal autorizado pode realizar modificações na Lista Consolidada. A criação de Tabelas de Seleção (para futura integração nos sistemas das entidades públicas) é da mesma forma controlada visto que é mantida uma cópia na ontologia.
+
+Este controlo de acesso obriga a existir formas de autenticação. Uma delas, Authentication.gov (Autenticação.gov), criada pelo Estado português, permite a autenticação dos cidadãos portugueses nos vários serviços públicos~\cite{authgov} entre os quais, a Segurança Social, o Serviço Nacional de Saúde e a Autoridade Tributária Aduaneira. Como tal, e sendo este um projeto do Governo Português, pretende-se que seja possível a autenticação no CLAV através do Authentication.gov.
+
+Por outro lado, devido à complexidade que o controlo de acesso e a autenticação adicionam pretende-se estudar se a criação de um API Gateway permite a simplificação da comunicação entre interface/utilizadores e a API. 
+
+\section*{Objetivos}
+
+\begin{itemize}
+    \item Documentação da API de dados
+    \item Adição de mais formatos de exportação à API de dados
+    \item Integração do Authentication.gov
+    \item Proteção da API de dados
+    \item Estudar a criação de um API Gateway
+    \item Integração do CLAV no iAP
+\end{itemize}
+
+\section*{Métodos de trabalho/investigação}
+
+\begin{itemize}
+    \item Reuniões semanais com o orientador
+    \item Reuniões periódicas com a equipa da Torre do Tombo (DGLAB - Direção-Geral do Livro, dos Arquivos e das Bibliotecas)
+\end{itemize}
+
+\section*{Calendarização}
+
+\begin{itemize}
+    \item \textbf{Estudo do problema}. Pesquisa e compreensão do que já se encontra desenvolvido. 
+    \item \textbf{Documentação em \textit{Swagger}} da API de dados do CLAV
+    \item \textbf{Adição de} outros \textbf{formatos de exportação} à API tais como CSV, XML e RDF
+    \item Continuação do trabalho de \textbf{integração} da autenticação \textbf{Authentication.gov} usando SAML 2.0 com extensões consideradas obrigatórias pela AMA
+    \item \textbf{Proteção da API} de dados com múltiplos níveis de acesso
+    \item \textbf{Estudo da} criação de um \textbf{API Gateway} bem como se este componente auxilia na simplificação da estrutura da aplicação
+    \item \textbf{Integração do CLAV no} backbone de serviços da AMA designado \textbf{iAP}
+    \item \textbf{Escrita da dissertação}
+\end{itemize}
+
+\begin{center}
+  \begin{tabularx}{\textwidth}{| c | Y | Y | Y | Y | Y | Y | Y | Y | Y | Y |}
+    \hline
+    & \multicolumn{3}{c|}{2019} & \multicolumn{7}{c|}{2020} \\
+    \cline{2-11}
+    & Out. & Nov. & Dez. & Jan. & Fev. & Mar. & Abr. & Mai. & Jun. & Jul. \\
+    \hline
+    Estudo do Problema & \multicolumn{3}{c}{\cellcolor[gray]{0.5}} & & & & & & & \\
+    \hline
+    Documentação em Swagger & \multicolumn{10}{c}{\cellcolor[gray]{0.5}} \\
+    \hline
+    Adição de formatos de exportação & & \multicolumn{3}{c}{\cellcolor[gray]{0.5}} & & & & & & \\
+    \hline
+    Integração do Authentication.gov & & & & \multicolumn{3}{c}{\cellcolor[gray]{0.5}} & & & & \\
+    \hline
+    Proteção da API & & & & & & \multicolumn{2}{c}{\cellcolor[gray]{0.5}} & & & \\
+    \hline
+    Estudo da API Gateway & & & & & & & \multicolumn{2}{c}{\cellcolor[gray]{0.5}} & & \\
+    \hline
+    Integração do CLAV no iAP & & & & & & & & \multicolumn{2}{c}{\cellcolor[gray]{0.5}} & \\
+    \hline
+    Escrita da dissertação & & & \multicolumn{8}{c}{\cellcolor[gray]{0.5}} \\
+    \hline
+  \end{tabularx}
+\end{center}
+
+\printbibliography
+
+\section*{Assinaturas}
+
+\large
+
+\vspace{0.5cm}
+
+\textbf{Orientador (José Carlos Leite Ramalho)}
+
+\vspace{0.5cm}
+
+\dotfill
+
+\vspace{1cm}
+
+\textbf{Orientando/Aluno (José Carlos Lima Martins)}
+
+\vspace{0.5cm}
+
+\dotfill
+
+\end{document}
