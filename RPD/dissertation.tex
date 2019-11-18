@@ -1,4 +1,3 @@
-
 % example for dissertation.sty
 \documentclass[
   % Replace oneside by twoside if you are printing your thesis on both sides
@@ -41,13 +40,12 @@
 %\keywords{master thesis}
 
 % Glossaries & Acronyms
-%\makeglossaries  %  either use this ...
+\makeglossaries{}  %  either use this ...
 %\makeindex	   % ... or this
 
 % Define Acronyms
-%\input{sec/acronyms}
+\input{glossary_acronyms}
 %\glsaddall[types={\acronymtype}]
-
 
 \ummetadata{} % add metadata to the document (author, publisher, ...)
 
@@ -74,6 +72,8 @@
 	\listoftables
 	%\lstlistoflistings
 	%\listofabbreviations
+    \printglossary[]
+    \printglossary[type=\acronymtype, title=Lista de Acrónimos]
 	
 	\pagenumbering{arabic}
 	
