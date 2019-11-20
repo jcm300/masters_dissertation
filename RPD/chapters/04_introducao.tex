@@ -1,14 +1,28 @@
-\section{Contextualização}
+Vemos atualmente a mudança de paradigma em várias organizações e governos em relação a políticas e estratégias para a disponibilização de dados abertos nos domínios das ciências e da \acrlong{ap}. Quanto à \acrlong{ap} portuguesa têm sido promovidas políticas para a sua transformação digital com o objetivo de otimização de processos, a modernização de procedimentos administrativos e a redução de papel. De certa forma a agilização de procedimentos da \acrlong{ap} portuguesa.~\citep{clav}
 
-\section{Motivação}
+De forma a alcançar estes objetivos a \acrfull{ap} tem desmaterializado processos e tem promovido a adoção de sistemas de gestão documental eletrónica bem como da digitalização de documentos destinados a serem arquivados.~\citep{clav}
+
+Por forma a continuar esta transformação da \acrshort{ap} a \acrfull{dglab} apresentou a iniciativa da \acrfull{lc} para a classificação e avaliação da informação pública. A \acrshort{lc} serve de referencial para a construção normalizada dos planos de classificação e tabelas de seleção das entidades que executam funções do Estado.~\citep{clav}
+
+Nasce assim o projeto \acrfull{clav} com um dos seus objetivos primordiais a operacionalização da utilização da \acrshort{lc}, numa colaboração entre a \acrshort{dglab} e a \acrfull{um} e financiado pelo \Gls{simplex}.~\citep{clav}
+
+A plataforma \acrshort{clav} disponibiliza em formato aberto uma \gls{ontologia} com as funções e processos de negócio das entidades que exercem funções públicas (ou seja a \acrshort{lc}) associadas a um catálogo de legislação e de organismos. Desta forma, a \acrshort{clav} viabiliza a desmaterialização dos procedimentos associados à elaboração de tabelas de seleção tendo como base a \acrshort{lc} e ao controlo de eliminação e arquivamento da informação pública através da integração das tabelas de seleção nos sistemas de informação das entidades públicas alertando-as quando determinado documento deve ser arquivado ou eliminado. Esta integração promove também a interoperabilidade através da utilização de uma linguagem comum (a \acrshort{lc}) usada no registo, na classificação e na avaliação da informação pública.~\citep{clav}
 
 \section{Objetivos}
 
-Nesta dissertação os objetivos são:
+A continuação do desenvolvimento da \acrshort{api} de dados da \acrshort{clav} nesta dissertação, seguindo uma metodologia \acrshort{rest}, permite a processos ou aplicações aceder aos dados sem a intervenção humana para além de suportar a plataforma \acrshort{clav}. Um dos objetivos da \acrshort{api} de dados é permitir futuramente a criação de novas aplicações através desta. Como tal, é extramemente essencial que a \acrshort{api} de dados do \acrshort{clav} possua uma boa documentação ajudando futuros programadores ou utilizadores a utilizar a \acrshort{api}. Advém daí a necessidade de nesta dissertação realizar a documentação da \acrshort{api} de dados em \textit{Swagger}.
+
+Apesar de o projeto ter em mente a disponibilização aberta de informação pública é necessário controlar a adição, edição e eliminação da informação presente na \acrlong{lc}, bem como a informação de utilizadores, da legislação, das entidades, etc, mantendo-a consistente e correta. É, portanto, necessário controlar os acessos à \acrshort{api} de dados com múltiplos níveis de acesso restringindo as operações que cada utilizador pode realizar consoante o seu nível. Desta forma garante-se que apenas pessoal autorizado pode realizar modificações aos dados.
+
+Este controlo de acesso exige a existência de formas de autenticação. Como um cofre para a qual ninguém tem a chave não é útil pelo facto de que algo lá guardado ficará eternamente inacessível, também algo com controlo de acesso seria inútil caso não fosse possível ultrapassar esse controlo de alguma forma. Assim, uma das formas de autenticação usadas, Autenticação.gov, criada pelo Estado português, permite a autenticação dos cidadãos portugueses nos vários serviços públicos~\cite{authgov} entre os quais, a Segurança Social, o Serviço Nacional de Saúde e a Autoridade Tributária Aduaneira. Sendo este um projeto do Governo Português, pretende-se que seja possível a autenticação no \acrshort{clav} através do Autenticação.gov.
+
+Por forma a contrariar o aumento da complexidade da \acrshort{api} de dados com a adição do controlo de acesso e da autenticação pretende-se investigar se a criação de um API Gateway simplifica a comunicação entre interface/utilizadores e a \acrshort{api} de dados.
+
+Resumidamente, os objetivos desta dissertação são:
 
 \begin{itemize}
     \item Documentação em \textit{Swagger} da \acrshort{api} de dados da \acrshort{clav}
-    \item Adição de formatos de exportação à \acrshort{api} de dados da \acrshort{clav}
+    \item Adição de formatos de exportação à \acrshort{api} de dados da \acrshort{clav} (para além do já presente \acrshort{json}, adicionar \acrshort{csv}, \acrshort{xml} e \acrshort{rdf})
     \item (Continuação da) Integração do Autenticação.gov na \acrshort{clav}
     \item Proteção da \acrshort{api} de dados da \acrshort{clav} com múltiplos níveis de acesso
     \item Estudo da crição de um \acrshort{api} Gateway
