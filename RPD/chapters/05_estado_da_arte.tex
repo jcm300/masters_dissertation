@@ -1,14 +1,20 @@
 \section{JavaScript e a Programação Assíncrona}
-A linguagem \textit{JavaScript} teve a sua origem no \textit{browser} \textit{Netscape Navigator} como uma forma de adicionar programas a páginas web.\cite{elojs} Hoje em dia é usado por grande parte dos \textit{browsers} e tornou possível as aplicações web onde o utilizador pode interagir sem precisar de realizar \textit{refresh} ao fim de cada ação.
-Contudo o \textit{Javascript} é bastante liberal no que permite o programador escrever, facilitando a aprendizagem para novos programadores mas tornando a tarefa de resolver e encontrar problemas bem mais difícil visto não apontar aonde estão esses problemas. Ainda assim esta flexibilidade permite uma quantidade de técnicas que não são possíveis em linguagens mais rígidas e que permitem ultrapassar algumas falhas do \textit{Javascript}.\cite{elojs} 
-%javascript how manage the processes and awaits etc
-\cite{elojs}
+A linguagem \textit{JavaScript} teve a sua origem no \textit{browser} \textit{Netscape Navigator} como uma forma de adicionar programas a páginas web.~\cite{elojs} Hoje em dia é usado por grande parte dos \textit{browsers} e tornou possível as aplicações web onde o utilizador pode interagir sem precisar de realizar \textit{refresh} ao fim de cada ação.
+Contudo o \textit{Javascript} é bastante liberal no que permite o programador escrever, facilitando a aprendizagem para novos programadores mas tornando a tarefa de resolver e encontrar problemas bem mais difícil visto não apontar aonde estão esses problemas. Ainda assim esta flexibilidade permite uma quantidade de técnicas que não são possíveis em linguagens mais rígidas e que permitem ultrapassar algumas falhas do \textit{Javascript}.~\cite{elojs} 
 
-\subsection{Callbacks}
+\subsection{Programação Assíncrona}
+Muitos programas em \textit{JavaScript} precisam de por exemplo obter dados através da rede ou a partir do disco. Estes casos são muito mais lentos do que obter os dados a partir de memória para posterior processamento pelo processador. Na realização de tais pedidos o programa em \textit{Javascript} perderia o acesso ao processador, passando este acesso para outro programa que esteja a correr. Para além disso o programa em \textit{Javascript} passaria para a lista de bloqueado do processador enquanto estivesse à espera do pedido e quando recebesse o sinal de que o pedido foi realizado passaria para a lista de espera antes de ter de novo acesso ao processador e assim continuar com o seu trabalho.
 
-\subsection{Promessas}
+Por forma evitar perder o acesso do processador em tais casos, e assim realizar trabalho enquanto se espera pela resposta do pedido, o \textit{Javascript} segue um modelo assíncrono. O modelo assíncrono permite que aconteçam várias coisas ao mesmo tempo; quando começa um pedido o programa continua a correr; quando o pedido termina, o programa é informado e tem acesso ao resultado.~\cite{elojs} Ao usar um modelo assíncrono a expressão de programas que não seguem um modelo de controlo linear é mais fácil enquanto que torna mais difícil aqueles que o seguem.~\cite{elojs}
 
-\section{REST}
+\subsubsection{\textit{Callbacks}}
+Uma abordagem de programação assíncrona é a adição de um argumento extra, uma função \textit{callback}, nas funções que realizam pedidos lentos.~\cite{elojs} Quando o pedido concluir a função \textit{callback} será chamada tendo como argumento o resultado do pedido. Com o uso de callbacks o nível de indentação aumenta com cada pedido assíncrono o que em alguns casos pode tornar o código um pouco difícil de compreender, principalmente nos casos com múltiplos pedidos assíncronos seguidos que têm de ser sequenciais. Para além disso, qualquer função que chame uma função assíncrona tem de ser ela própria assíncrona. Não é recomendado a reestruturação de grandes quantidades de código através de \textit{callbacks} visto ser mais propenso a erros do que retornar apenas um valor.
+
+\subsubsection{Promessas}
+
+\subsubsection{Funções \textit{async}}
+
+\section{\acrshort{rest}}
 \cite{restws}
 
 \section{express}
