@@ -10,9 +10,55 @@ Por forma evitar perder o acesso do processador em tais casos, e assim realizar 
 \subsubsection{\textit{Callbacks}}
 Uma abordagem de programação assíncrona é a adição de um argumento extra, uma função \textit{callback}, nas funções que realizam pedidos lentos.~\cite{elojs} Quando o pedido concluir a função \textit{callback} será chamada tendo como argumento o resultado do pedido. Com o uso de callbacks o nível de indentação aumenta com cada pedido assíncrono o que em alguns casos pode tornar o código um pouco difícil de compreender, principalmente nos casos com múltiplos pedidos assíncronos seguidos que têm de ser sequenciais. Para além disso, qualquer função que chame uma função assíncrona tem de ser ela própria assíncrona. Não é recomendado a reestruturação de grandes quantidades de código através de \textit{callbacks} visto ser mais propenso a erros do que retornar apenas um valor.
 
+\begin{lstlisting}[language=JavaScript, caption=Exemplo de uma \textit{Callback}]
+    almocar("comida", function(dentes%*\_*)sujos)%*\{*)
+        dentes%*\_*)limpos = lavar%*\_*)dentes(dentes%*\_*)sujos)
+    %*\}*))
+\end{lstlisting}
+
 \subsubsection{Promessas}
+Uma outra abordagem, em vez de passar uma função a ser chamada no futuro, é devolver um objeto que represente este evento futuro, uma promessa. Ou seja, uma promessa é um pedido assíncrono que pode ser concluído no futuro e produzir um valor, tendo a capacidade de notificar qualquer interessado quando o valor estiver disponível.\cite{elojs} O resultado de uma promessa tanto pode já estar pronto ou estar apenas daqui a algum tempo. A principal vantagem das promessas é que simplificam o uso de funções assíncronas visto que não é necessário passar uma função \textit{callback}. Como tal estas funções são similares às restantes mas com uma pequena diferença, o resultado da função pode ainda não estar disponível. 
+
+\begin{lstlisting}[language=JavaScript, caption=Exemplo de uma Promessa]
+    almocar("comida")
+        .then(dentes%*\_*)sujos =%*$>$*) dentes%*\_*)limpos = lavar%*\_*)dentes(dentes%*\_*)sujos))
+\end{lstlisting}
+
+\subsubsection{Exceções}
+Durante a execução de um pedido assíncrono podem ocorrer exceções seja por um erro ou porque por exemplo ocorreu um \textit{time out} do pedido, este último acontece essencialmente quando se realiza pedidos através da rede. Estas exceções precisam de ser tratadas por forma a que o programa que estámos a desenvolver não ``expluda'' deixando de funcionar. Esta tratamento não é simples de se realizar quando se usa \textit{callbacks} enquanto que no caso das promessas basta o uso de um \textit{catch}. No caso das \textit{callbacks} o pedido assíncrono teria de devolver dois valores em vez de um, o primeiro com o erro em caso de insucesso e o segundo com o resultado em caso de sucesso o que obrigaria a função \textit{callback} a verificar se não recebeu uma exceção.
+
+\begin{lstlisting}[language=JavaScript, caption=Exemplo de uma \textit{Callback} com captura de exceções]
+    almocar("comida", function(erro, dentes%*\_*)sujos)%*\{*)
+        if(!erro)%*\{*)
+            dentes%*\_*)limpos = lavar%*\_*)dentes(dentes%*\_*)sujos)
+        %*\}*)else%*\{*)
+            console.log("Falta pasta de dentes")
+        %*\}*)
+    %*\}*))
+\end{lstlisting}
+
+\begin{lstlisting}[language=JavaScript, caption=Exemplo de uma Promessa com captura das exceções]
+    almocar("comida")
+        .then(dentes%*\_*)sujos =%*$>$*) dentes%*\_*)limpos = lavar%*\_*)dentes(dentes%*\_*)sujos))
+        .catch(erro =%*$>$*) console.log("Falta pasta de dentes"))
+\end{lstlisting}
 
 \subsubsection{Funções \textit{async}}
+Dentro de funções \textit{async} é possível escrever código pseudo-síncrono por forma a descrever código assíncrono com recurso ao \textit{await} que espera pela conclusão de uma promessa antes de avançar com a execução do resto da função, ficando o código com um aspeto semelhante ao síncrono. As funções \textit{async} retornam implicitamente uma promessa e enquanto estão à espera duma promessa (\textit{await}) ficam congeladas. Serão resumidas mais tarde quando a promessa estiver concluída.
+
+\begin{lstlisting}[language=JavaScript, caption=Exemplo de uma função \textit{async}]
+    async function almoco()%*\{*)
+        try%*\{*)
+            dentes%*\_*)sujos = await almocar("comida")
+            dentes%*\_*)limpos = lavar%*\_*)dentes(dentes%*\_*)sujos)
+        %*\}*)catch(erro)%*\{*)
+            console.log("Falta pasta de dentes")
+        %*\}*)
+        return "Almocei!"
+    %*\}*)
+\end{lstlisting}
+
+\section{Node.js}
 
 \section{\acrshort{rest}}
 \cite{restws}
