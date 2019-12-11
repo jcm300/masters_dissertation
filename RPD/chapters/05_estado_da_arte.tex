@@ -1,3 +1,4 @@
+\begin{comment}
 \section{JavaScript e a Programação Assíncrona}
 A linguagem \textit{JavaScript} teve a sua origem no \textit{browser} \textit{Netscape Navigator} como uma forma de adicionar programas a páginas web.~\cite{elojs} Hoje em dia é usado por grande parte dos \textit{browsers} e tornou possível as aplicações web onde o utilizador pode interagir sem precisar de realizar \textit{refresh} ao fim de cada ação.
 Contudo o \textit{Javascript} é bastante liberal no que permite o programador escrever, facilitando a aprendizagem para novos programadores mas tornando a tarefa de resolver e encontrar problemas bem mais difícil visto não apontar aonde estão esses problemas. Ainda assim esta flexibilidade permite uma quantidade de técnicas que não são possíveis em linguagens mais rígidas e que permitem ultrapassar algumas falhas do \textit{Javascript}.~\cite{elojs} 
@@ -70,29 +71,60 @@ Em \textit{Node.js} estão disponíveis os \textit{bindings} globais \texttt{pro
 O \textit{Node.js} tem algums módulos embutidos, entre os quais o módulo \texttt{fs} (\textit{file system}) que exporta funções que permitem trabalhar com ficheiros e directorias. Tem também o módulo \texttt{http} que exporta funções que permitem correr servidores \acrshort{http} ou fazer pedidos \acrshort{http}.
 
 Todo o input e output no \textit{Node.js} é realizado de forma assíncrona a menos que se use uma variante síncrona de uma determinada função.~\cite{elojs}
+\end{comment}
+
+\section{Estado da Arte do \acrshort{clav}}
+
+Quando esta dissertação teve início o projeto \acrshort{clav} já tinha cerca de 2 anos de desenvolvimento. Assim nesta secção será apresentado o estado da arte do \acrshort{clav} quando esta dissertação iniciou aprofundando principalmente os pontos mais importantes sobre o tema desta dissertação.
+
+\subsection{Estrutura}
+O \acrshort{clav} está dividido em duas partes, a interface (\textit{front-end}) presente em \url{http://clav.dglab.gov.pt} e a \acrshort{api} de dados (\textit{back-end} que inclui também duas bases de dados, \textit{GraphDB} e \textit{MongoDB}) presente em \url{http://clav-api.dglab.gov.pt}. Cada parte encontra-se numa máquina diferente.
+
+Através da figura~\ref{fig:clav_struct} é possível ver o possível fluxo tanto de um utilizador a aceder à interface como a de um utilizador a aceder diretamente à \acrshort{api} de dados. No primeiro caso, quando um utilizador acede o servidor da interface do \acrshort{clav} é descarregado para o lado do utilizador o ficheiro \acrshort{html} (\textit{index}) e os vários ficheiros \textit{JavaScript}, \acrshort{css} e \textit{assets} (como imagens, \acrshort{pdf}s, etc) quando necessários. O servidor da interface é nada mais que um servidor \textit{web} com recurso ao \textit{Nginx} que hospeda estes ficheiros, os quais representam a interface construída com o \textit{Vue} e o \textit{Vuetify}. Como tal o código apresenta-se todo do lado do utilizador e os pedidos à \acrshort{api} serão feitos do computador do utilizador para o servidor da \acrshort{api} de dados e não do servidor da interface para o servidor da \acrshort{api} de dados. Ou seja, o fluxo de cada um desses pedidos será igual ao fluxo no caso em que se acede diretamente a \acrshort{api} sem uso de qualquer interface.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.7\textwidth]{img/clav_struct.png}
+    \end{center}
+    \caption{Estrutura do \acrshort{clav} incluíndo a interação de um utilizador com a mesma}
+    \label{fig:clav_struct}
+\end{figure}
+
+\subsection{Formas de autenticação}
+A \acrshort{api} de dados e a interface estavam inicialmente ``juntos'' (aplicação monolítica) onde as rotas eram protegidas contudo, com a separação da aplicação em duas partes, ambas partes deixaram de estar protegidas. Como tal a plataforma \acrshort{clav} já possui duas formas de autenticação, através de chaves \acrshort{api} ou de utilizadores registados.
+
+As chaves \acrshort{api} existem por forma a dar acesso a certas rotas da \acrshort{api} a aplicações que interajam com a mesma (por exemplo sistemas de informação) sem a necessidade de interação humana.
+
+Já os utilizadores possuem múltiplos níveis de acesso sendo que consoante o seu nível podem ou não aceder a uma rota da interface ou da \acrshort{api}. Os utilizadores podem autenticarem-se através de \textit{email} e \textit{password} ou com recurso ao \acrfull{cc} através do Autenticação.gov.
+
+\subsection{Lista Consolidada}
+
+\subsection{Tabelas de Seleção}
+
+\subsection{Cache e Fecho Transitivo}
 
 \section{\acrshort{rest}}
 \cite{restws}
 
-\section{express}
-\cite{wdmongo}
+%\section{express}
+%\cite{wdmongo}
 %procurar "semelhantes" para cada um
 
-\section{passport}
+%\section{passport}
 %procurar "semelhantes" para cada um
 
 \section{jsonwebtoken}
-%package e conceito JWT
+%conceito JWT
 %procurar "semelhantes" para cada um
 
-\section{passport-jwt}
+%\section{passport-jwt}
 %procurar "semelhantes" para cada um
 
 \section{CORS}
 %falar da package e do conceito CORS
 %procurar "semelhantes" para cada um
 
-\section{axios}
+%\section{axios}
 %procurar "semelhantes" para cada um
 
 \section{HTTP Status}
@@ -102,13 +134,13 @@ Todo o input e output no \textit{Node.js} é realizado de forma assíncrona a me
 \section{Autenticação.gov}
 \cite{agov}
 
-\section{exceljs}
+%\section{exceljs}
 %procurar "semelhantes" para cada um
 
 \section{MongoDB}
 \cite{wdmongo}
 
-\section{mongoose}
+%\section{mongoose}
 %procurar "semelhantes" para cada um
 
 \section{Web Semântica}
@@ -130,13 +162,13 @@ Todo o input e output no \textit{Node.js} é realizado de forma assíncrona a me
 
 \section{Swagger-UI}
 
-\section{yaml-include}
+%\section{yaml-include}
 %procurar "semelhantes" para cada um
 
-\section{swagger-ui-express}
+%\section{swagger-ui-express}
 %procurar "semelhantes" para cada um
 
-\section{js-yaml}
+%\section{js-yaml}
 %procurar "semelhantes" para cada um
 
 \section{Nginx}
@@ -154,9 +186,3 @@ Todo o input e output no \textit{Node.js} é realizado de forma assíncrona a me
 \section{Docker Compose}
 \cite{udocker}
 %procurar "semelhantes" para cada um
-
-\section{Lista Consolidada}
-
-\section{Tabelas de Seleção}
-
-\section{Cache e Fecho Transitivo}
