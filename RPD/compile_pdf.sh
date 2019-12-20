@@ -1,6 +1,8 @@
 #!/bin/bash
 
+engine="lualatex"
+
 makeglossaries dissertation
-pdflatex dissertation
+$engine dissertation.tex
 bibtex dissertation
-pdflatex dissertation
+$engine dissertation.tex

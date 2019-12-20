@@ -11,52 +11,52 @@ Por forma a evitar perder o acesso do processador em tais casos, e assim realiza
 \subsubsection{\textit{Callbacks}}
 Uma abordagem de programação assíncrona é a adição de um argumento extra, uma função \textit{callback}, nas funções que realizam pedidos lentos.~\cite{elojs} Quando o pedido concluir a função \textit{callback} será chamada tendo como argumento o resultado do pedido. Com o uso de callbacks o nível de indentação aumenta com cada pedido assíncrono o que em alguns casos pode tornar o código um pouco difícil de compreender, principalmente nos casos com múltiplos pedidos assíncronos seguidos que têm de ser sequenciais. Para além disso, qualquer função que chame uma função assíncrona tem de ser ela própria assíncrona. Não é recomendado a reestruturação de grandes quantidades de código através de \textit{callbacks} visto ser mais propenso a erros do que retornar apenas um valor.
 
-\begin{lstlisting}[language=JavaScript, caption=Exemplo de uma \textit{Callback}]
-    almocar("comida", function(dentes%*\_*)sujos)%*\{*)
-        dentes%*\_*)limpos = lavar%*\_*)dentes(dentes%*\_*)sujos)
-    %*\}*))
+\begin{lstlisting}[language=javascript, caption=Exemplo de uma \textit{Callback}]
+    almocar("comida", function(dentes\_sujos){
+        dentes_limpos = lavar_dentes(dentes_sujos)
+    })
 \end{lstlisting}
 
 \subsubsection{Promessas}
 Uma outra abordagem, em vez de passar uma função a ser chamada no futuro, é devolver um objeto que represente este evento futuro, uma promessa. Ou seja, uma promessa é um pedido assíncrono que pode ser concluído no futuro e produzir um valor, tendo a capacidade de notificar qualquer interessado quando o valor estiver disponível.\cite{elojs} O resultado de uma promessa tanto pode já estar pronto ou estar apenas daqui a algum tempo. A principal vantagem das promessas é que simplificam o uso de funções assíncronas visto que não é necessário passar uma função \textit{callback}. Como tal estas funções são similares às restantes mas com uma pequena diferença, o resultado da função pode ainda não estar disponível. 
 
-\begin{lstlisting}[language=JavaScript, caption=Exemplo de uma Promessa]
+\begin{lstlisting}[language=javascript, caption=Exemplo de uma Promessa]
     almocar("comida")
-        .then(dentes%*\_*)sujos =%*$>$*) dentes%*\_*)limpos = lavar%*\_*)dentes(dentes%*\_*)sujos))
+        .then(dentes_sujos => dentes_limpos = lavar_dentes(dentes_sujos))
 \end{lstlisting}
 
 \subsubsection{Exceções}
 Durante a execução de um pedido assíncrono podem ocorrer exceções seja por um erro ou porque por exemplo ocorreu um \textit{time out} do pedido, este último acontece essencialmente quando se realiza pedidos através da rede. Estas exceções precisam de ser tratadas por forma a que o programa que estámos a desenvolver não ``expluda'' deixando de funcionar. Esta tratamento não é simples de se realizar quando se usa \textit{callbacks} enquanto que no caso das promessas basta o uso de um \textit{catch}. No caso das \textit{callbacks} o pedido assíncrono teria de devolver dois valores em vez de um, o primeiro com o erro em caso de insucesso e o segundo com o resultado em caso de sucesso o que obrigaria a função \textit{callback} a verificar se não recebeu uma exceção.
 
-\begin{lstlisting}[language=JavaScript, caption=Exemplo de uma \textit{Callback} com captura de exceções]
-    almocar("comida", function(erro, dentes%*\_*)sujos)%*\{*)
-        if(!erro)%*\{*)
-            dentes%*\_*)limpos = lavar%*\_*)dentes(dentes%*\_*)sujos)
-        %*\}*)else%*\{*)
+\begin{lstlisting}[language=javascript, caption=Exemplo de uma \textit{Callback} com captura de exceções]
+    almocar("comida", function(erro, dentes_sujos){
+        if(!erro){
+            dentes_limpos = lavar_dentes(dentes_sujos)
+        }else{
             console.log("Falta pasta de dentes")
-        %*\}*)
-    %*\}*))
+        }
+    })
 \end{lstlisting}
 
-\begin{lstlisting}[language=JavaScript, caption=Exemplo de uma Promessa com captura das exceções]
+\begin{lstlisting}[language=javascript, caption=Exemplo de uma Promessa com captura das exceções]
     almocar("comida")
-        .then(dentes%*\_*)sujos =%*$>$*) dentes%*\_*)limpos = lavar%*\_*)dentes(dentes%*\_*)sujos))
-        .catch(erro =%*$>$*) console.log("Falta pasta de dentes"))
+        .then(dentes_sujos => dentes_limpos = lavar_dentes(dentes_sujos))
+        .catch(erro => console.log("Falta pasta de dentes"))
 \end{lstlisting}
 
 \subsubsection{Funções \textit{async}}
 Dentro de funções \textit{async} é possível escrever código pseudo-síncrono por forma a descrever código assíncrono com recurso ao \textit{await} que espera pela conclusão de uma promessa antes de avançar com a execução do resto da função, ficando o código com um aspeto semelhante ao síncrono. As funções \textit{async} retornam implicitamente uma promessa e enquanto estão à espera duma promessa (\textit{await}) ficam congeladas. Serão resumidas mais tarde quando a promessa estiver concluída.
 
-\begin{lstlisting}[language=JavaScript, caption=Exemplo de uma função \textit{async}]
-    async function almoco()%*\{*)
-        try%*\{*)
-            dentes%*\_*)sujos = await almocar("comida")
-            dentes%*\_*)limpos = lavar%*\_*)dentes(dentes%*\_*)sujos)
-        %*\}*)catch(erro)%*\{*)
+\begin{lstlisting}[language=javascript, caption=Exemplo de uma função \textit{async}]
+    async function almoco(){
+        try{
+            dentes_sujos = await almocar("comida")
+            dentes_limpos = lavar_dentes(dentes_sujos)
+        }catch(erro){
             console.log("Falta pasta de dentes")
-        %*\}*)
+        }
         return "Almocei!"
-    %*\}*)
+    }
 \end{lstlisting}
 
 \section{Node.js}
@@ -92,8 +92,7 @@ Através da figura~\ref{fig:clav_struct} é possível ver o possível fluxo tant
     \begin{center}
         \includegraphics[width=0.7\textwidth]{img/clav_struct.png}
     \end{center}
-    \caption{Estrutura do \acrshort{clav} incluíndo a interação de um utilizador com a mesma}
-    \label{fig:clav_struct}
+    \caption{Estrutura do \acrshort{clav} incluíndo a interação de um utilizador com a mesma}\label{fig:clav_struct}
 \end{figure}
 
 \subsection{Formas de autenticação}
@@ -129,15 +128,14 @@ Para o registo de uma chave \acrshort{api} é necessário providenciar um nome, 
 
 Um utilizador pode se registar através de \texttt{email + password} ou através do Autenticação.gov. No primeiro caso, ao se registar necessita obviamente de indicar o seu email, a \textit{password}, o seu nome, a entidade a que pertence e o nível de acesso que pretende. Já no caso do Autenticação.gov para o registo do utilizador é necessário todos os campos anteriores exceto a \textit{password} (pode ser depois definida), sendo também necessário o campo \acrfull{nic} do utilizador. Caso o registo seja efetuado com recurso à interface do Autenticação.gov apenas será necessário indicar o email, a entidade a que pertence e o nível de acesso que pretende visto que os restantes campos são fornecidos pela Autenticação.gov quando o utilizador se autentica e autoriza nesta a partilha dessa informação com a plataforma do \acrshort{clav}.
 A \textit{password} é armazenada não na sua forma literal mas sim a sua \textit{hash} ao aplicar a função criptográfica \texttt{bcrypt}. A utilização de funções de \textit{hash} criptográficas ao armazenar \textit{passwords} impede que as \textit{passwords} originais se saibam caso a base de dados seja comprometida. Para além disso, como o \texttt{bcrypt} combina um valor aleatório (\texttt{salt}) com a \textit{password} do utilizador, é impossível pré-computar a \textit{password} que deu origem ao \textit{hash} sem saber o \texttt{salt}\footnote{Para mais informação veja \textit{rainbow table attack}}.
-%TODO: pequena intro ao bcrypt
 
 Durante esta tese com a proteção da \acrshort{api} ficará apenas possível o registo de utilizadores através de utilizadores que já estejam registados e possuam um nível de acesso suficiente para registar utilizadores. Estes utilizadores registados e autorizados pertencem à entidade \acrshort{dglab}. Portanto por forma a utilizadores representantes de outras entidades se registarem na plataforma terão de:~\cite{clavwebpage}
 \begin{itemize}
     \item Preencher o formulário disponibilizado para o efeito, para cada representante designado pela entidade;
-    \item O formulário deverá ser assinado por um dirigente superior da Entidade e autenticado com assinatura digital, se o envio for feito por via eletrónica (NB: não serão aceites assinaturas do formulário por dirigentes intermédios). Esta autorização autenticada pelo dirigente superior é o equivalente a uma delegação de competências, uma vez que o representante da entidade passa a ter capacidade para, em nome da entidade, submeter autos de eliminação, propostas de tabelas de seleção e novas classes para a Lista Consolidada;
+    \item O formulário deverá ser assinado por um dirigente superior da Entidade e autenticado com assinatura digital, se o envio for feito por via eletrónica (NB\@: não serão aceites assinaturas do formulário por dirigentes intermédios). Esta autorização autenticada pelo dirigente superior é o equivalente a uma delegação de competências, uma vez que o representante da entidade passa a ter capacidade para, em nome da entidade, submeter autos de eliminação, propostas de tabelas de seleção e novas classes para a Lista Consolidada;
     \item O formulário deverá ser remetido à \acrshort{dglab} por via postal ou eletrónica, respetivamente, para:
     \begin{itemize}
-        \item \acrshort{dglab}, Edifício da Torre do Tombo, Alameda da Universidade, 1649-010 Lisboa (formulário assinado manualmente) ou
+        \item \acrshort{dglab}, Edifício da Torre do Tombo, Alameda da Universidade, 1649--010 Lisboa (formulário assinado manualmente) ou
         \item clav@dglab.gov.pt (formulário com assinatura digital).
     \end{itemize}
     \item Após receção do formulário, a \acrshort{dglab} efetuará o(s) respetivo(s) registo(s) até 48 horas úteis;
@@ -160,14 +158,14 @@ No caso do \textit{login} através do Autenticação.gov, o utilizador tem de se
     \begin{center}
         \includegraphics[width=0.5\textwidth]{img/authgov.png}
     \end{center}
-    \caption{Fluxo do \textit{login} de um utilizador através do Autenticação.gov}
-    \label{fig:authgov}
+    \caption{Fluxo do \textit{login} de um utilizador através do Autenticação.gov}\label{fig:authgov}
 \end{figure}
 
 No \textit{login} do utilizador é gerado um \acrshort{jwt} com a duração de 8 horas que deve ser usado nos pedidos a realizar à \acrshort{api}. No fim das 8 horas o utilizador necessita de se autenticar de novo.
 
 \subsubsection{A melhorar}
 
+%TODO
 As duas formas de autenticação necessitam de melhorias. Uma delas é a possibilidade de o \acrshort{jwt} do utilizador puder ser enviado no \texttt{body} algo que nem todos os métodos \acrshort{http} permitem bem como o \textit{Swagger} que iremos falar mais à frente não suporta a documentação desta forma de autenticação com \acrshort{jwt}'s. Logo deve ser removido este tipo de autenticação.
 
 \subsection{Lista Consolidada}
@@ -177,13 +175,82 @@ As duas formas de autenticação necessitam de melhorias. Uma delas é a possibi
 \subsection{Cache e Fecho Transitivo}
 
 \section{\acrshort{rest}}
-\cite{restws}
+~\cite{restws}
 
 %\section{express}
 %\cite{wdmongo}
 %procurar "semelhantes" para cada um
 
-\section{jsonwebtoken}
+\section{\acrfull{jwt}}
+O \acrshort{jwt} é um \textit{open standard}\footnote{Mais informação em \url{https://tools.ietf.org/html/rfc7519}} que define uma forma compacta e independente de transmitir com segurança informação entre partes com um objeto \acrshort{json}.~\cite{jwtio} O \acrshort{jwt} pode ser assinado digitalmente (\acrshort{jws}), encriptado (\acrshort{jwe}), assinado e depois encriptado (\acrshort{jws} encriptado gerando um \acrshort{jwe}, ordem recomendada\footnote{Mais informação em \url{https://tools.ietf.org/html/rfc7519\#section-11.2}}) ou encriptado e depois assinado (\acrshort{jwe} assinado gerando um \acrshort{jws}).
+
+Caso seja assinado digitalmente é possível verificar a integridade da informação mas não é garantida a sua privacidade contudo podemos confiar na informação do \acrshort{jwt}. A assinatura pode ser efetuada através de um segredo usando por exemplo o algoritmo \acrshort{hmac} ou através de pares de chaves pública/privada usando por exemplo o algoritmo \acrshort{rsa}. No caso de se usar pares de chaves pública/privada a assinatura também garante que a parte envolvida que tem a chave privada é aquela que assinou o \acrshort{jwt}.
+
+Por outro lado, os \acrshort{jwt}s podem ser encriptados garantindo a privacidade destes, escondendo a informação das partes não envolvidas.
+
+Sendo assim em que casos é útil o uso de \acrshort{jwt}s? Dois dos casos são os seguintes:
+\begin{itemize}
+    \item Autorização: Este será o caso para o qual o \acrshort{jwt} será usado na \acrshort{clav}. Quando o utilizador realiza o \textit{login} gera-se um \acrshort{jwt} por forma a que os restantes pedidos desse utilizador sejam realizados com esse \acrshort{jwt} (\textit{Single Sign On}). O uso de \acrshort{jwt}s para estes casos permitem um \textit{overhead} pequeno e a flexibilidade de serem usados em diferentes domínios.
+    \item Troca de informação: No caso de troca de informação entre duas partes os \acrshort{jwt}s assinados são de bastante utilidade visto que permitem verificar se o conteúdo não foi violado e, no caso de se usar pares de chaves pública/privada para assinar, permitem ter a certeza que o remetente é quem diz ser.
+\end{itemize}
+
+\subsection{Estrutura do \acrshort{jwt}}
+
+Os \acrshort{jwt}s são construídos a partir de três elementos, o \textit{header} (objeto \acrshort{json}), o \textit{payload} (objeto \acrshort{json}) e os dados de assinatura/encriptação (depende do algoritmo usado). Estes elementos são depois codificados em representações compactas (\texttt{Base64 URL-safe}\footnote{Variante da codificação \texttt{Base64} onde a codificação gerada é segura para ser usada em \textit{URL}s. Basicamente para a codificação \texttt{Base64} gerada substitui os caracteres '+' e '/' pelos caracteres '-' e '\_' respetivamente. Além disso, remove o caracter de \textit{padding} e proibe separadores de linha}). As codificações \texttt{Base64 URL-safe} de cada elemento são depois concatenadas através de pontos dando origem a uma representação final compacta do \acrshort{jwt} (\textit{JWS/JWE Compact Serialization}).
+
+\begin{figure}[H]
+    \centering
+    \textbf{\textcolor{red}{eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9}.
+        \textcolor{purple}{eyJuYW1lIjoiSm9zw6kgTWFydGlucyIsIm51bSI6ImE3ODgyMSJ9}.
+        \textcolor{cyan}{tRPSYVsFI-nziRPuAjdGZLN2tUez5MtLML\_aAnPplgM}
+    }
+    \caption{Exemplo de representação compacta de \acrshort{jwt}, quebra de linhas por forma a melhorar leitura}\label{fig:exemjwt}
+\end{figure}
+
+De seguida vamos aprofundar cada elemento referido:
+\begin{itemize}
+    \item[\textbf{\textit{Header}:}]
+
+    O cabeçalho consiste em duas partes (dois atributos):
+    \begin{itemize}
+        \item O atributo opcional \texttt{typ} (tipo do \textit{token}) em que o seu valor é ``JWT''
+        \item O atributo obrigatório (único campo obrigatório para o caso de um \acrshort{jwt} não encriptado) \texttt{alg} (algorítmo) onde é indicado que algoritmo é usado para assinar e/ou desencriptar. O seu valor pode ser por exemplo HS256 (\acrshort{hmac} com o auxilio do SHA-256\footnote{Função pertencente ao conjunto de funções \textit{hash} criptográficas \acrfull{sha2} desenhadas pela \acrshort{nsa}}) ou \acrshort{rsa}.
+    \end{itemize}
+
+    O cabeçalho é de grande importância visto que permite saber se o \acrshort{jwt} é assinado ou encriptado e de que forma o resto do \acrshort{jwt} deve ser interpretado.
+
+    Exemplo de cabeçalho:
+    \begin{lstlisting}[language=json, caption=\textit{Header} do \acrshort{jwt} usado na figura~\ref{fig:exemjwt}]
+    {
+        "alg": "HS256",
+        "typ": "JWT"
+    }
+    \end{lstlisting}
+
+    Este \acrshort{json} é depois codificado em \texttt{Base64URL} gerando a primeira parte do \acrshort{jwt}
+
+    \item [\textbf{\textit{Payload}:}] O \textit{payload} contém a informação/dados que pretendemos transmitir com o \acrshort{jwt}.
+
+    Exemplo de \textit{payload}:
+    \begin{lstlisting}[language=json, caption=\textit{Payload} do \acrshort{jwt} usado na figura~\ref{fig:exemjwt}]
+    {
+        "name": "José Martins",
+        "num": "a78821"
+    }
+    \end{lstlisting}
+
+    \item [\textbf{\textit{Signature}:}]
+
+    Exemplo de cabeçalho:
+    \begin{lstlisting}[language=javascript, caption=\textit{Signature} do \acrshort{jwt} usado na figura~\ref{fig:exemjwt}]
+    HMACSHA256(
+        base64UrlEncode(header) + "." +
+        base64UrlEncode(payload),
+        segredo1.-uminho!clav
+    )
+    \end{lstlisting}
+\end{itemize}
+
 %conceito JWT
 %procurar "semelhantes" para cada um
 
