@@ -168,20 +168,25 @@ No \textit{login} do utilizador é gerado um \acrshort{jwt} com a duração de 8
 %TODO
 As duas formas de autenticação necessitam de melhorias. Uma delas é a possibilidade de o \acrshort{jwt} do utilizador puder ser enviado no \texttt{body} algo que nem todos os métodos \acrshort{http} permitem bem como o \textit{Swagger} que iremos falar mais à frente não suporta a documentação desta forma de autenticação com \acrshort{jwt}'s. Logo deve ser removido este tipo de autenticação.
 
-\subsection{Lista Consolidada}
+%TODO
+%\subsection{Lista Consolidada}
 
-\subsection{Tabelas de Seleção}
+%TODO
+%\subsection{Tabelas de Seleção}
 
-\subsection{Cache e Fecho Transitivo}
+%TODO
+%\subsection{Cache e Fecho Transitivo}
 
-\section{\acrshort{rest}}
-~\cite{restws}
+%TODO
+%\section{\acrshort{rest}}
+%~\cite{restws}
 
+%TODO
 %\section{express}
 %\cite{wdmongo}
 %procurar "semelhantes" para cada um
 
-\section{Introdução ao \acrfull{jwt}}
+\section{\acrfull{jwt}}
 O \acrshort{jwt} é um \textit{open standard}\footnote{Mais informação em \url{https://tools.ietf.org/html/rfc7519}} que define uma forma compacta e independente de transmitir com segurança informação entre partes com um objeto \acrshort{json}.~\cite{jwtio} O \acrshort{jwt} pode ser assinado digitalmente (\acrshort{jws}), encriptado (\acrshort{jwe}), assinado e depois encriptado (\acrshort{jws} encriptado, ou seja, um \acrshort{jwe}, ordem recomendada\footnote{Mais informação em \url{https://tools.ietf.org/html/rfc7519\#section-11.2}}) ou encriptado e depois assinado (\acrshort{jwe} assinado, ou seja, um \acrshort{jws}).
 
 Caso seja assinado digitalmente é possível verificar a integridade da informação mas não é garantida a sua privacidade contudo podemos confiar na informação do \acrshort{jwt}. A assinatura pode ser efetuada através de um segredo usando por exemplo o algoritmo \acrshort{hmac} ou através de pares de chaves pública/privada usando por exemplo o algoritmo \acrshort{rsa}. No caso de se usar pares de chaves pública/privada a assinatura também garante que a parte envolvida que tem a chave privada é aquela que assinou o \acrshort{jwt}.
@@ -229,7 +234,7 @@ De seguida vamos aprofundar cada elemento referido:
 
     \item [\textbf{\textit{Payload}:}] O \textit{payload} (a roxo na figura~\ref{fig:exemjwt}) contém a informação/dados que pretendemos transmitir com o \acrshort{jwt}. Não há atributos obrigatórios contudo existem certos atributos que têm um significado definido (atributos registados).
 
-    Existem 7 atributos registados (\textit{registered claims}):
+    Existem 7 atributos registados (\textit{registered claims}):~\cite{jwthandbook}
     \begin{itemize}
         \item \texttt{iss} (\textit{issuer}): Identificador único (\textit{case-sensitive string}) que identifica unicamente quem emitiu o \acrshort{jwt}. A sua interpretação é específica a cada aplicação visto que não há uma autoridade central que gere os emissores.
         \item \texttt{sub} (\textit{subject}): Identificador único (\textit{case-sensitive string}) que identifica unicamente de quem é a informação que o \acrshort{jwt} transporta. Este atributo deve ser único no contexto do emissor, ou se tal não for possível, globalmente único. O tratamento do atributo é específico a cada aplicação. 
@@ -284,68 +289,75 @@ Já na figura~\ref{fig:buildJWS} é demonstrada a construção de um \acrshort{j
 
 \subsection{Alternativas ao \acrshort{jwt}}
 
-%Let's talk about the benefits of JSON Web Tokens (JWT) when compared to Simple Web Tokens (SWT) and Security Assertion Markup Language Tokens (SAML).
+Algumas alternativas ao \acrshort{jwt} passam pelo uso de \acrfull{swt} ou \acrfull{saml}. Se compararmos o \acrshort{jwt} ao \acrshort{saml}, o \acrshort{json} é menos verboso que o \acrshort{xml} e mesmo quando codificado o seu tamanho é menor. 
 
-%As JSON is less verbose than XML, when it is encoded its size is also smaller, making JWT more compact than SAML. This makes JWT a good choice to be passed in HTML and HTTP environments.
-%
-%Security-wise, SWT can only be symmetrically signed by a shared secret using the HMAC algorithm. However, JWT and SAML tokens can use a public/private key pair in the form of a X.509 certificate for signing. Signing XML with XML Digital Signature without introducing obscure security holes is very difficult when compared to the simplicity of signing JSON.
-%
-%JSON parsers are common in most programming languages because they map directly to objects. Conversely, XML doesn't have a natural document-to-object mapping. This makes it easier to work with JWT than SAML assertions.
-%
-%Regarding usage, JWT is used at Internet scale. This highlights the ease of client-side processing of the JSON Web token on multiple platforms, especially mobile.
+De um ponto de vista de segurança o \acrshort{swt} apenas pode ser assinado simetricamente por um segredo partilhado usando o algoritmo \acrshort{hmac}. Já o \acrshort{jwt} e o \acrshort{saml} podem usar pares de chaves pública/privada para assinar. Contudo assinar \acrshort{xml} com \textit{\acrshort{xml} Digital Signature} sem introduzir buracos de segurança é mais dificil quando comparado com a simplicidade de assinar \acrshort{json}.~\cite{jwtio}
 
-%PASETO
-%Branca
-%Macaroons
+Houve contudo algumas bibliotecas de \acrshort{jwt} com vulnerabilidades devido ao atributo \texttt{alg} da \textit{header} do \acrshort{jwt}. Havia duas situações de vulnerabilidade:
+\begin{itemize}
+    \item As bibliotecas ao fazer a verificação (recebe um \acrshort{jwt} e um segredo/chave pública como argumentos) de um \acrshort{jwt} com \texttt{alg} igual a \texttt{none} assumiam logo que o \acrshort{jwt} era válido mesmo que o segredo/chave pública fosse diferente de vazio. Ou seja, com a simples alteração do atributo \texttt{alg} e com a remoção da \textit{signature} podia-se alterar o \textit{payload} do \acrshort{jwt} que o servidor iria continuar a considerar que a integridade do \acrshort{jwt} não foi colocada em causa mesmo que os \acrshort{jwt}s gerados pelo servidor tivessem sido com um algoritmo e com recurso a um segredo/chave privada.
+    \item As bibliotecas ao fazer a verificação seja um algoritmo simétrico ou assimétrico apenas tinham como parâmetros o \acrshort{jwt} e o segredo/chave pública. Isto gera uma segunda vulnerabilidade, se o servidor estiver à espera de um \acrshort{jwt} assinado com pares de chaves pública/privada mas recebe um \acrshort{jwt} assinado com \acrshort{hmac} vai assumir que a chave pública é o segredo a usar no algoritmo \acrshort{hmac}. Ou seja, se se criar um \acrshort{jwt} com o atributo \texttt{alg} igual a \acrshort{hmac} e a assinatura for gerada usando o algoritmo \acrshort{hmac} com o segredo a ser a chave pública, podemos alterar o \textit{payload} (antes de assinar) que o servidor vai considerar que o \acrshort{jwt} não foi maliciosamente alterado.
+\end{itemize}
 
-%TODO: explicar problemas do JWT (segurança e que n é tao compacto)
-%tb o problema de se quiser revogar tokens tenho de ter algo statefull
-%https://scotch.io/bar-talk/why-jwts-suck-as-session-tokens
-%https://paragonie.com/blog/2017/03/jwt-json-web-tokens-is-bad-standard-that-everyone-should-avoid
-%https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/
-%https://kevin.burke.dev/kevin/things-to-use-instead-of-jwt/
+Portanto a flexibilidade de algoritmos dada pelo \acrshort{jwt} coloca em causa a segurança pelo que da parte das bibliotecas o atributo \texttt{alg} não deve ser considerado~\cite{jwtvuln} bem como deve ser \textit{deprecated} e deixar de ser incluído nos \acrshort{jwt}s\footnote{Ver \url{https://gist.github.com/paragonie-scott/c88290347c2589b0cd38d8bb6ac27c03}}. 
+
+A biblioteca que será usada na \acrshort{clav}, \texttt{jsonwebtoken}, já endereçou estes problemas\footnote{Ver \url{https://github.com/auth0/node-jsonwebtoken/commit/1bb584bc382295eeb7ee8c4452a673a77a68b687}} pelo que estas vulnerabilidades não estarão presentes na \acrshort{clav}.
+
+Por outro os \textit{parsers} de \acrshort{json} são mais comuns em grande parte das linguagens de programação visto que os \acrshort{json}s mapeiam diretamentepara objetos ao contrário do \acrshort{xml} que não tem um mapeamento natural de documento para objeto.~\cite{jwtio} Portanto isto torna mais fácil trabalhar com \acrshort{jwt} do que com \acrshort{saml}.
+
+Já quando comparamos os \acrshort{jwt} a \textit{cookie sessions}, o \acrshort{jwt} tem a vantagem de as sessões puderem ser \textit{stateless} enquanto que as \textit{cookies} são \textit{statefull}. Contudo, ser \textit{stateless} não permite por exemplo que a qualquer altura se possa revogar um \acrshort{jwt}. Para endereçar esse problema é necessário, por exemplo, guardar (\textit{statefull}) os \acrshort{jwt}s numa base de dados associando cada \acrshort{jwt} ao identificador único de quem é a informação contida no \acrshort{jwt} (o uso de uma \textit{whitelist}). Assim para revogar um \acrshort{jwt} bastaria removê-lo da base de dados.
+
+%TODO: referencia para API gateways
+Outra alternativa ao \acrshort{jwt} seria \textit{sessionIDs}. As \textit{sessionIDs} são \textit{strings} longas, únicas e aleatórias. É possível revogar um \textit{sessionID}, ao contrário do \acrshort{jwt}, bastando para isso remover o \textit{sessionID} da base de dados. Mais à frente na secção~\ref{} veremos outra possível alternativa com recurso a \acrshort{api} \textit{gateways} em que uma possível abordagem é dentro da \acrshort{api} \textit{gateway} ser através de \acrshort{jwt}s, fora ser usado \textit{sessionIDs} e na ``entrada'' da \acrshort{api} \textit{gateway} ter uma base de dados que associa os \textit{sessionsIDs} aos \acrshort{jwt}s.
+
+Por fim, uma outra alternativa bastante semelhante ao \acrshort{jwt} é \textit{Branca}. \textit{Branca} usa o algoritmo simétrico \textit{\acrshort{ietf} XChaCha20-Poly1305 \acrshort{aead}} que permite criar \textit{tokens} encriptados e que garantam integridade. Tem também uma região de \textit{payload} como \acrshort{jwt} com a única diferença é que este \textit{payload} não tem um estrutura definida. Não necessita da \textit{header} visto que o algoritmo usado não varia. Em vez de usar codificação em \texttt{Base64 URL-safe} usa \texttt{Base62} que também é \textit{URL-safe}. Para além disso o \textit{token} gerado é geralmente de menor dimensão do que o gerado pelo \acrshort{jwt} sendo como tal mais compacto que o \acrshort{jwt}.~\cite{branca} Visto que o \textit{Branca} encripta e garante integridade de uma forma mais simples que o \acrshort{jwt} permite (para isso era necessário recorrer a um \acrshort{jwe} que tem no seu \textit{payload} um \acrshort{jws}), sendo como tal propenso a menos erros de programação. Contudo, o \textit{Branca} ainda não é muito conhecido nem um \textit{standard} da indústria, ao contrário do \acrshort{jwt}, mas não deixa de ser algo a ter em conta para o futuro. 
 
 \section{Autorização de pedidos à \acrshort{api}}
 %TODO: explicar como se usa o JWT
 
 %TODO: tentar aproveitar a estrutura do rpd om
 
-%procurar "semelhantes" para cada um
-
+%TODO
 %\section{passport-jwt}
 %procurar "semelhantes" para cada um
 
-\section{CORS}
+%TODO
+%\section{CORS}
 %falar da package e do conceito CORS
 %procurar "semelhantes" para cada um
 
+%TODO
 %\section{axios}
 %procurar "semelhantes" para cada um
 
-\section{HTTP Status}
+%TODO
+%\section{HTTP Status}
 
-\section{Headers do HTTP}
+%TODO
+%\section{Headers do HTTP}
 
 \section{Autenticação.gov}
-\cite{agov}
+~\cite{agov}
 
+%TODO
 %\section{exceljs}
 %procurar "semelhantes" para cada um
 
 \section{MongoDB}
-\cite{wdmongo}
+~\cite{wdmongo}
 
+%TODO
 %\section{mongoose}
 %procurar "semelhantes" para cada um
 
 \section{Web Semântica}
-\cite{lsparql}
+~\cite{lsparql}
 
 \subsection{RDF}
-\cite{lsparql}
+~\cite{lsparql}
 
 \subsection{SPARQL}
-\cite{lsparql}
+~\cite{lsparql}
 
 %se calhar referir algumas packages de ligação ao sparql em vez de usar o que criei
 
@@ -357,27 +369,34 @@ Já na figura~\ref{fig:buildJWS} é demonstrada a construção de um \acrshort{j
 
 \section{Swagger-UI}
 
+%TODO
 %\section{yaml-include}
 %procurar "semelhantes" para cada um
 
+%TODO
 %\section{swagger-ui-express}
 %procurar "semelhantes" para cada um
 
+%TODO
 %\section{js-yaml}
 %procurar "semelhantes" para cada um
 
-\section{Nginx}
-\cite{nginxcook}
+%TODO
+%\section{Nginx}
+%~\cite{nginxcook}
 %procurar "semelhantes" para cada um
 
-\section{Ontologia}
-\cite{bontology}
+%TODO
+%\section{Ontologia}
+%~\cite{bontology}
 %conceito
 
-\section{Docker}
-\cite{udocker}
+%TODO
+%\section{Docker}
+%~\cite{udocker}
 %procurar "semelhantes" para cada um
 
-\section{Docker Compose}
-\cite{udocker}
+%TODO
+%\section{Docker Compose}
+%~\cite{udocker}
 %procurar "semelhantes" para cada um
