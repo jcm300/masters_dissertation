@@ -487,7 +487,32 @@ No projeto \acrshort{clav} irá ser implementado a autenticação com recurso ao
     \item \acrfull{cmd}: Um dos objetivos desta tese é a implementação da autenticação com recurso a este certificado digital. Com o \acrshort{cmd}, após o utilizador associar um número de telemóvel ao \acrshort{nic}, o utilizador pode autenticar-se com o número de telemóvel, o código \acrshort{pin} da \acrshort{cmd} e o código de segurança temporário enviado por \acrshort{sms}.
 \end{itemize}
 
-%TODO: acabar autenticacao.gov
+De forma a completar a figura~\ref{fig:authgov} apresenta-se de seguida o fluxo de pedidos efetuado entre o \acrshort{clav} e o Autenticação.gov de forma a autenticar um utilizador na \acrshort{clav}:~\cite{agov}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{img/fluxoauthgov.png}
+    \end{center}
+    \caption{Fluxo de pedidos entre \acrshort{clav} e o Autenticação.gov de forma a autenticar um utilizador na \acrshort{clav}. Fonte:~\cite{agov}}\label{fig:fluxoauthgov}
+\end{figure}
+
+\begin{enumerate}
+    \item O utilizador pretende aceder à área privada do portal de uma entidade (do \acrshort{clav}), na qual é necessário que comprove a sua identidade;
+    \item O portal da entidade (\acrshort{clav}) delega a autenticação e redireciona o utilizador para o Autenticação.gov, juntamente com um pedido de autenticação assinado digitalmente;
+    \item O Autenticação.gov valida o pedido de autenticação recebido e solicita a autenticação do utilizador com recurso ao seu \acrshort{cc} pedindo a inserção do seu \acrshort{pin} de autenticação. Durante este processo, o Autenticação.gov efetua as seguintes operações internas:
+    \begin{enumerate}
+        \item Valida as credenciais do utilizador com recurso à \acrshort{pki} do \acrshort{cc} via \acrshort{ocsp}
+        \item Obtém atributos que sejam solicitados pelo portal da entidade (\acrshort{clav}) junto dos vários fornecedores de atributos qualificados. Esta operação é efetuada via Plataforma de Interoperabilidade. Este processo pode incluir a obtenção de dados da Federação de Identidades ou de outras Entidades.
+    \end{enumerate}
+    \item A identificação e atributos do utilizador são autenticadas e assinados digitalmente pelo Autenticação.gov, após o que redireciona o utilizador de volta ao portal da entidade original (\acrshort{clav}). Cabe à entidade (\acrshort{clav}) a validação das credenciais do Autenticação.gov e utilização dos atributos do cidadão.
+\end{enumerate}
+
+A troca de pedidos entre o \acrshort{clav} e o Autenticação.gov é feita através de \acrshort{saml} 2.0 (com as extensões que a \acrshort{ama} considera obrigatórias). De seguida será feita uma pequena introdução ao \acrshort{saml} 2.0. 
+
+\subsection{\acrshort{saml} 2.0}
+O \acrfull{saml} define uma \textit{framework} \textit{standard} em \acrshort{xml} para a troca segura de informação entre entidades \textit{web}.
+
+Existem dois tipos de \textit{provides} em \acrshort{saml}:
+%TODO
 
 %TODO
 %\section{exceljs}
