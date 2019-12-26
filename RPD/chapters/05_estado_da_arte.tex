@@ -509,14 +509,27 @@ De forma a completar a figura~\ref{fig:authgov} apresenta-se de seguida o fluxo 
 A troca de pedidos entre o \acrshort{clav} e o Autenticação.gov é feita através de \acrshort{saml} 2.0 (com as extensões que a \acrshort{ama} considera obrigatórias). De seguida será feita uma pequena introdução ao \acrshort{saml} 2.0. 
 
 \subsection{\acrshort{saml} 2.0}
-O \acrfull{saml} define uma \textit{framework} \textit{standard} em \acrshort{xml} para a troca segura de informação entre entidades \textit{web}.
+O \acrfull{saml} define uma \textit{framework} \textit{standard} em \acrshort{xml}.~\cite{sam2man} Foi aprovado pela \acrshort{oasis} e permite a troca segura de informação de autenticação e autorização entre diferentes entidades. Através do \acrshort{saml} é possível através de uma credencial (\textit{login} de um utilizador) aceder autenticado a um conjunto de \textit{websites}. Esta funcionalidade é conhecida por \acrfull{sso}.
 
-Existem dois tipos de \textit{provides} em \acrshort{saml}:
-%TODO
+Existem três tipos de papéis em \acrshort{saml}:~\cite{wisaml}
+\begin{itemize}[leftmargin=2cm]
+    \item Utilizador
+    \item \textit{Identity Provider}: Realiza a autenticação de que o utilizador é quem diz ser e envia essa informação ao \textit{Service Provider} junta com as permissões de acesso do utilizador para o serviço
+    \item \textit{Service Provider}: Precisa de autenticação do \textit{Identity Provider} para poder dar autorização ao utilizador
+\end{itemize}
+
+O documento \acrshort{xml} enviado pelo \textit{Identity Provider} para o \textit{Service Provider} é conhecida por \textit{\acrshort{saml} Assertion}. Existem três tipos de \textit{\acrshort{saml} Assertion}:~\cite{wisaml}
+\begin{itemize}[leftmargin=2cm]
+    \item \textit{Authentication Assertion}: Prova a identificação de um utilizador e fornece a hora em que o utilizador se autenticou e o método de autenticação usado
+    \item \textit{Attribution Assertion}: Envia \textit{\acrshort{saml} attributes} (formato de dados que contém informação acerca do utilizador) para o \textit{Service Provider}
+    \item \textit{Authorization Assertion}: Indica se o utilizador está autorizado a usar o serviço ou se o \textit{Identity Provider} recusou o pedido à inserção de uma password errada ou por falta de permissões para usar o serviço
+\end{itemize}
+
+No projeto \acrshort{clav} o utilizador final é o utilizador da \acrshort{clav}, o \textit{Identity Provider} é representado pelo Autenticação.gov e o \textit{Service Provider} é representado pela \acrshort{clav}.
 
 %TODO
 %\section{exceljs}
-%procurar "semelhantes" para cada um
+    %procurar "semelhantes" para cada um
 
 \section{MongoDB}
 ~\cite{wdmongo}
