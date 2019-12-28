@@ -6,3 +6,4 @@ makeglossaries dissertation
 bibtex dissertation
 $engine dissertation.tex
 $engine dissertation.tex
+$engine dissertation.tex

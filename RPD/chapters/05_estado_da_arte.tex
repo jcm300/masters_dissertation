@@ -488,34 +488,132 @@ O \textit{Swagger} é um ecossistema de ferramentas para desenvolver \acrshort{a
 
 Até 2015 o \textit{Swagger} consistia numa especificação e num ecossistema de ferramentas para implementar a especificação. Em 2015 a fundadora do \textit{Swagger}, \textit{SmartBear Software}, doou a especificação \textit{Swagger} para a \textit{Linux Foundation} e renomeou a especificação para \acrlong{oas}.~\cite{wiswagger}
 
-A especificação é agora desenvolvida pela \textit{OpenAPI Initiative} que envolve várias empresas tecnológias entre as quais \textit{Microsoft}, \textit{Google}, \textit{IBM} e a fundadora \textit{Smartbear Software}.
+A especificação \textit{OpenAPI} é agora desenvolvida pela \textit{OpenAPI Initiative} que envolve várias empresas tecnológias entre as quais \textit{Microsoft}, \textit{Google}, \textit{IBM} e a fundadora \textit{Smartbear Software}.
 
-Já o conjunto de ferramentas \textit{Swagger} inclui ferramentas \textit{open-source}, gratuitas e comerciais que podem ser usadas em diferentes estágios do ciclo de vida de uma \acrshort{api}. Algumas das ferramentas são:~\cite{swaggerVSoas}
+Já o conjunto de ferramentas \textit{Swagger} inclui ferramentas \textit{open-source}, gratuitas e comerciais que podem ser usadas em diferentes estágios do ciclo de vida de uma \acrshort{api}, que inclui documentação, desenho, testes e \textit{deployment}. Algumas das ferramentas são:~\cite{swaggerVSoas}
 \begin{itemize}
-    \item \textbf{\textit{Swagger Editor}}: Permite editar especificações \textit{OpenAPI} em \acrshort{yaml} no \textit{browser} bem como pré-visualizar a documentação em tempo real
-    \item \textbf{\textit{Swagger UI}}: Coleção de \textit{assets} \textit{\acrshort{html}}, \textit{JavaScript} e \textit{\acrshort{css}} que geram dinamicamente documentação a partir de uma especificação \textit{OpenAPI} de uma \acrshort{api}
-    \item \textbf{\textit{Swagger Codegen}}: Permite a geração de bibliotecas cliente da \acrshort{api} (geração \acrshort{sdk}), \textit{server stubs} e documentação automática a partir de uma especificação \textit{OpenAPI}
+    \item \textbf{\textit{Swagger Editor}}: Permite editar especificações \textit{OpenAPI} em \acrshort{yaml} no \textit{browser}\footnote{Aceder \url{https://editor.swagger.io/}}, validar as especificações em relação às regras do \acrshort{oas} bem como pré-visualizar a documentação em tempo real. Facilita o desenho e a documentação de \acrshort{api}s \acrshort{rest}
+    \item \textbf{\textit{Swagger \acrshort{ui}}}: Coleção de \textit{assets} \textit{\acrshort{html}}, \textit{JavaScript} e \textit{\acrshort{css}} que geram dinamicamente documentação a partir de uma especificação \textit{OpenAPI} de uma \acrshort{api}
+    \item \textbf{\textit{Swagger Codegen}}: Permite a geração de bibliotecas cliente (geração de \acrshort{sdk}), \textit{server stubs} e documentação automática a partir de especificações \textit{OpenAPI}
     \item \textbf{\textit{Swagger Inspector}} (gratuita): Ferramenta de testes de \acrshort{api}s que permite validar as \acrshort{api}s e gerar definições \textit{OpenAPI} de \acrshort{api}s existentes
     \item \textbf{\textit{SwaggerHub}} (gratuita e comercial): Desenho e documentação de \acrshort{api}s, construido para equipas que trabalham com \textit{OpenAPI}
 \end{itemize}
 
-O \textit{Swagger} possui um ecossistema que permite criar uma \acrshort{api} de raíz até ao fim de forma estruturada. Contudo, visto que já temos grande parte da \acrshort{api} construída o \textit{Swagger} vai ser usado apenas para uma das últimas fases da construção da \acrshort{api}, a documentação da \acrshort{api}.
+O \textit{Swagger} possui duas abordagens:~\cite{swaggerNode}
+\begin{itemize}
+    \item \textit{top-down}: Uso do \textit{Swagger Editor} para criar a especificação \textit{OpenAPI} e depois usar o \textit{Swagger Codegen} por forma a gerar o código do cliente e do servidor. Ou seja, primeiro desenha-se a \acrshort{api} antes de escrever código
+    \item \textit{bottom-up}: Utilizador já possui uma \acrshort{api} \acrshort{rest} e o \textit{Swagger} irá ser usado apenas para documentar a \acrshort{api} existente
+\end{itemize}
 
-%procurar "semelhantes" para cada um
+Visto que o \acrshort{clav} já possui grande parte da \acrshort{api} construída vai ser usada uma abordagem \textit{bottom-up}. Portanto, o \textit{Swagger} vai ser usado apenas para uma das últimas fases da construção da \acrshort{api}, a documentação da \acrshort{api}. De forma a produzir a documentação, do portfólio de ferramentas do \textit{Swagger} apenas precisaremos de utilizar o \textit{Swagger \acrshort{ui}} e o \textit{Swagger Editor}. O primeiro permitirá apresentar aos utilizadores a documentação gerada e o segundo permitirá validar a especificação \textit{OpenAPI} (documentação) criada, verificando se não possui erros.
 
-\section{Swagger-UI}
+\subsection{Especificação \textit{OpenAPI}}
 
-%TODO
-%\section{yaml-include}
-%procurar "semelhantes" para cada um
+A especificação \textit{OpenAPI} providencia um conjunto de propriedades que podem ser usadas para descrever uma \acrshort{api} \acrshort{rest}. Com um documento de especificação válido é possível usá-lo para criar uma documentação interativa, por exemplo, através do \textit{Swagger \acrshort{ui}}.
 
-%TODO
-%\section{swagger-ui-express}
-%procurar "semelhantes" para cada um
+%Especificões: (alternativas)
+%- RAML: https://raml.org/
+%- API Blueprint
 
-%TODO
-%\section{js-yaml}
-%procurar "semelhantes" para cada um
+\subsection{\textit{Swagger \acrshort{ui}}}
+
+O \textit{Swagger \acrshort{ui}} permite a qualquer um visualizar uma \acrshort{api} \acrshort{rest}. A partir de um documento \acrshort{json} ou \acrshort{yaml} (especificação \textit{OpenAPI}) é automaticamente gerado uma documentação interativa.
+
+%imagem com um exemplo
+
+%alternativas:
+%http://redocly.github.io/redoc/
+%https://github.com/Redocly/redoc
+
+\subsection{Alternativas}
+Há outras \textit{frameworks} como o \textit{\acrshort{raml}} ou \textit{APIBlueprint} contudo não são tão populares como o \textit{Swagger}. Uma das razões é devido ao \textit{Swagger} criar uma documentação clara e interativa. Para além disso usa uma linguagem comum que todos entendem e é de fácil compreensão tanto para desenvolvedores como para quem não seja desenvolvedor. Além disso possui um ecossistema de ferramentas que permite desenhar \acrshort{api}s e melhorar o trabalho com serviços \textit{web}.
+
+%Swagger: (alternativas)
+%apiary: https://apiary.io/ (mais para desenho de apis)
+%slate: https://github.com/slatedocs/slate
+%https://blog.cloudboost.io/adding-swagger-to-existing-node-js-project-92a6624b855b
+%Postman — if you don’t want to host documentation in your application, you can create Postman collection, and distribute that to the user of your API. But if your API is changing fast, you will have a lot of versions of Postman collection and that can be pretty messy.
+%apiDoc — is RESTful web API documentation generator. It creates a documentation from API annotations in your source code. This tool doesn’t support design first approach, there is not code generator and fancy editor.
+%API Console — is based on RAML(RAML — RESTful API Modeling Language). RAML is direct competitor to Swagger. It supports top-down and bottom up approach and has editor and code generator.
+%docbox — RESTful API documentation generator. It takes Markdown files and generates a friendly two-column layout with navigation, permalinks, and examples. This library can be used only for API documentation.
+
+\section{Documentação da \acrshort{api} do \acrshort{clav}}
+
+Agora sabendo que será usada a especificação \textit{OpenAPI} e o \textit{Swagger} é importante perceber que bibliotecas devem ser usadas para a produção da documentação. 
+
+Existem duas \textit{packages} que podem ser usados para criar documentação interativa para uma \acrshort{api} \acrshort{rest} criada com \textit{Node.js} e \textit{Express.js}:~\cite{swaggerNode}
+\begin{itemize}
+    \item \texttt{swagger-node-express}
+    \begin{itemize}
+        \item Vantagens
+        \begin{itemize}
+            \item Módulo oficial suportado pelo \textit{Swagger}
+            \item É \textit{open-source} e como tal é possível contribuir para a correção de problemas
+            \item A solução contém \textit{Swagger Editor} e \textit{Swagger Codegen} e como tal tanto podemos usar uma abordagem \textit{top-down} como \textit{bottom-up}
+        \end{itemize}
+        \item Desvantagens
+        \begin{itemize}
+            \item Instalação manual do \textit{Swagger \acrshort{ui}}. O código do \textit{Swagger \acrshort{ui}} tem de ser copiado manualmente para o projeto e sempre que há uma atualização é necessário copiar manualmente de novo
+            \item Instalação complexa. Por forma a aplicação hospedar a documentação é necessário adicionar algumas rotas ao servidor para além das já definidas na especificação \textit{OpenAPI}
+            \item Fraca documentação
+        \end{itemize}
+    \end{itemize}
+    \item \texttt{swagger-ui-express}
+    \begin{itemize}
+        \item Vantagens
+        \begin{itemize}
+            \item É \textit{open-source} e como tal é possível contribuir para a correção de problemas
+            \item Não é necessário copiar manualmente o \textit{Swagger \acrshort{ui}}
+            \item De fácil instalação, apenas é necessário adicionar uma rota aonde estará hospedada a documentação
+            \item Boa documentação
+        \end{itemize}
+        \item Desvantagens
+        \begin{itemize}
+            \item Não é o módulo oficial suportado pelo \textit{Swagger}
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+Das duas foi escolhida a \texttt{swagger-ui-express} visto ser de mais simples implementação e de mais fácil manutenção.
+
+\begin{lstlisting}[language=javascript, caption=Exemplo de uso do \texttt{swagger-ui-express}, label=exem:suie]
+var swaggerUI = require('swagger-ui-express')
+//JSON
+var swaggerDocument = require('./swagger.json')
+//ou YAML
+var yaml = require('js-yaml')
+var fs = require('fs')
+var swaggerDocument = yaml.load(fs.readFileSync('./swagger.yaml'))
+
+app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+\end{lstlisting}
+
+No exemplo~\ref{exem:suie} a documentação da \acrshort{api} está presente na rota \texttt{'/doc'}. Neste exemplo é exemplificado como carregar uma especificação \textit{OpenAPI} em \acrshort{json} bem como em \acrshort{yaml}. Quanto ao \textit{middleware} \texttt{serve} retorna os ficheiros estáticos necessários para hospedar o \textit{Swagger \acrshort{ui}}. Já o segundo \textit{middleware} \texttt{setup} para além de puder receber o documento com a especificação \textit{OpenAPI} pode também receber um outro parâmetro de opções que o utilizador pode definir para a apresentação interativa da documentação com o \textit{Swagger \acrshort{ui}}\footnote{As opções possíveis estão presentes em \url{https://github.com/scottie1984/swagger-ui-express}. Para o atributo (opção) \texttt{swaggerOptions} as opções possíveis estão presentes em \url{https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/configuration.md}}.
+
+Agora há duas abordagens possíveis de realizar a documentação:
+\begin{itemize}
+    \item Documentação de cada rota nos comentários da rota através da utilização da \textit{package} \texttt{swagger-jsdoc}\footnote{Ver \url{https://github.com/Surnet/swagger-jsdoc}}
+    \item Documentação à parte do código
+\end{itemize}
+
+A abordagem escolhida foi a da documentação à parte do código por forma a modularizar a documentação. A modularização da documentação foi realizada através do uso da \textit{package} \texttt{yaml-include}\footnote{Ver \url{https://github.com/claylo/yaml-include}}. Esta \textit{package} permite que o documento \acrshort{yaml} da especificação \textit{OpenAPI} possa ser dividida por vários ficheiros.
+
+\begin{lstlisting}[language=yaml, caption=Exemplo de uso do \texttt{yaml-include} no documento de especificação \textit{OpenAPI}, label=exem:yamli]
+openapi: 3.0.0
+info:
+  description: Esta é a API do projeto CLAV. Pode encontrar mais informação sobre o CLAV em [http://clav.dglab.gov.pt](http://clav.dglab.gov.pt).
+  version: 1.0.0
+  title: CLAV API
+  contact:
+    name: CLAV
+    email: clav@dglab.gov.pt
+servers:
+  - url: http://localhost:7779/api
+    description: Local API server
+paths: !!inc/dir [ 'paths' ]
+components:
+  schemas: !!inc/dir [ 'schemas', excludeTopLevelDirSeparator: true ]
+\end{lstlisting}
 
 %TODO
 %\section{Nginx}

@@ -205,6 +205,25 @@
 	keywordstyle=\bfseries
 }
 
+\lstdefinelanguage{yaml}{
+  keywords={true,false,null,y,n},
+  keywordstyle=\color{darkgray}\bfseries,
+  basicstyle=\color{OliveGreen}\ttfamily\footnotesize,
+  sensitive=false,
+  comment=[l]{\#},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{RoyalBlue}\ttfamily,
+  moredelim=[l][\color{orange}]{\&},
+  moredelim=[l][\color{magenta}]{*},
+  moredelim=**[il][\color{red}{:}\color{RoyalBlue}]{:},
+  morestring=[b]',
+  morestring=[b]",
+  literate =    {---}{{\ProcessThreeDashes}}3
+                {>}{{\textcolor{red}\textgreater}}1
+                {|}{{\textcolor{red}\textbar}}1,
+}
+
 \lstset{
 	%numbers=left,
 	numberstyle=\scriptsize,
