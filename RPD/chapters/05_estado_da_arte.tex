@@ -1,78 +1,3 @@
-\begin{comment}
-\section{JavaScript e a Programação Assíncrona}
-A linguagem \textit{JavaScript} teve a sua origem no \textit{browser} \textit{Netscape Navigator} como uma forma de adicionar programas a páginas web.~\cite{elojs} Hoje em dia é usado por grande parte dos \textit{browsers} e tornou possível as aplicações web onde o utilizador pode interagir sem precisar de realizar \textit{refresh} ao fim de cada ação.
-Contudo o \textit{Javascript} é bastante liberal no que permite o programador escrever, facilitando a aprendizagem para novos programadores mas tornando a tarefa de resolver e encontrar problemas bem mais difícil visto não apontar aonde estão esses problemas. Ainda assim esta flexibilidade permite uma quantidade de técnicas que não são possíveis em linguagens mais rígidas e que permitem ultrapassar algumas falhas do \textit{Javascript}.~\cite{elojs} 
-
-\subsection{Programação Assíncrona}
-Muitos programas em \textit{JavaScript} precisam de por exemplo obter dados através da rede ou a partir do disco. Estes casos são muito mais lentos do que obter os dados a partir de memória para posterior processamento pelo processador. Na realização de tais pedidos o programa em \textit{Javascript} perderia o acesso ao processador, passando este acesso para outro programa que esteja a correr. Só depois de receber o sinal de que o pedido foi efetuado e de ter de novo acesso ao processador é que o programa voltaria a continuar o seu trabalho.
-
-Por forma a evitar perder o acesso do processador em tais casos, e assim realizar trabalho enquanto se espera pela resposta do pedido, o \textit{Javascript} segue um modelo assíncrono. O modelo assíncrono permite que aconteçam várias coisas ao mesmo tempo; quando começa um pedido o programa continua a correr; quando o pedido termina, o programa é informado e tem acesso ao resultado.~\cite{elojs} Para além de não se perder imediatamente o acesso ao processor, o uso de programação assíncrona permite receber e enviar dados de e para múltiplos dispositivos ao mesmo tempo sem complicar a gestão de \textit{threads} e a sincronização necessária em tais casos. Ao usar um modelo assíncrono a expressão de programas que não seguem um modelo de controlo linear é mais fácil enquanto que torna mais difícil aqueles que o seguem.~\cite{elojs}
-
-\subsubsection{\textit{Callbacks}}
-Uma abordagem de programação assíncrona é a adição de um argumento extra, uma função \textit{callback}, nas funções que realizam pedidos lentos.~\cite{elojs} Quando o pedido concluir a função \textit{callback} será chamada tendo como argumento o resultado do pedido. Com o uso de callbacks o nível de indentação aumenta com cada pedido assíncrono o que em alguns casos pode tornar o código um pouco difícil de compreender, principalmente nos casos com múltiplos pedidos assíncronos seguidos que têm de ser sequenciais. Para além disso, qualquer função que chame uma função assíncrona tem de ser ela própria assíncrona. Não é recomendado a reestruturação de grandes quantidades de código através de \textit{callbacks} visto ser mais propenso a erros do que retornar apenas um valor.
-
-\begin{lstlisting}[language=javascript, caption=Exemplo de uma \textit{Callback}]
-    almocar("comida", function(dentes\_sujos){
-        dentes_limpos = lavar_dentes(dentes_sujos)
-    })
-\end{lstlisting}
-
-\subsubsection{Promessas}
-Uma outra abordagem, em vez de passar uma função a ser chamada no futuro, é devolver um objeto que represente este evento futuro, uma promessa. Ou seja, uma promessa é um pedido assíncrono que pode ser concluído no futuro e produzir um valor, tendo a capacidade de notificar qualquer interessado quando o valor estiver disponível.\cite{elojs} O resultado de uma promessa tanto pode já estar pronto ou estar apenas daqui a algum tempo. A principal vantagem das promessas é que simplificam o uso de funções assíncronas visto que não é necessário passar uma função \textit{callback}. Como tal estas funções são similares às restantes mas com uma pequena diferença, o resultado da função pode ainda não estar disponível. 
-
-\begin{lstlisting}[language=javascript, caption=Exemplo de uma Promessa]
-    almocar("comida")
-        .then(dentes_sujos => dentes_limpos = lavar_dentes(dentes_sujos))
-\end{lstlisting}
-
-\subsubsection{Exceções}
-Durante a execução de um pedido assíncrono podem ocorrer exceções seja por um erro ou porque por exemplo ocorreu um \textit{time out} do pedido, este último acontece essencialmente quando se realiza pedidos através da rede. Estas exceções precisam de ser tratadas por forma a que o programa que estámos a desenvolver não ``expluda'' deixando de funcionar. Esta tratamento não é simples de se realizar quando se usa \textit{callbacks} enquanto que no caso das promessas basta o uso de um \textit{catch}. No caso das \textit{callbacks} o pedido assíncrono teria de devolver dois valores em vez de um, o primeiro com o erro em caso de insucesso e o segundo com o resultado em caso de sucesso o que obrigaria a função \textit{callback} a verificar se não recebeu uma exceção.
-
-\begin{lstlisting}[language=javascript, caption=Exemplo de uma \textit{Callback} com captura de exceções]
-    almocar("comida", function(erro, dentes_sujos){
-        if(!erro){
-            dentes_limpos = lavar_dentes(dentes_sujos)
-        }else{
-            console.log("Falta pasta de dentes")
-        }
-    })
-\end{lstlisting}
-
-\begin{lstlisting}[language=javascript, caption=Exemplo de uma Promessa com captura das exceções]
-    almocar("comida")
-        .then(dentes_sujos => dentes_limpos = lavar_dentes(dentes_sujos))
-        .catch(erro => console.log("Falta pasta de dentes"))
-\end{lstlisting}
-
-\subsubsection{Funções \textit{async}}
-Dentro de funções \textit{async} é possível escrever código pseudo-síncrono por forma a descrever código assíncrono com recurso ao \textit{await} que espera pela conclusão de uma promessa antes de avançar com a execução do resto da função, ficando o código com um aspeto semelhante ao síncrono. As funções \textit{async} retornam implicitamente uma promessa e enquanto estão à espera duma promessa (\textit{await}) ficam congeladas. Serão resumidas mais tarde quando a promessa estiver concluída.
-
-\begin{lstlisting}[language=javascript, caption=Exemplo de uma função \textit{async}]
-    async function almoco(){
-        try{
-            dentes_sujos = await almocar("comida")
-            dentes_limpos = lavar_dentes(dentes_sujos)
-        }catch(erro){
-            console.log("Falta pasta de dentes")
-        }
-        return "Almocei!"
-    }
-\end{lstlisting}
-
-\section{Node.js}
-\textit{Node.js} é um ambiente de execução que permite usar \textit{JavaScript} fora do contexto de um \textit{browser} permitindo construir desde ferramentas de linha de comandos até servidores \acrshort{http}. Foi originalmente desenhado de forma a ter o papel de nodo numa rede. O \textit{JavaScript} não tem embutido a capacidade de entrada e saída de dados sendo suprimida esta necessidade com o uso do \textit{Node.js}.
-
-Quando instalado num sistema, o \textit{Node.js} permite executar ficheiros \textit{JavaScript} através do comando \texttt{node}. Se este comando for executado sem indicar um ficheiro apresenta uma consola interativa onde se pode introduzir código \textit{JavaScript}, executá-lo e obter o resultado.
-
-Através do \acrshort{npm}, mais precisamente do comando \texttt{npm}, é possível instalar, no nosso projeto pessoal, os módulos \textit{JavaScript} disponíveis no repositório \textit{online}. Caso exista um ficheiro \textit{package.json} no projeto é mantido neste os módulos já instalados e as suas versões bem como meta informação do projeto.
-
-Em \textit{Node.js} estão disponíveis os \textit{bindings} globais \texttt{process} e \texttt{console} que permitem inspecionar e manipular o programa atual. Para além destes, também estão diponíveis os \textit{bindings} padrão do \textit{JavaScript} exceto aqueles relacionados com funcionalidades do \textit{browser}, como o \texttt{document}.
-
-O \textit{Node.js} tem algums módulos embutidos, entre os quais o módulo \texttt{fs} (\textit{file system}) que exporta funções que permitem trabalhar com ficheiros e directorias. Tem também o módulo \texttt{http} que exporta funções que permitem correr servidores \acrshort{http} ou fazer pedidos \acrshort{http}.
-
-Todo o input e output no \textit{Node.js} é realizado de forma assíncrona a menos que se use uma variante síncrona de uma determinada função.~\cite{elojs}
-\end{comment}
-
 \section{Estado da Arte do \acrshort{clav}}
 
 Quando esta dissertação teve início o projeto \acrshort{clav} já tinha cerca de 2 anos de desenvolvimento. Assim nesta secção será apresentado o estado da arte do \acrshort{clav} quando esta dissertação iniciou aprofundando principalmente os pontos mais importantes sobre o tema desta dissertação.
@@ -531,28 +456,51 @@ No projeto \acrshort{clav} o utilizador final é o utilizador da \acrshort{clav}
 %\section{exceljs}
     %procurar "semelhantes" para cada um
 
-\section{MongoDB}
-~\cite{wdmongo}
+%TODO
+%\section{MongoDB}
+%~\cite{wdmongo}
 
 %TODO
 %\section{mongoose}
 %procurar "semelhantes" para cada um
 
-\section{Web Semântica}
-~\cite{lsparql}
+%TODO
+%\section{Web Semântica}
+%~\cite{lsparql}
 
-\subsection{RDF}
-~\cite{lsparql}
+%TODO
+%\subsection{RDF}
+%~\cite{lsparql}
 
-\subsection{SPARQL}
-~\cite{lsparql}
+%TODO
+%\subsection{SPARQL}
+%~\cite{lsparql}
 
+%TODO
 %se calhar referir algumas packages de ligação ao sparql em vez de usar o que criei
 
-\section{GraphDB}
+%TODO
+%\section{GraphDB}
 %procurar "semelhantes" para cada um (Neo4j)
 
 \section{Swagger}
+O \textit{Swagger} é um ecossistema de ferramentas para desenvolver \acrshort{api}s com a \acrfull{oas}.
+
+Até 2015 o \textit{Swagger} consistia numa especificação e num ecossistema de ferramentas para implementar a especificação. Em 2015 a fundadora do \textit{Swagger}, \textit{SmartBear Software}, doou a especificação \textit{Swagger} para a \textit{Linux Foundation} e renomeou a especificação para \acrlong{oas}.~\cite{wiswagger}
+
+A especificação é agora desenvolvida pela \textit{OpenAPI Initiative} que envolve várias empresas tecnológias entre as quais \textit{Microsoft}, \textit{Google}, \textit{IBM} e a fundadora \textit{Smartbear Software}.
+
+Já o conjunto de ferramentas \textit{Swagger} inclui ferramentas \textit{open-source}, gratuitas e comerciais que podem ser usadas em diferentes estágios do ciclo de vida de uma \acrshort{api}. Algumas das ferramentas são:~\cite{swaggerVSoas}
+\begin{itemize}
+    \item \textbf{\textit{Swagger Editor}}: Permite editar especificações \textit{OpenAPI} em \acrshort{yaml} no \textit{browser} bem como pré-visualizar a documentação em tempo real
+    \item \textbf{\textit{Swagger UI}}: Coleção de \textit{assets} \textit{\acrshort{html}}, \textit{JavaScript} e \textit{\acrshort{css}} que geram dinamicamente documentação a partir de uma especificação \textit{OpenAPI} de uma \acrshort{api}
+    \item \textbf{\textit{Swagger Codegen}}: Permite a geração de bibliotecas cliente da \acrshort{api} (geração \acrshort{sdk}), \textit{server stubs} e documentação automática a partir de uma especificação \textit{OpenAPI}
+    \item \textbf{\textit{Swagger Inspector}} (gratuita): Ferramenta de testes de \acrshort{api}s que permite validar as \acrshort{api}s e gerar definições \textit{OpenAPI} de \acrshort{api}s existentes
+    \item \textbf{\textit{SwaggerHub}} (gratuita e comercial): Desenho e documentação de \acrshort{api}s, construido para equipas que trabalham com \textit{OpenAPI}
+\end{itemize}
+
+O \textit{Swagger} possui um ecossistema que permite criar uma \acrshort{api} de raíz até ao fim de forma estruturada. Contudo, visto que já temos grande parte da \acrshort{api} construída o \textit{Swagger} vai ser usado apenas para uma das últimas fases da construção da \acrshort{api}, a documentação da \acrshort{api}.
+
 %procurar "semelhantes" para cada um
 
 \section{Swagger-UI}
