@@ -684,16 +684,18 @@ Nesta secção será demonstrada como se pode adicionar a autenticação e autor
 Após definir os esquemas de segurança é necessário aplicá-los nas rotas que devem estar protegidas por esses esquemas. Paral tal em cada rota pode ser definida a propriedade \texttt{security} e indicar os esquemas de segurança que essa rota suporta.\footnote{Mais detalhes em \url{https://swagger.io/docs/specification/authentication/}}
 
 \subsubsection{Alternativas}
-Em termos de alternativas à especificação \textit{OpenAPI} existem duas concorrentes \textit{\acrshort{raml}}\footnote{Ver \url{https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md/}} e \textit{\acrshort{api} Blueprint}\footnote{Ver \url{https://github.com/apiaryio/api-blueprint/blob/master/API\%20Blueprint\%20Specification.md}}.
+Em termos de alternativas à especificação \textit{OpenAPI} existem duas concorrentes: \textit{\acrshort{raml}}\footnote{Ver \url{https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md/}} e \textit{\acrshort{api} Blueprint}\footnote{Ver \url{https://github.com/apiaryio/api-blueprint/blob/master/API\%20Blueprint\%20Specification.md}}.
 
 Comparemos as três hipóteses:~\cite{specsComp}
 \begin{table}[H]
+    \footnotesize
     \begin{center}
     \begin{tabular}{|r|p{0.385\textwidth}|p{0.385\textwidth}|}
     \hline
     Especificação & Vantagens & Desvantagens \\ \hline
     \textit{OpenAPI} &
         \begin{itemize}[leftmargin=0.3cm]
+            \setlength\itemsep{0em}
             \item Grande adoção
             \item Grande comunidade de utilizadores
             \item Bom suporte
@@ -701,11 +703,13 @@ Comparemos as três hipóteses:~\cite{specsComp}
         \end{itemize}
         &
         \begin{itemize}[leftmargin=0.3cm]
+            \setlength\itemsep{0em}
             \item Falta de construtores avançados para metadados
         \end{itemize}
         \\ \hline
     \acrshort{raml} &
         \begin{itemize}[leftmargin=0.3cm]
+            \setlength\itemsep{0em}
             \item Suporta construções avançadas
             \item Adoção decente
             \item \textit{Human readable format}
@@ -713,17 +717,20 @@ Comparemos as três hipóteses:~\cite{specsComp}
         \end{itemize}
         &
         \begin{itemize}[leftmargin=0.3cm]
+            \setlength\itemsep{0em}
             \item Falta de ferramentas ao nível do código
             \item Ainda não comprovado a longo prazo
         \end{itemize}
         \\ \hline
     \textit{\acrshort{api} Blueprint} &
         \begin{itemize}[leftmargin=0.3cm]
+            \setlength\itemsep{0em}
             \item Fácil de entender
             \item Simples de escrever
         \end{itemize}
         &
         \begin{itemize}[leftmargin=0.3cm]
+            \setlength\itemsep{0em}
             \item Pouca adoção
             \item Falta de construtores avançados
             \item Instalação complexa
@@ -742,34 +749,110 @@ O \textit{Swagger \acrshort{ui}} permite a qualquer um visualizar uma \acrshort{
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=1\textwidth]{img/swaggerUI.png}
+        \includegraphics[width=0.5\textwidth]{img/swaggerUI.png}
     \end{center}
     \caption{\textit{Swagger \acrshort{ui}} exemplo}
 \end{figure}
 
 \subsubsection{Alternativas}
-Existem algumas alternativas ao \textit{Swagger \acrshort{ui}} que interpretam também a especificação \textit{OpenAPI}:
+Existem várias alternativas ao \textit{Swagger \acrshort{ui}}:
+\begin{savenotes}
+\begin{table}[H]
+    \footnotesize
+    \begin{center}
+    \begin{tabular}{|r|p{0.39\textwidth}|p{0.39\textwidth}|}
+    \hline
+    Ferramenta & Vantagens & Desvantagens \\ \hline
+        \textit{Swagger \acrshort{ui}} &
+        \begin{itemize}[leftmargin=0.3cm]
+            \setlength\itemsep{0em}
+            \item Suporta a especificação \textit{OpenAPI}
+            \item \textit{Open-source}
+            \item Amplamente usado
+        \end{itemize}
+        &
+        %\begin{itemize}[leftmargin=0.3cm]
+        %    \setlength\itemsep{0em}
+        %    \item
+        %\end{itemize}
+        \\ \hline
+    \textit{Apiary}\footnote{Ver \url{https://apiary.io/}} &
+        \begin{itemize}[leftmargin=0.3cm]
+            \setlength\itemsep{0em}
+            \item Suporta a especificação \textit{\acrshort{api} Blueprint} e a especificação \textit{OpenAPI}
+        \end{itemize}
+        &
+        \begin{itemize}[leftmargin=0.3cm]
+            \setlength\itemsep{0em}
+            \item Necessário pagar de forma a puder integrar a documentação da \acrshort{api} num domínio próprio
+            \item \textit{Closed-source}
+        \end{itemize}
+        \\ \hline
+    \textit{\acrshort{api} Console}\footnote{Ver \url{https://github.com/mulesoft/api-console}} &
+        \begin{itemize}[leftmargin=0.3cm]
+            \setlength\itemsep{0em}
+            \item Suporta a especificação \acrshort{raml} e a especificação \textit{OpenAPI}
+            \item \textit{Open-source}
+        \end{itemize}
+        &
+        %\begin{itemize}[leftmargin=0.3cm]
+        %    \setlength\itemsep{0em}
+        %    \item
+        %\end{itemize}
+        \\ \hline
+    \textit{Slate}\footnote{Ver \url{https://github.com/slatedocs/slate}} &
+        \begin{itemize}[leftmargin=0.3cm]
+            \setlength\itemsep{0em}
+            \item \textit{Open-source}
+            \item \acrshort{api} definida em \textit{Markdown}
+        \end{itemize}
+        &
+        \begin{itemize}[leftmargin=0.3cm]
+            \setlength\itemsep{0em}
+            \item Não suporta nenhuma especificação
+        \end{itemize}
+        \\ \hline
+    \textit{apiDoc}\footnote{Ver \url{https://apidocjs.com/}} &
+        \begin{itemize}[leftmargin=0.3cm]
+            \setlength\itemsep{0em}
+            \item Documentação criada a partir das anotações nos comentários do código
+            \item \textit{Open-source} 
+        \end{itemize}
+        &
+        \begin{itemize}[leftmargin=0.3cm]
+            \setlength\itemsep{0em}
+            \item Não suporta nenhuma especificação
+        \end{itemize}
+        \\ \hline
+    \textit{ReDoc}\footnote{Ver \url{https://github.com/Redocly/redoc}} &
+        \begin{itemize}[leftmargin=0.3cm]
+            \setlength\itemsep{0em}
+            \item Suporta a especificação \textit{OpenAPI}
+            \item \textit{Open-source} 
+            \item Fácil de integrar
+        \end{itemize}
+        &
+        %\begin{itemize}[leftmargin=0.3cm]
+        %    \setlength\itemsep{0em}
+        %    \item
+        %\end{itemize}
+        \\ \hline
+    \end{tabular}
+    \end{center}
+    \caption{Comparação entre ferramentas de \acrshort{api}s}
+\end{table}
+\end{savenotes}
+
+De forma a escolher a ferramenta apropriada é necessário ter em conta que:
 \begin{itemize}
-    \item \textit{ReDoc}\footnote{Ver \url{https://github.com/Redocly/redoc}}
-    \item \textit{OpenAPI-GUI}\footnote{Ver \url{https://github.com/Mermade/openapi-gui}}
-    \item \textit{angular-swagger-ui}\footnote{Ver \url{https://github.com/Orange-OpenSource/angular-swagger-ui}}
-    \item \textit{Swagger UI responsive theme}\footnote{Ver \url{https://github.com/jensoleg/swagger-ui}}
+    \item Não há financiamento
+    \item Já existe uma \acrshort{api} desenvolvida
+    \item A documentação deve estar acessível de um domínio próprio
+    \item A documentação deve ser fácil de criar, de editar e de manter
+    \item Será usada a especificação \textit{OpenAPI}
 \end{itemize}
 
-Das quatro alternativas a que se encontra mais polida é a \textit{ReDoc}. Contudo ainda não se encontra ao nível do \textit{Swagger \acrshort{ui}} em termos de interactividade e aspeto visual. Apesar disso é uma interface de documentação a considerar no futuro.
-
-\subsection{Alternativas}
-Há outras \textit{frameworks} como o \textit{\acrshort{raml}} ou \textit{APIBlueprint} contudo não são tão populares como o \textit{Swagger}. Uma das razões é devido ao \textit{Swagger} criar uma documentação clara e interativa. Para além disso usa uma linguagem comum que todos entendem e é de fácil compreensão tanto para desenvolvedores como para quem não seja desenvolvedor. Além disso possui um ecossistema de ferramentas que permite desenhar \acrshort{api}s e melhorar o trabalho com serviços \textit{web}.
-
-%TODO
-%Swagger: (alternativas)
-%apiary: https://apiary.io/ (mais para desenho de apis)
-%slate: https://github.com/slatedocs/slate
-%https://blog.cloudboost.io/adding-swagger-to-existing-node-js-project-92a6624b855b
-%Postman — if you don’t want to host documentation in your application, you can create Postman collection, and distribute that to the user of your API. But if your API is changing fast, you will have a lot of versions of Postman collection and that can be pretty messy.
-%apiDoc — is RESTful web API documentation generator. It creates a documentation from API annotations in your source code. This tool doesn’t support design first approach, there is not code generator and fancy editor.
-%API Console — is based on RAML(RAML — RESTful API Modeling Language). RAML is direct competitor to Swagger. It supports top-down and bottom up approach and has editor and code generator.
-%docbox — RESTful API documentation generator. It takes Markdown files and generates a friendly two-column layout with navigation, permalinks, and examples. This library can be used only for API documentation.
+As escolhas ficam como tal reduzidas ao \textit{Swagger \acrshort{ui}} e ao \textit{ReDoc}. Optou-se por escolher o \textit{Swagger \acrshort{ui}} visto ser a ferramenta mais amplamente usada para além de que é possível obter também uma fácil integração no \textit{Swagger \acrshort{ui}} com recurso à package \texttt{swagger-ui-express}.
 
 \section{Documentação da \acrshort{api} do \acrshort{clav}}
 
