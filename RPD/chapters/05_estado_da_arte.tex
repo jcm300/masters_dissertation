@@ -982,10 +982,193 @@ components:
 
 No final teremos um ficheiro no formato \acrshort{yaml} com toda a documentação da \acrshort{api} que puderá então ser usado para alimentar a documentação dinâmica \textit{Swagger \acrshort{ui}}.
 
+\section{Importação de dados}
+%falar da tabela de seleção
+
+\section{Exportação de dados}
+Um dos requisitos da \acrshort{api} da \acrshort{clav} é permitir a exportação de Classes, Entidades, Tipologias e Legislações em formato \acrshort{json}, \acrshort{xml} e \acrshort{csv}. Deve também permitir exportar toda a ontologia do projeto nos formatos \textit{Turtle}, \acrshort{json-ld} e \acrshort{rdf}/\acrshort{xml}.
+
+Para a primeira parte foi necessário desenvolver dois conversores, de \acrshort{json} para \acrshort{xml} e de \acrshort{json} para \acrshort{csv} visto que o \acrshort{json} já é por predefinição devolvido.
+
+O conversor de \acrshort{json} para \acrshort{xml} foi contruído sem recorrer a nenhuma biblioteca através do seguinte algoritmo:
+\begin{lstlisting}[language=pseudocode, caption=Algorítmo de conversão de \acrshort{json} para \acrshort{xml}]
+sizeTab = 4
+
+function protectForXml(string)
+    string = replace '<' by '&lt;' in string
+    string = replace '>' by '&gt;' in string
+    string = replace '&' by '&amp;' in string
+    string = replace "'" by '&apos;' in string
+    string = replace '"' by '&quot;' in string
+    return string
+
+function protectKey(string)
+    string = replace '<' by '' in string
+    string = replace '>' by '' in string
+    string = replace '&' by '_' in string
+    string = replace "'" by '' in string
+    string = replace '"' by '' in string
+    string = replace '\s+' by '_' in string
+    return string
+
+function json2xmlArray(array, nTabs)
+    xml = ''
+    len = length(array)
+
+    for i=0; i < len; i++
+        type = type of array[i]
+        xml += repeat(' ', nTabs * sizeTab) + '<item index="' + i + '" type="' + type + '">' 
+
+        if type == 'object' or type == 'string' or type == 'boolean' or type == 'number' then
+            xml += json2xmlRec(array[i], nTabs + 1)
+
+        if type == 'object' then
+            xml += repeat(' ', nTabs * sizeTab)
+
+        xml += '</item>\n'
+
+    return xml
+
+function json2xmlRec(json, nTabs)
+    xml = ''
+    type = type of json
+    
+    if type == 'object' then
+        xml = '\n'
+
+        if json is an Array then
+            xml = json2xmlArray(json, nTabs)
+        else
+            for key in json
+                aux = ''
+                type = type of json[key]
+
+                if type === 'object' then
+                    if json[key] is an Array then
+                        aux = '\n' + json2xmlArray(json[key], nTabs + 1)
+                        type = 'array'
+                    else
+                        aux += json2xmlRec(json[key], nTabs + 1)
+                    
+                    aux += repeat(' ', nTabs * sizeTab)
+                else if type == 'string' then
+                    aux = protectForXml(json[key])
+                else if type == 'boolean' or type == 'number' then
+                    aux = json[key]
+
+                xml += repeat(' ', nTabs * sizeTab)
+                xml += '<' + protectKey(key) + ' type="' + type + '">'
+                xml += aux + '</' + protectKey(key) + '>\n'
+    else if type == 'string' then
+        xml = protectForXml(json)
+    else if type == 'boolean' or type == 'number' then
+        xml = json
+
+    return xml
+
+function json2xml(json)
+    xml = '<?xml version="1.0" encoding="utf-8"?>\n'
+    xml += '<root>'
+    xml += json2xmlRec(json, 1)
+    xml += '</root>'
+    return xml
+\end{lstlisting}
+
+Portanto, os dados exportados estarão sempre encapsolados na \textit{tag} \texttt{root} por forma a garantir que só existe um elemento \textit{root} no documento \acrshort{xml} gerado. Cada tipo de dados do \acrshort{json} é convertido da seguinte forma:
+\begin{itemize}
+    \item \textit{string}: Mantém-se igual tirando os caracteres ``\texttt{<}'', ``\texttt{>}'', ``\texttt{\&}'', ``\texttt{'}'' e ``\texttt{"}'' que são convertidos para a \textit{Entity Reference}\footnote{``\texttt{<}'' para ``\texttt{\&lt;}'', ``\texttt{>}'' para ``\texttt{\&gt;}'', ``\texttt{\&}'' para ``\texttt{\&amp;}'', ``\texttt{'}'' para ``\texttt{\&apos;}'' e ``\texttt{"}'' para ``\texttt{\&quot;}''} correspondente
+    \item \textit{number}: Mantém-se igual
+    \item \textit{boolean}: Mantém-se igual
+    \item \textit{null}: Origina uma \textit{string} vazia
+    \item \textit{array}: Cada item é encapsulado numa \textit{tag} \texttt{item} que possui um atributo \texttt{index} que indica a posição do elemento no \textit{array} e um atributo \texttt{type} que indica o tipo do elemento do \textit{array}. O tipo pode ser \textit{number}, \textit{boolean}, \textit{string}, \textit{array} ou \textit{object}.
+    \item \textit{object}: Para cada propriedade será criado uma \textit{tag} com valor igual à chave da propriedade e ao valor da propriedade será aplicado recursivamente uma das transformações desta lista. Esta \textit{tag} terá um atributo \texttt{type} em que o seu valor, tal como nos \textit{arrays}, pode ser \textit{number}, \textit{boolean}, \textit{string}, \textit{array} ou \textit{object}.
+\end{itemize}
+
+Apresenta-se de seguida uma conversão exemplo. Para o seguinte \acrshort{json}:
+\begin{lstlisting}[language=json, caption=\acrshort{json} exemplo a converter, label=exem:json]
+{
+    "Actors": [
+        {
+            "name": "Tom Cruise",
+            "age": 56,
+            "Born At": "Syracuse, NY",
+            "Birthdate": "July 3, 1962",
+            "wife": null,
+            "weight": 67.5,
+            "hasChildren": true,
+            "hasGreyHair": false,
+            "children": [
+                "Suri",
+                "Isabella Jane",
+                "Connor"
+            ]
+        },
+        {
+            "name": "Robert Downey Jr.",
+            "age": 53,
+            "Born At": "New York City, NY",
+            "Birthdate": "April 4, 1965",
+            "wife": "Susan Downey",
+            "weight": 77.1,
+            "hasChildren": true,
+            "hasGreyHair": false,
+            "children": [
+                "Indio Falconer",
+                "Avri Roel",
+                "Exton Elias"
+            ]
+        }
+    ]
+}
+\end{lstlisting}
+
+é gerado o seguinte \acrshort{xml}:
+\begin{lstlisting}[language=xml, caption=\acrshort{xml} resultante da conversão do \acrshort{json} presente em~\ref{exem:json}]
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <Actors type="array">
+        <item index="0" type="object">
+            <name type="string">Tom Cruise</name>
+            <age type="number">56</age>
+            <Born_At type="string">Syracuse, NY</Born_At>
+            <Birthdate type="string">July 3, 1962</Birthdate>
+            <wife type="object">
+            </wife>
+            <weight type="number">67.5</weight>
+            <hasChildren type="boolean">true</hasChildren>
+            <hasGreyHair type="boolean">false</hasGreyHair>
+            <children type="array">
+                <item index="0" type="string">Suri</item>
+                <item index="1" type="string">Isabella Jane</item>
+                <item index="2" type="string">Connor</item>
+            </children>
+        </item>
+        <item index="1" type="object">
+            <name type="string">Robert Downey Jr.</name>
+            <age type="number">53</age>
+            <Born_At type="string">New York City, NY</Born_At>
+            <Birthdate type="string">April 4, 1965</Birthdate>
+            <wife type="string">Susan Downey</wife>
+            <weight type="number">77.1</weight>
+            <hasChildren type="boolean">true</hasChildren>
+            <hasGreyHair type="boolean">false</hasGreyHair>
+            <children type="array">
+                <item index="0" type="string">Indio Falconer</item>
+                <item index="1" type="string">Avri Roel</item>
+                <item index="2" type="string">Exton Elias</item>
+            </children>
+        </item>
+    </Actors>
+</root>
+\end{lstlisting}
+%XML
+%CSV
+%ontologia, exportações devolvidas e como
+
 %TODO
 %\section{Nginx}
 %~\cite{nginxcook}
-%procurar "}}semelhantes" para cada um
+%procurar "semelhantes" para cada um
 
 %TODO
 %\section{Ontologia}

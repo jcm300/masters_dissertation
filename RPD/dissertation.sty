@@ -100,16 +100,19 @@
 \definecolor{dark-green}{cmyk}{1.0,0,1.0,0.65}
 \definecolor{dark-red}{cmyk}{0,1.0,1.0,0.3}
 \definecolor{navy-blue}{cmyk}{1.0,1.0,0.0,0.5}
-\definecolor{grey}{rgb}{0.6,0.6,0.6}
 \definecolor{eng}{cmyk}{0.14,0.71,1,0.03}
 \definecolor{um}{cmyk}{0.25,1.00,1.00,0.22}
-\definecolor{lightGray}{gray}{0.92}
 \definecolor{verylightgray}{cmyk}{0,0,0,0.05}
+
+\definecolor{grey}{rgb}{0.6,0.6,0.6}
 \definecolor{darkgray}{rgb}{0.4,0.4,0.4}
 \definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+\definecolor{string}{rgb}{0.64,0.08,0.08}
+
 \definecolor{delim}{RGB}{20,105,176}
 \definecolor{numb}{RGB}{106, 109, 32}
-\definecolor{string}{rgb}{0.64,0.08,0.08}
+
+\definecolor{lightGray}{gray}{0.92}
 
 % Default UM logo colors
 \gdef\umc{um}
@@ -223,6 +226,35 @@
   literate =    {---}{{\ProcessThreeDashes}}3
                 {>}{{\textcolor{red}\textgreater}}1
                 {|}{{\textcolor{red}\textbar}}1,
+}
+
+%\lstdefinelanguage{xml}
+%{
+%  basicstyle=\ttfamily\footnotesize,
+%  morestring=[b]",
+%  moredelim=[s][\bfseries\color{Maroon}]{<}{\ },
+%  moredelim=[s][\bfseries\color{Maroon}]{</}{>},
+%  moredelim=[l][\bfseries\color{Maroon}]{/>},
+%  moredelim=[l][\bfseries\color{Maroon}]{>},
+%  morecomment=[s]{<?}{?>},
+%  morecomment=[s]{<!--}{-->},
+%  commentstyle=\color{OliveGreen},
+%  stringstyle=\color{blue},
+%  identifierstyle=\color{red}
+%}
+
+\lstdefinelanguage{xml}{
+    columns=fullflexible,
+    basicstyle=\ttfamily\footnotesize,
+    commentstyle=\ttfamily\color{OliveGreen},
+    morestring=[s]{"}{"},
+    morecomment=[s]{?}{?},
+    morecomment=[s]{!--}{--},
+    morecomment=[s]{!DOCTYPE}{]},
+    moredelim=[s][\color{black}]{>}{<},
+    moredelim=[s][\bfseries\color{black}]{\ }{=},
+    stringstyle=\color{blue},
+    identifierstyle=\bfseries\color{red}
 }
 
 \lstset{
