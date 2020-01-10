@@ -1170,10 +1170,27 @@ Da mesma forma que o \acrshort{xml}, o \acrshort{csv} é convertido sem recurso 
 %Exemplo
 %CSV
 
-Por fim quanto à exportação da ontologia, das três é a mais simples visto que o \textit{GraphDB}\footnote{} possui funcionalidades de exportação dos triplos presentes numa \acrshort{bd}. O \textit{GraphDB} usa o RDF4J (mais especificamente as suas \acrshort{api}s) por forma a armazenar, consultar bem como suportar várias \textit{query languages} como o \acrshort{sparql} e várias sintaxes \acrshort{rdf}. Desta forma, e seguindo a \acrshort{rest} \acrshort{api} do RDF4J\footnote{Ver \url{https://rdf4j.org/documentation/rest-api/}} é possível obter todos os triplos através da rota \verb|<url do GraphDB>/repositories/<id do repositório>/statements| indicando no cabeçalho \acrshort{http} \textit{Accept} o formato de saída \acrshort{rdf} (\textit{\acrshort{mime} type}\footnote{\textit{Standard} que indica a natureza e o formato de um documento, ficheiro ou conjunto de \textit{bytes}. Ver \href{https://tools.ietf.org/html/rfc6838}{RFC 6838}}) dos triplos. Os formatos \acrshort{rdf} possíveis são \textit{TriG}, \textit{BinaryRDF}, \textit{TriX}, \textit{N-Triples}, \textit{N-Quads}, \acrshort{n3}, \acrshort{rdf}/\acrshort{xml}, \acrshort{rdf}/\acrshort{json}, \acrshort{json-ld} e \acrshort{turtle}. Destes todos apenas tornaremos acessíveis, como já indicado, o \acrshort{turtle} (\texttt{text/turtle}), \acrshort{json-ld} (\texttt{application/ld+json}) e \acrshort{rdf}/\acrshort{xml} (\texttt{application/rdf+xml}).
+Por fim quanto à exportação da ontologia, das três é a mais simples visto que o \textit{GraphDB}\footnote{\acrfull{bd} Semântica baseada em grafos compatível com os padrões \acrshort{w3c}. Suporta \acrshort{rdf} e \acrshort{sparql}} possui funcionalidades de exportação dos triplos presentes numa \acrshort{bd} armazenada no \textit{GraphDB}.
 
-%falar em como é só atualizado de x em x dias mm que haja vários pedidos
-%ontologia, exportações devolvidas e como
+Para um fácil uso e compatibilidade com os \textit{standards} da indústria, o \textit{GraphDB} implementou as interfaces da \textit{framework} \textit{RDF4J}, a especificação do protocolo \acrshort{w3c} \acrshort{sparql}\footnote{Ver \url{https://www.w3.org/TR/sparql11-protocol/}} e suporta vários formatos de serialização \acrshort{rdf}\footnote{\label{fnRDF}\textit{TriG}, \textit{BinaryRDF}, \textit{TriX}, \textit{N-Triples}, \textit{N-Quads}, \acrshort{n3}, \acrshort{rdf}/\acrshort{xml}, \acrshort{rdf}/\acrshort{json}, \acrshort{json-ld} e \acrshort{turtle}}.~\cite{graphdbAbout}
+
+O \textit{GraphDB} é um \textit{plugin} \acrshort{sail} para a \textit{framework} \textit{RDF4J} fazendo uso extensivo dos recursos e infraestrutura do \textit{RDF4J} especialmente do modelo \acrshort{rdf}, dos \textit{parsers} \acrshort{rdf} e os motores de pesquisa.~\cite{graphdbArch}
+
+Assim, o \textit{GraphDB} possui uma \acrshort{rest} \acrshort{api} do servidor RDF4J\footnote{Ver \url{https://rdf4j.org/documentation/rest-api/}} a partir da qual é possível obter todos os triplos através da rota \verb|<url do GraphDB>/repositories/<id do repositório>/statements| indicando no cabeçalho \acrshort{http} \textit{Accept} o formato de serialização \acrshort{rdf}\footnoteref{fnRDF} de saída (\textit{\acrshort{mime} type}\footnote{\textit{Standard} que indica a natureza e o formato de um documento, ficheiro ou conjunto de \textit{bytes}. Ver \href{https://tools.ietf.org/html/rfc6838}{RFC 6838}}) dos triplos. Dos vários formatos de serialização \acrshort{rdf} serão apenas suportados (acessíveis) na \acrshort{clav}, como já indicado, o \acrshort{turtle} (\texttt{text/turtle}), o \acrshort{json-ld} (\texttt{application/ld+json}) e o \acrshort{rdf}/\acrshort{xml} (\texttt{application/rdf+xml}).
+
+Apesar da facilidade de exportação da ontologia estes pedidos de exportação originam um grande consumo de recursos de \textit{hardware} por parte do \textit{GraphDB} visto que cada pedido devolve todos os triplos de uma \acrshort{bd} (a atual \acrshort{bd} da \acrshort{clav} possui já cerca de 150 000 triplos explicitos e cerca de 85 000 triplos implicitos) para além da conversão necessária desses triplos para o formato de serialização \acrshort{rdf} de saída. Deve-se então limitar o número de pedidos de exportação realizados ao \textit{GraphDB}. Para tal irá ser usado o seguinte mecanismo de controlo/\textit{cache}:
+
+\begin{itemize}
+    \item Os ficheiros exportados são mantidos pela \acrshort{api} da \acrshort{clav}
+    \item Mantém-se dois ficheiros por cada serialização \acrshort{rdf}, um com os triplos explicitos e outro com os triplos explicitos e implicitos.
+    \item Se o ficheiro pretendido não existe na \acrshort{api} da \acrshort{clav} realiza-se o pedido de exportação ao \textit{GraphDB}
+    \item Se o ficheiro pretendido existe na \acrshort{api} da \acrshort{clav} mas não é atualizado há sete dias realiza-se o pedido de exportação ao \textit{GraphDB}
+    \item Se o ficheiro pretendido existe na \acrshort{api} da \acrshort{clav} e foi atualizado há menos de sete dias devolve-se ao utilizador o ficheiro guardado na \acrshort{api} da \acrshort{clav}
+    \item Mantém-se na \acrshort{api} da \acrshort{clav} apenas o ficheiro mais recente para cada versão de cada serialização \acrshort{rdf}
+    \item Cada ficheiro é apenas atualizado (removendo o antigo) quando é feito um pedido por um utilizador desse ficheiro
+\end{itemize}
+
+Assim, respeitando todas estas restrições, são mantidas pela \acrshort{api} da \acrshort{clav} no máximo seis ficheiros, dois por cada serialização \acrshort{rdf}. Para além disso estes ficheiros são atualizados no melhor caso de sete em ete dias e no pior caso nunca se o ficheiro nunca for requisitado pelos utilizadores.
 
 %TODO
 %\section{Nginx}

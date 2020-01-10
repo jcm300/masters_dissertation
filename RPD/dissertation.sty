@@ -3,9 +3,11 @@
 % Color setup
 %\usepackage{color}
 \usepackage[dvipsnames,rgb,table]{xcolor}
-\usepackage[utf8]{inputenc}
 \usepackage[portuguese]{babel}
+\usepackage[utf8]{inputenc}
 \usepackage[linedheaders,parts,pdfspacing]{classicthesis}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
 \usepackage{amsmath}
 %\usepackage{acronym}
 \usepackage{a4wide} % Setup for fullpage
@@ -324,6 +326,7 @@
   \hyperref[#1]{\cref*{#1}: \nameref*{#1}}
 }
 
+\newcommand\footnoteref[1]{\protected@xdef\@thefnmark{\ref{#1}}\@footnotemark}
 
 % Index of terms and acronyms
 %%\renewcommand{\glossarymark}[1]{\markboth{\MakeUppercase{#1}}{\MakeUppercase{#1}}}
@@ -355,8 +358,8 @@
 \newcommand{\reminder}[1]{\fbox{{\color{blue} #1}}}
 
 \def\myear{\ifcase\month\or
- January\or February\or March\or April\or May\or June\or
- July\or August\or September\or October\or November\or December\fi
+ Janeiro\or Fevereiro\or Março\or Abril\or Maio\or Junho\or
+ Julho\or Agosto\or Setembro\or Outubro\or Novembro\or Dezembro\fi
  \space\number\year}
 
 \newenvironment{backcover}{\begin{titlepage}}{\end{titlepage}}
@@ -442,7 +445,7 @@
 \gdef\@department{Departamento de Inform\'{a}tica}
 \gdef\@school{Escola de Engenharia}
 \gdef\@university{Universidade do Minho}
-\gdef\@masterdegree{Computer Science}
+\gdef\@masterdegree{Engenharia Inform\'{a}tica}
 
 % Authoring Macros
 \def\supervisor#1{\gdef\@supervisor{#1}}
@@ -476,10 +479,10 @@
 \\\withboldnewsgott{\large\@subtitleA}
 \\\withboldnewsgott{\large\@subtitleB}
 \\\rule{0pt}{4.2cm}
-\\\optionalwithnewsgott{\large Master dissertation}
-\\\optionalwithnewsgott{\large Master Degree in \@masterdegree}
+\\\optionalwithnewsgott{\large Dissertação de Mestrado}
+\\\optionalwithnewsgott{\large Mestrado Integrado em \@masterdegree}
 \\\rule{0pt}{6mm}
-\\\optionalwithnewsgott{\large Dissertation supervised by}
+\\\optionalwithnewsgott{\large Dissertação realizada sob a orientação do Professor}
 \\\optionalwithboldnewsgott{\@supervisor}\rule{0pt}{4mm}
 \\\optionalwithboldnewsgott{\@cosupervisor}
 \\\rule{0pt}{2cm}
