@@ -1486,7 +1486,7 @@ Assim, respeitando todas estas restrições, são mantidas pela \acrshort{api} d
 \subsection{Exportação na \acrshort{api} de dados}
 Nesta secção será explicado de que forma será possível exportar os dados da \acrshort{api}. Para tal definiu-se a \textit{querystring} \texttt{fs} (formato de saída) onde é possível indicar claro está o formato de saída. Esta \textit{querystring} estará presente nas rotas onde será possível exportar os dados. Para além nisso, nestas rotas também se pode indicar o formato de saída através do cabeçalho \texttt{Accept}.
 
-De sequida são apresentadas as rotas onde é possível exportar bem como os formatos de saída disponíveis:
+De sequida são apresentadas as rotas onde é possível realizar exportação, os formatos de saída disponíveis para cada rota bem como os valores a usar de forma a obter uma exportação nesse formato:
 \begin{table}[H]
     \footnotesize
     \begin{center}
@@ -1522,7 +1522,7 @@ De sequida são apresentadas as rotas onde é possível exportar bem como os for
 
 Portanto, por exemplo para obter as Classes em \acrshort{csv} basta realizar o seguinte pedido à \acrshort{api}: \verb|GET /api/classes?fs=json|
 
-Já em termos de fluxo dos dados durante esta exportação, inicialmente os dados são obtidos da \acrshort{bd}, caso o formato de saída seja o \acrshort{json} é devolvido sem qualquer conversão. Caso contrário os dados são convertidos através de um dos conversores já descritos para o formato de saída apropriado. Isto para as 8 primeiras rotas da tabela~\ref{table:rotasExp}. A última rota, a de exportação da ontologia a informação é devolvida no formato apropriado pela própria \acrshort{bd} (\textit{GraphDB}).
+Já em termos de fluxo dos dados durante esta exportação, para as 8 primeiras rotas da tabela~\ref{table:rotasExp} inicialmente os dados são obtidos da \acrshort{bd}, caso o formato de saída seja o \acrshort{json} é devolvido a quem pediu sem qualquer conversão. Caso contrário os dados são convertidos através de um dos conversores já descritos para o formato de saída apropriado. Na última rota, a da exportação da ontologia, a informação é devolvida no formato apropriado pela própria \acrshort{bd} (\textit{GraphDB}) de acordo com o pedido.
 
 %TODO
 %\section{Nginx}
