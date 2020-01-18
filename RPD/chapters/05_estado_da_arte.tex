@@ -858,7 +858,7 @@ As escolhas ficam como tal reduzidas ao \textit{Swagger \acrshort{ui}} e ao \tex
 
 Agora sabendo que será usada a especificação \textit{OpenAPI} e o \textit{Swagger} é importante perceber que bibliotecas devem ser usadas para a produção da documentação. 
 
-Existem duas \textit{packages} que podem ser usados para criar documentação interativa para uma \acrshort{api} \acrshort{rest} criada com \textit{Node.js} e \textit{Express.js}:~\cite{swaggerNode}
+Existem duas \textit{packages} que podem ser usadas para criar documentação interativa para uma \acrshort{api} \acrshort{rest} criada com \textit{Node.js} e \textit{Express.js}:~\cite{swaggerNode}
 \begin{itemize}
     \item \texttt{swagger-node-express}
     \begin{itemize}
@@ -870,7 +870,7 @@ Existem duas \textit{packages} que podem ser usados para criar documentação in
         \end{itemize}
         \item Desvantagens
         \begin{itemize}
-            \item Instalação manual do \textit{Swagger \acrshort{ui}}. O código do \textit{Swagger \acrshort{ui}} tem de ser copiado manualmente para o projeto e sempre que há uma atualização é necessário copiar manualmente de novo
+            \item Instalação manual do \textit{Swagger \acrshort{ui}}. O código do \textit{Swagger \acrshort{ui}} tem de ser copiado manualmente para o projeto e sempre que há uma atualização é necessário copiar novamente manualmente
             \item Instalação complexa. Por forma a aplicação hospedar a documentação é necessário adicionar algumas rotas ao servidor para além das já definidas na especificação \textit{OpenAPI}
             \item Fraca documentação
         \end{itemize}
@@ -990,7 +990,8 @@ Um dos requisitos da \acrshort{api} da \acrshort{clav} é permitir a exportaçã
 
 Para a primeira parte foi necessário desenvolver dois conversores, de \acrshort{json} para \acrshort{xml} e de \acrshort{json} para \acrshort{csv} visto que o \acrshort{json} já é por predefinição devolvido.
 
-O conversor de \acrshort{json} para \acrshort{xml} foi contruído sem recorrer a nenhuma biblioteca através do seguinte algoritmo:
+\subsection{\acrshort{xml}}
+O conversor de \acrshort{json} para \acrshort{xml} pode ser representado pelo seguinte algoritmo:
 \begin{lstlisting}[language=pseudocode, caption=Algorítmo de conversão de \acrshort{json} para \acrshort{xml}]
 sizeTab = 4
 
@@ -1162,7 +1163,9 @@ Apresenta-se de seguida uma conversão exemplo. Para o seguinte \acrshort{json}:
 </root>
 \end{lstlisting}
 
-Da mesma forma que o \acrshort{xml}, o \acrshort{csv} é convertido sem recurso a qualquer biblioteca visto que a conversão a realizar é muito específica a cada objeto \acrshort{json}. Ao contrário do conversor desenvolvido para \acrshort{xml}, o conversor para \acrshort{csv} não converte qualquer objeto para \acrshort{csv} mas apenas um conjunto restrito de objetos \acrshort{json}.
+\subsection{\acrshort{csv}}
+
+Da mesma forma que o \acrshort{xml}, o \acrshort{csv} é convertido sem recurso a uma biblioteca que converte já de si o \acrshort{json} para \acrshort{csv} visto que a conversão necessária a realizar é específica a cada objeto \acrshort{json} que se pretende exportar. Ao contrário do conversor desenvolvido para \acrshort{xml}, o conversor para \acrshort{csv} não converte qualquer objeto para \acrshort{csv} mas apenas um conjunto restrito de objetos \acrshort{json}.
 
 \begin{lstlisting}[language=pseudocode, caption=Algorítmo de conversão de \acrshort{json} para \acrshort{csv}]
 separator = ';'
@@ -1382,7 +1385,7 @@ Quanto à conversão em si, possui uma estrutura interna durante a conversão. E
 Para além desta estrutura interna existe um dicionário que permite agilizar o algoritmo de conversão. Este dicionário possuirá vários dicionários, um por cada objeto (Classe, Entidade, Tipologia e Legislação) em que cada um destes dicionários irá ter como chaves os campos a converter. Para cada um destes campos existe um tuplo em que na primeira posição está presente o título a colocar no \acrshort{csv} referente a este campo e na segunda posição a função de transformação a executar para o valor do campo. Há a presença de três casos especiais:
 \begin{itemize}
     \item Quando o valor do campo é uma lista de objetos e pretendemos apenas um dos campos de cada objeto, o valor do campo deve ser \verb|campo_campoDaLista| e deve ser usada a função de transformação \verb|map_value(<campoDaLista>)|
-    \item Quando o valor do campo é um objeto do qual irá resultar vários títulos na primeira posição do tuplo deve estar presente uma \textit{string} vazia e a função de transformação deve devolver uma lista com duas posições, na primeira com os títulos e na segunda com os valores transformados dos campos
+    \item Quando o valor do campo é um objeto do qual irá resultar vários títulos, na primeira posição do tuplo deve estar presente uma \textit{string} vazia e a função de transformação deve devolver uma lista com duas posições, na primeira com os títulos e na segunda com os valores transformados dos campos
     \item Quando o valor do campo é uma lista de objetos Classe, Entidade, Tipologia ou Legislação a primeira posição do tuplo deve ser \texttt{null} e a função de transformação deve devolver uma lista de listas sem a primeira linha de títulos
 \end{itemize}
 No caso da conversão de um objeto:
@@ -1397,13 +1400,16 @@ No caso da conversão de um objeto:
     \end{itemize}
 \end{itemize}
 
-No caso da conversão de uma lista de objetos, para cada objeto será feita a conversão como se fosse apenas um objeto, sendo depois ignorado a linha dos títulos em todos os objetos exceto no caso do primeiro objeto em que são mantidos os títulos gerados.
+No caso da conversão de uma lista de objetos, para cada objeto será feita a conversão já apresentada para um objeto, onde depois é ignorada a linha dos títulos em todos os objetos exceto no primeiro objeto da lista onde é mantido os títulos gerados. Ou seja, na primeira linha estará presente os títulos e nas seguintes linhas, em cada inha estará presente os valores de um objeto.
+
+O último passo seja para uma lista ou para um único objeto é transformar a estrutura interna no \acrshort{csv} a gerar. Este papel é desempenhado pela função \texttt{joinLines} em que os elementos de cada lista da lista são juntos de acordo com um separador (neste caso é usado o ponto e vírgula, \texttt{;}) tornando a lista de listas numa lista de \textit{strings}. Por fim, as \textit{strings} desta lista são juntas através da inserção de novas linhas (\texttt{\textbackslash{}n}) entre cada \textit{string}.
 %TODO
 %Algoritmo
 %Tentar explicar o que faz
 %Exemplo
 %CSV
 
+\subsection{Exportação da Ontologia}
 Por fim quanto à exportação da ontologia, das três é a mais simples visto que o \textit{GraphDB}\footnote{\acrfull{bd} Semântica baseada em grafos compatível com os padrões \acrshort{w3c}. Suporta \acrshort{rdf} e \acrshort{sparql}} possui funcionalidades de exportação dos triplos presentes numa \acrshort{bd} armazenada no \textit{GraphDB}.
 
 Para um fácil uso e compatibilidade com os \textit{standards} da indústria, o \textit{GraphDB} implementou as interfaces da \textit{framework} \textit{RDF4J}, a especificação do protocolo \acrshort{w3c} \acrshort{sparql}\footnote{Ver \url{https://www.w3.org/TR/sparql11-protocol/}} e suporta vários formatos de serialização \acrshort{rdf}\footnote{\label{fnRDF}\textit{TriG}, \textit{BinaryRDF}, \textit{TriX}, \textit{N-Triples}, \textit{N-Quads}, \acrshort{n3}, \acrshort{rdf}/\acrshort{xml}, \acrshort{rdf}/\acrshort{json}, \acrshort{json-ld} e \acrshort{turtle}}.~\cite{graphdbAbout}
@@ -1429,6 +1435,11 @@ Apesar da facilidade de exportação da ontologia estes pedidos de exportação 
 \end{itemize}
 
 Assim, respeitando todas estas restrições, são mantidas pela \acrshort{api} da \acrshort{clav} no máximo seis ficheiros, dois por cada serialização \acrshort{rdf}. Para além disso estes ficheiros são atualizados no melhor caso de sete em sete dias e no pior caso nunca se o ficheiro nunca for requisitado pelos utilizadores.
+
+\subsection{Exportação na \acrshort{api} de dados}
+%TODO
+%como exportar os dados na api?
+%como é feita a interligação entre api, dados e conversores?
 
 %TODO
 %\section{Nginx}
