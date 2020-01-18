@@ -1088,38 +1088,52 @@ Portanto, os dados exportados estarão sempre encapsolados na \textit{tag} \text
 Apresenta-se de seguida uma conversão exemplo. Para o seguinte \acrshort{json}:
 \begin{lstlisting}[language=json, caption=\acrshort{json} exemplo a converter, label=exem:json]
 {
-    "Actors": [
+    "nivel": 2,
+    "pai": {
+        "codigo": "100",
+        "titulo": "ORDENAMENTO JURÍDICO E NORMATIVO"
+    },
+    "codigo": "100.10",
+    "titulo": "Elaboração de diplomas jurídico-normativos",
+    "descricao": "Compreende os processos de elaboração/alteração de legislação, de regulamentos e de diretivas políticas ou operacionais portuguesas.",
+    "status": "A",
+    "filhos": [],
+    "notasAp": [
         {
-            "name": "Tom Cruise",
-            "age": 56,
-            "Born At": "Syracuse, NY",
-            "Birthdate": "July 3, 1962",
-            "wife": null,
-            "weight": 67.5,
-            "hasChildren": true,
-            "hasGreyHair": false,
-            "children": [
-                "Suri",
-                "Isabella Jane",
-                "Connor"
-            ]
-        },
-        {
-            "name": "Robert Downey Jr.",
-            "age": 53,
-            "Born At": "New York City, NY",
-            "Birthdate": "April 4, 1965",
-            "wife": "Susan Downey",
-            "weight": 77.1,
-            "hasChildren": true,
-            "hasGreyHair": false,
-            "children": [
-                "Indio Falconer",
-                "Avri Roel",
-                "Exton Elias"
-            ]
+            "idNota": "http://jcr.di.uminho.pt/m51-clav#na_c100.10_MRIKl-RBu_2sz5u9FzPqH",
+            "nota": "Qualquer despacho com diretrizes gerais e abstratas"
         }
-    ]
+    ],
+    "exemplosNotasAp": [],
+    "notasEx": [
+        {
+            "idNota": "http://jcr.di.uminho.pt/m51-clav#ne_c100.10_bXM5qoj-hKZt6cijQktaj",
+            "nota": "- Procedimentos administrativos de classificação do património cultural devem ser considerados em \"Reconhecimentos e permissões/ Classificação e declaração de interesse ou utilidade pública\" (450.20)"
+        }
+    ],
+    "termosInd": [],
+    "temSubclasses4Nivel": false,
+    "temSubclasses4NivelPCA": false,
+    "temSubclasses4NivelDF": false,
+    "subdivisao4Nivel01Sintetiza02": true,
+    "tipoProc": "",
+    "procTrans": "",
+    "donos": [],
+    "participantes": [],
+    "processosRelacionados": [],
+    "legislacao": [],
+    "pca": {
+        "valores": "",
+        "notas": "",
+        "formaContagem": "",
+        "subFormaContagem": "",
+        "justificacao": []
+    },
+    "df": {
+        "valor": "NE",
+        "nota": null,
+        "justificacao": []
+    }
 }
 \end{lstlisting}
 
@@ -1127,39 +1141,72 @@ Apresenta-se de seguida uma conversão exemplo. Para o seguinte \acrshort{json}:
 \begin{lstlisting}[language=xml, caption=\acrshort{xml} resultante da conversão do \acrshort{json} presente em~\ref{exem:json}]
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-    <Actors type="array">
+    <nivel type="number">2</nivel>
+    <pai type="object">
+        <codigo type="string">100</codigo>
+        <titulo type="string">ORDENAMENTO JURÍDICO E NORMATIVO</titulo>
+    </pai>
+    <codigo type="string">100.10</codigo>
+    <titulo type="string">Elaboração de diplomas jurídico-normativos e de normas técnicas</titulo>
+    <descricao type="string">Compreende os processos de elaboração/alteração de legislação, de regulamentos e de diretivas políticas ou operacionais portuguesas...</descricao>
+    <status type="string">A</status>
+    <filhos type="array">
         <item index="0" type="object">
-            <name type="string">Tom Cruise</name>
-            <age type="number">56</age>
-            <Born_At type="string">Syracuse, NY</Born_At>
-            <Birthdate type="string">July 3, 1962</Birthdate>
-            <wife type="object">
-            </wife>
-            <weight type="number">67.5</weight>
-            <hasChildren type="boolean">true</hasChildren>
-            <hasGreyHair type="boolean">false</hasGreyHair>
-            <children type="array">
-                <item index="0" type="string">Suri</item>
-                <item index="1" type="string">Isabella Jane</item>
-                <item index="2" type="string">Connor</item>
-            </children>
+            <codigo type="string">100.10.001</codigo>
+            <titulo type="string">Produção e comunicação de atos legislativos</titulo>
+            <id type="string">http://jcr.di.uminho.pt/m51-clav#c100.10.001</id>
+            <status type="string">A</status>
+        </item>
+    </filhos>
+    <notasAp type="array">
+        <item index="0" type="object">
+            <idNota type="string">http://jcr.di.uminho.pt/m51-clav#na_c100.10_MRIKl-RBu_2sz5u9FzPqH</idNota>
+            <nota type="string">Qualquer despacho com diretrizes gerais e abstratas</nota>
         </item>
         <item index="1" type="object">
-            <name type="string">Robert Downey Jr.</name>
-            <age type="number">53</age>
-            <Born_At type="string">New York City, NY</Born_At>
-            <Birthdate type="string">April 4, 1965</Birthdate>
-            <wife type="string">Susan Downey</wife>
-            <weight type="number">77.1</weight>
-            <hasChildren type="boolean">true</hasChildren>
-            <hasGreyHair type="boolean">false</hasGreyHair>
-            <children type="array">
-                <item index="0" type="string">Indio Falconer</item>
-                <item index="1" type="string">Avri Roel</item>
-                <item index="2" type="string">Exton Elias</item>
-            </children>
+            <idNota type="string">http://jcr.di.uminho.pt/m51-clav#na_c100.10_2Dp209euc1AdQg7CUnKCN</idNota>
+            <nota type="string">Atos legislativos</nota>
         </item>
-    </Actors>
+    </notasAp>
+    <exemplosNotasAp type="array">
+    </exemplosNotasAp>
+    <notasEx type="array">
+        <item index="0" type="object">
+            <idNota type="string">http://jcr.di.uminho.pt/m51-clav#ne_c100.10_bXM5qoj-hKZt6cijQktaj</idNota>
+            <nota type="string">- Procedimentos administrativos de classificação do património cultural devem ser considerados em &quot;Reconhecimentos e permissões/ Classificação e declaração de interesse ou utilidade pública&quot; (450.20)</nota>
+        </item>
+    </notasEx>
+    <termosInd type="array">
+    </termosInd>
+    <temSubclasses4Nivel type="boolean">false</temSubclasses4Nivel>
+    <temSubclasses4NivelPCA type="boolean">false</temSubclasses4NivelPCA>
+    <temSubclasses4NivelDF type="boolean">false</temSubclasses4NivelDF>
+    <subdivisao4Nivel01Sintetiza02 type="boolean">true</subdivisao4Nivel01Sintetiza02>
+    <tipoProc type="string"></tipoProc>
+    <procTrans type="string"></procTrans>
+    <donos type="array">
+    </donos>
+    <participantes type="array">
+    </participantes>
+    <processosRelacionados type="array">
+    </processosRelacionados>
+    <legislacao type="array">
+    </legislacao>
+    <pca type="object">
+        <valores type="string"></valores>
+        <notas type="string"></notas>
+        <formaContagem type="string"></formaContagem>
+        <subFormaContagem type="string"></subFormaContagem>
+        <justificacao type="array">
+        </justificacao>
+    </pca>
+    <df type="object">
+        <valor type="string">NE</valor>
+        <nota type="object">
+        </nota>
+        <justificacao type="array">
+        </justificacao>
+    </df>
 </root>
 \end{lstlisting}
 
@@ -1340,7 +1387,7 @@ convertOne(json, type)
             else
                 csvLines[0].push(protect(header))
                 csvLines[1].push(protect(value))
-        else if type == "pca" or type == "df" then
+        else if type == "pca" or type == "df" or k == "fonte" then
             csvLines[0].push(protect(header))
             csvLines[1].push(protect(""))
 
@@ -1403,11 +1450,16 @@ No caso da conversão de um objeto:
 No caso da conversão de uma lista de objetos, para cada objeto será feita a conversão já apresentada para um objeto, onde depois é ignorada a linha dos títulos em todos os objetos exceto no primeiro objeto da lista onde é mantido os títulos gerados. Ou seja, na primeira linha estará presente os títulos e nas seguintes linhas, em cada inha estará presente os valores de um objeto.
 
 O último passo seja para uma lista ou para um único objeto é transformar a estrutura interna no \acrshort{csv} a gerar. Este papel é desempenhado pela função \texttt{joinLines} em que os elementos de cada lista da lista são juntos de acordo com um separador (neste caso é usado o ponto e vírgula, \texttt{;}) tornando a lista de listas numa lista de \textit{strings}. Por fim, as \textit{strings} desta lista são juntas através da inserção de novas linhas (\texttt{\textbackslash{}n}) entre cada \textit{string}.
-%TODO
-%Algoritmo
-%Tentar explicar o que faz
-%Exemplo
-%CSV
+
+Apresenta-se de seguida um exemplo de uma conversão, onde o ficheiro \acrshort{json} a converter é o mesmo usado para exemplificar a conversão de \acrshort{xml} presente em~\ref{exem:json}.
+
+A partir desse \acrshort{json} é gerado o seguinte \acrshort{csv}:
+\begin{lstlisting}[language=pseudocode, caption=\acrshort{csv} resultante da conversão do \acrshort{json} presente em~\ref{exem:json}]
+"Código";"Título";"Descrição";"Notas de aplicação";"Exemplos de NA";"Notas de exclusão";"Termos Indice";"Tipo de processo";"Processo transversal (S/N)";"Donos do processo";"Participante no processo";"Tipo de intervenção do participante";"Código do processo relacionado";"Título do processo relacionado";"Tipo de relação entre processos";"Diplomas jurídico-administrativos REF Ids";"Diplomas jurídico-administrativos REF Títulos";"Prazo de conservação administrativa";"Nota ao PCA";"Forma de contagem do PCA";"Sub Forma de contagem do PCA";"Critério PCA";"ProcRefs/LegRefs PCA";"Destino final";"Notas ao DF";"Critério DF";"ProcRefs/LegRefs DF"
+"100.10";"Elaboração de diplomas jurídico-normativos e de normas técnicas";"Compreende os processos de elaboração/alteração de legislação, de regulamentos e de diretivas políticas ou operacionais portuguesas...";"Qualquer despacho com diretrizes gerais e abstratas#
+Atos legislativos";"";"- Procedimentos administrativos de classificação do património cultural devem ser considerados em ""Reconhecimentos e permissões/ Classificação e declaração de interesse ou utilidade pública"" (450.20)";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";""
+"100.10.001";"Produção e comunicação de atos legislativos"
+\end{lstlisting}
 
 \subsection{Exportação da Ontologia}
 Por fim quanto à exportação da ontologia, das três é a mais simples visto que o \textit{GraphDB}\footnote{\acrfull{bd} Semântica baseada em grafos compatível com os padrões \acrshort{w3c}. Suporta \acrshort{rdf} e \acrshort{sparql}} possui funcionalidades de exportação dos triplos presentes numa \acrshort{bd} armazenada no \textit{GraphDB}.
