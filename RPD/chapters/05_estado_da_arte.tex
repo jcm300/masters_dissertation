@@ -3,7 +3,7 @@
 Quando esta dissertação teve início o projeto \acrshort{clav} já tinha cerca de 2 anos de desenvolvimento. Assim nesta secção será apresentado o estado da arte do \acrshort{clav} quando esta dissertação iniciou aprofundando principalmente os pontos mais importantes sobre o tema desta dissertação.
 
 \subsection{Estrutura}
-O \acrshort{clav} está dividido em duas partes:
+A \acrshort{clav} está dividido em duas partes:
 \begin{itemize}
     \item interface (\textit{front-end}) presente em \url{http://clav.dglab.gov.pt}
     \item \acrshort{api} de dados (\textit{back-end} que inclui também duas bases de dados, \textit{GraphDB} e \textit{MongoDB}) presente em \url{http://clav-api.dglab.gov.pt}.
@@ -11,21 +11,30 @@ O \acrshort{clav} está dividido em duas partes:
 
 Cada parte encontra-se numa máquina diferente.
 
-Através da figura~\ref{fig:clav_struct} é possível ver o possível fluxo tanto de um utilizador a aceder à interface como a de um utilizador a aceder diretamente à \acrshort{api} de dados. No primeiro caso, quando um utilizador acede o servidor da interface do \acrshort{clav} é descarregado para o lado do utilizador o ficheiro \acrshort{html} (\textit{index}) e os vários ficheiros \textit{JavaScript}, \acrshort{css} e \textit{assets} (como imagens, \acrshort{pdf}s, etc) quando necessários. O servidor da interface é nada mais que um servidor \textit{web} com recurso ao \textit{Nginx} que hospeda estes ficheiros, os quais representam a interface construída com o \textit{Vue} e o \textit{Vuetify}. Como tal o código apresenta-se todo do lado do utilizador e os pedidos à \acrshort{api} serão feitos do computador do utilizador para o servidor da \acrshort{api} de dados e não do servidor da interface para o servidor da \acrshort{api} de dados. Ou seja, o fluxo de cada um desses pedidos será igual ao fluxo no caso em que se acede diretamente a \acrshort{api} sem uso de qualquer interface.
+Através da figura~\ref{fig:clav_struct} é possível ver o possível fluxo tanto de um utilizador a aceder à interface como a de um utilizador a aceder diretamente à \acrshort{api} de dados. No primeiro caso, quando um utilizador acede o servidor da interface da \acrshort{clav} é descarregado para o lado do utilizador o ficheiro \acrshort{html} (\textit{index}) e os vários ficheiros \textit{JavaScript}, \acrshort{css} e \textit{assets} (como imagens, \acrshort{pdf}s, etc) quando necessários. O servidor da interface é nada mais que um servidor \textit{web} com recurso ao \textit{Nginx} que hospeda estes ficheiros, os quais representam a interface construída com o \textit{Vue} e o \textit{Vuetify}. Como tal o código apresenta-se todo do lado do utilizador e os pedidos à \acrshort{api} serão feitos do computador do utilizador para o servidor da \acrshort{api} de dados e não do servidor da interface para o servidor da \acrshort{api} de dados. Ou seja, o fluxo de cada um desses pedidos será igual ao fluxo no caso em que se acede diretamente a \acrshort{api} sem uso de qualquer interface.
 
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.7\textwidth]{img/clav_struct.png}
     \end{center}
-    \caption{Estrutura do \acrshort{clav} incluíndo a interação de um utilizador com a mesma}\label{fig:clav_struct}
+    \caption{Estrutura da \acrshort{clav} incluíndo a interação de um utilizador com a mesma}\label{fig:clav_struct}
+\end{figure}
+
+Esta estrutura evoluiu depois para a estrutura presente na figura~\ref{fig:clav_struct2} em que tanto a interface como o \textit{back-end} estão ``por trás'' do \textit{Nginx} o que leva a que todos os pedidos passem por este, seja para obter a interface (onde o \textit{Nginx} devolve esta) como para a aceder a \acrshort{api} de dados (onde o \textit{Nginx} reencaminha o pedido para a \acrshort{api}).
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.7\textwidth]{img/clav_struct2.png}
+    \end{center}
+    \caption{Estrutura evoluída da \acrshort{clav}}\label{fig:clav_struct2}
 \end{figure}
 
 \subsection{Formas de autenticação}\label{sec:autenticacao}
-A \acrshort{api} de dados e a interface estavam inicialmente ``juntas'' (aplicação monolítica) onde as rotas eram protegidas contudo, com a separação da aplicação em duas partes, ambas partes deixaram de estar protegidas. Devido à plataforma já ter estado protegida esta já possui duas formas de autenticação, através de chaves \acrshort{api} ou através de utilizadores registados. Ou seja, tanto o registo de utilizadores e de chaves API já se encontra implementado bem como o \textit{login} de utilizadores.
+A \acrshort{api} de dados e a interface estavam inicialmente ``juntas'' (aplicação monolítica) onde as rotas eram protegidas contudo, com a separação da aplicação em duas partes, ambas partes deixaram de estar protegidas. Devido à plataforma já ter estado protegida esta já possui duas formas de autenticação, através de chaves \acrshort{api} e através de utilizadores registados. Ou seja, tanto o registo de utilizadores e de chaves API já se encontra implementado bem como o \textit{login} de utilizadores.
 
 As chaves \acrshort{api} existem por forma a dar acesso a certas rotas da \acrshort{api} a aplicações que interajam com a mesma (por exemplo sistemas de informação) sem a necessidade de interação humana.
 
-Já os utilizadores possuem múltiplos níveis de acesso sendo que consoante o seu nível podem ou não aceder a uma rota da interface ou da \acrshort{api}. Os utilizadores podem autenticarem-se através de \textit{email} e \textit{password} ou com recurso ao \acrfull{cc} através do Autenticação.gov, este último apenas disponível através da interface do \acrshort{clav}.
+Já os utilizadores possuem múltiplos níveis de acesso sendo que consoante o seu nível podem ou não aceder a uma rota da interface ou da \acrshort{api}. Os utilizadores podem se autenticar através de \textit{email} e \textit{password} ou com recurso ao \acrfull{cc} através do Autenticação.gov, este último apenas disponível através da interface da \acrshort{clav}.
 
 A hierarquia dos níveis de acesso, do nível que permite menor para o maior acesso, é a seguinte:
 \begin{itemize}
@@ -33,7 +42,7 @@ A hierarquia dos níveis de acesso, do nível que permite menor para o maior ace
     \item Nível 1: Representante Entidade
     \item Nível 2: Utilizador Simples
     \item Nível 3: Utilizador Avançado
-    \item Nível 3.5: Utilizador Validador (AD)
+    \item Nível 3.5: Utilizador Validador (\acrshort{ad})
     \item Nível 4: Utilizador Validador
     \item Nível 5: Utilizador Decisor
     \item Nível 6: Administrador de Perfil Funcional
@@ -45,6 +54,7 @@ Já os utilizadores poderão realizar todos os pedidos que as chaves \acrshort{a
 
 A proteção da \acrshort{api} terá de ter esta hierarquia em conta.
 
+%Rever a partir daqui
 \subsubsection{Registo}
 
 Como já referido tanto o registo de chaves \acrshort{api} como de utilizadores já se encontra implementado.
