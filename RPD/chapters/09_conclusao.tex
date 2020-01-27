@@ -1,3 +1,15 @@
 %Conclusions and future work.
 %\section{Conclusions}
 %\section{Prospect for future work}
+
+Esta dissertação tem vários objetivos distintos pelo que foram aprofundadas nesta pré-dissertação vários temas diferentes. Estes temas variam deste a proteção da \acrshort{api} à exportação de dados até à documentação desta \acrshort{api}.
+
+Por forma a perceber o estado atual do projeto \acrshort{clav} foi inicialmente apresentado os pontos mais importantes referentes aos objetivos desta dissertação.
+
+De seguida, foi introduzido a noção de \acrshort{jwt}s e de \acrshort{jws}s com os quais será realizada a proteção da \acrshort{api}. Além disso, for feita uma pequena introdução ao \texttt{Autenticação.gov} com o objetivo de preparar o desenvolvimento do mecanismo de autenticação com recurso à \acrlong{cmd}. 
+
+Com o intuito de assimilar como será realizada a documentação da \acrshort{api} foi introduzido a especificação \textit{OpenAPI} e o \textit{Swagger \acrshort{ui}} bem como as suas alternativas.
+
+Ao fim desta introdução, foi aprofundado como é realizada a exportação da informação da \acrshort{api} da \acrshort{clav} para os vários formatos de saída a suportar.
+
+Em termos de trabalho futuro, o mesmo passa por explorar o tema da \textit{\acrshort{api} Gateway} por forma a avaliar se esta permite simplificar a comunicação entre utilizadores/interface e a \acrshort{api} de dados. Por outro lado, passa por melhorar a documentação já presente, adicionando mais exemplos e melhorando as descrições já presentes. Para além disso, será alterado o algorítmo usado para verificação dos \acrshort{jws}s mudando de \acrshort{hmac}, que usa um segredo, para o \acrshort{rsa}, que usa um par de chaves pública/privada. Será também desenvolvida a possibilidade de autenticação pelo \texttt{Autenticação.gov} com recurso ao certificado digital \acrlong{cmd}. Será ainda desenvolvido alguns mecanismos em falta de \textit{refresh} de \textit{caches} bem como de \textit{backup} para a informação da plataforma. Finalmente será realizada a integração da \acrshort{clav} no \acrshort{iap}.

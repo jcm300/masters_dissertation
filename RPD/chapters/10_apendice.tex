@@ -4,10 +4,444 @@
 %
 %%\chapter{Details of results}
 %Details of results whose length would compromise readability of main text; or
-%
-%%\chapter{Listings}
-%Specifications and Code Listings: should this be the case; or
-%
+
+\chapter{Algorítmos}
+
+\section{Conversor de \acrshort{json} para \acrshort{xml}}\label{exem:convXML}
+\begin{lstlisting}[language=pseudocode, caption=Algorítmo de conversão de \acrshort{json} para \acrshort{xml}]
+sizeTab = 4
+
+function protectForXml(string)
+    string = replace '<' by '&lt;' in string
+    string = replace '>' by '&gt;' in string
+    string = replace '&' by '&amp;' in string
+    string = replace "'" by '&apos;' in string
+    string = replace '"' by '&quot;' in string
+    return string
+
+function protectKey(string)
+    string = replace '<' by '' in string
+    string = replace '>' by '' in string
+    string = replace '&' by '_' in string
+    string = replace "'" by '' in string
+    string = replace '"' by '' in string
+    string = replace '\s+' by '_' in string
+    return string
+
+function json2xmlArray(array, nTabs)
+    xml = ''
+    len = length(array)
+
+    for i=0; i < len; i++
+        type = type of array[i]
+        xml += repeat(' ', nTabs * sizeTab) + '<item index="' + i + '" type="' + type + '">' 
+
+        if type == 'object' or type == 'string' or type == 'boolean' or type == 'number' then
+            xml += json2xmlRec(array[i], nTabs + 1)
+
+        if type == 'object' then
+            xml += repeat(' ', nTabs * sizeTab)
+
+        xml += '</item>\n'
+
+    return xml
+
+function json2xmlRec(json, nTabs)
+    xml = ''
+    type = type of json
+    
+    if type == 'object' then
+        xml = '\n'
+
+        if json is an Array then
+            xml = json2xmlArray(json, nTabs)
+        else
+            for key in json
+                aux = ''
+                type = type of json[key]
+
+                if type === 'object' then
+                    if json[key] is an Array then
+                        aux = '\n' + json2xmlArray(json[key], nTabs + 1)
+                        type = 'array'
+                    else
+                        aux += json2xmlRec(json[key], nTabs + 1)
+                    
+                    aux += repeat(' ', nTabs * sizeTab)
+                else if type == 'string' then
+                    aux = protectForXml(json[key])
+                else if type == 'boolean' or type == 'number' then
+                    aux = json[key]
+
+                xml += repeat(' ', nTabs * sizeTab)
+                xml += '<' + protectKey(key) + ' type="' + type + '">'
+                xml += aux + '</' + protectKey(key) + '>\n'
+    else if type == 'string' then
+        xml = protectForXml(json)
+    else if type == 'boolean' or type == 'number' then
+        xml = json
+
+    return xml
+
+function json2xml(json)
+    xml = '<?xml version="1.0" encoding="utf-8"?>\n'
+    xml += '<root>'
+    xml += json2xmlRec(json, 1)
+    xml += '</root>'
+    return xml
+\end{lstlisting}
+
+\section{Conversor de \acrshort{json} para \acrshort{csv}}\label{exem:convCSV}
+\begin{lstlisting}[language=pseudocode, caption=Algorítmo de conversão de \acrshort{json} para \acrshort{csv}]
+separator = ';'
+types = ["classes", "classe", "entidades", "entidade", "tipologias", "tipologia",  "legislacoes", "legislacao"]
+convert_to = {
+    "classe": {
+        "codigo": ["Código", v => v],
+        "titulo": ["Título", v => v],
+        "descricao": ["Descrição", v => v],
+        "notasAp": ["Notas de aplicação", map_value("nota")],
+        "exemplosNotasAp": ["Exemplos de NA", map_value("exemplo")],
+        "notasEx": ["Notas de exclusão", map_value("nota")],
+        "termosInd": ["Termos Indice", map_value("termo")],
+        "tipoProc": ["Tipo de processo", v => v],
+        "procTrans": ["Processo transversal (S/N)", v => v],
+        "dono": ["Dono", v => v],
+        "participante": ["Participante", v => v],
+        "donos": ["Donos do processo", map_value("sigla")],
+        "participantes_sigla": ["Participante no processo", map_value("sigla")],
+        "participantes_participLabel": ["Tipo de intervenção do participante", map_value("participLabel")],
+        "processosRelacionados_codigo": ["Código do processo relacionado", map_value("codigo")],
+        "processosRelacionados_titulo": ["Título do processo relacionado", map_value("titulo")],
+        "processosRelacionados_idRel": ["Tipo de relação entre processos", map_value("idRel")],
+        "legislacao_idLeg": ["Diplomas jurídico-administrativos REF Ids", map_value("idLeg")],
+        "legislacao_titulos": ["Diplomas jurídico-administrativos REF Títulos", leg_titulos],
+        "pca": ["", pca_df("pca")],
+        "df": ["", pca_df("df")],
+        "filhos": [null, filhos]
+    },
+    "entidade": {
+        "sigla": ["Sigla", v => v],
+        "designacao": ["Designação", v => v],
+        "estado": ["Estado", v => v],
+        "sioe": ["ID SIOE", v => v],
+        "internacional": ["Internacional", internacional],
+        "dono": ["Dono no processo", map_value("codigo")],
+        "participante_codigo": ["Participante no processo", map_value("codigo")],
+        "participante_tipoPar": ["Tipo de intervenção no processo", map_value("tipoPar")],
+        "tipologias": ["Tipologias da entidade", map_value("sigla")]
+    },
+    "tipologia": {
+        "sigla": ["Sigla", v => v],
+        "designacao": ["Designação", v => v],
+        "estado": ["Estado", v => v],
+        "dono": ["Dono no processo", map_value("codigo")],
+        "participante_codigo": ["Participante no processo", map_value("codigo")],
+        "participante_tipoPar": ["Tipo de intervenção no processo", map_value("tipoPar")]
+    },
+    "legislacao": {
+        "tipo": ["Tipo", v => v],
+        "numero": ["Número", v => v],
+        "data": ["Data", v => v],
+        "sumario": ["Sumário", v => v],
+        "fonte": ["Fonte", v => v],
+        "link": ["Link", v => v],
+        "entidades": ["Entidades", entidades],
+        "regula": ["Regula processo", map_value("codigo")]
+    },
+    "pca": {
+        "valores": ["Prazo de conservação administrativa", v => v],
+        "notas": ["Nota ao PCA", v => v],
+        "formaContagem": ["Forma de contagem do PCA", v => v],
+        "subFormaContagem": ["Sub Forma de contagem do PCA", v => v],
+        "justificacao_criterio": ["Critério PCA", map_value("tipoId")],
+        "justificacao_refs": ["ProcRefs/LegRefs PCA", refs]
+    },
+    "df": {
+        "valor": ["Destino final", destino_final],
+        "notas": ["Notas ao DF", v => v],
+        "justificacao_criterio": ["Critério DF", map_value("tipoId")],
+        "justificacao_refs": ["ProcRefs/LegRefs DF", refs]
+    }
+}
+
+internacional(value)
+    if value == "" then
+        return "Não"
+    else
+        return "Sim"
+
+join(array)
+    return join_with(array, '#\n')
+
+map_value(key)
+    return function(value)
+        return join(map(value, p => p[key]))
+
+leg_titulos(value)
+    return join(map(value, l => l.tipo + ' ' + l.numero))
+
+entidades(value)
+    v = value
+
+    if len(value) and "sigla" in value[0] then
+        v = map(value, t => t.sigla)
+
+    return join(v)
+
+destino_final(value)
+    if value == "NE" then
+        value = ""
+
+    return value
+
+refs(value)
+    procs_legs = []
+
+    for just in value
+        if len(just.processos) > 0 then
+            procs_legs.push('(' + join(map(just.processos, p => p.procId)) + ')')
+        else if len(just.legislacao) > 0 then
+            procs_legs.push('(' + join(map(just.legislacao, l => l.legId)) + ')')
+        else
+            procs_legs.push('()')
+
+    return join(procs_legs)
+
+pca_df(key)
+    return function(value)
+        csvLines = [[], []]
+
+        if type of value == "string" then
+            csvLines[0].push(protect(key.toUpperCase()))
+            csvLines[1].push(protect(value))
+        else
+            csvLines = convertOne(value, key)
+
+        return csvLines
+
+filhos(value)
+    csvLines = []
+
+    for classe in value
+        aux = convertOne(classe, "classe")
+        delete aux[0]
+        csvLines = concat(csvLines, aux)
+
+    return csvLines
+
+protect(string)
+    if string != null then
+        if type of string == 'string' then
+            string = replace '"' by '""' in string
+        return '"' + string + '"'
+    else
+        return '""'
+
+joinLines(csvLines)
+    len = len(csvLines)
+
+    for i = 0; i<len; i++
+        csvLines[i] = join_with(csvLines[i], separator)
+
+    return join_with(csvLines, '\n')
+
+convertOne(json, type)
+    csvLines = [[],[]]
+
+    for key in convert_to[type]
+        k = (split key by '_')[0]
+        header = convert_to[type][key][0]
+
+        if k in json then
+            f = convert_to[type][key][1]
+            value = f(json[k])
+
+            if header == null then
+                csvLines = concat(csvLines, value)
+            else if header == "" then
+                csvLines[0] = concat(csvLines[0], value[0])
+                csvLines[1] = concat(csvLines[1], value[1])
+            else
+                csvLines[0].push(protect(header))
+                csvLines[1].push(protect(value))
+        else if type == "pca" or type == "df" or k == "fonte" then
+            csvLines[0].push(protect(header))
+            csvLines[1].push(protect(""))
+
+    return csvLines
+
+convertAll(json, type)
+    csvLines = []
+    len = json.length
+
+    if len > 0 then
+        csvLines = convertOne(json[0], type)
+
+        for i = 1; i < len; i++
+            aux = convertOne(json[i], type)
+            delete aux[0]
+            csvLines = concat(csvLines, aux)
+
+    return csvLines
+
+json2csv(json, type)
+
+    if type in types then
+        if type[last] == "s" then
+            delete type[last]
+
+            if type == "legislacoe" then
+                type = "legislacao"
+
+            csvLines = convertAll(json, type)
+        else
+            csvLines = convertOne(json, type)
+    else
+        throw("Não é possível exportar para CSV nesta rota...")
+
+    return joinLines(csvLines)
+\end{lstlisting}
+
+\chapter{Exemplos}
+
+\section{Conversão de \acrshort{json} para \acrshort{xml}}\label{conv:jsonTOxml}
+
+\subsection{\acrshort{json} a converter}\label{exem:json}
+\begin{lstlisting}[language=json, caption=\acrshort{json} exemplo a converter]
+{
+    "nivel": 2,
+    "pai": {
+        "codigo": "100",
+        "titulo": "ORDENAMENTO JURÍDICO E NORMATIVO"
+    },
+    "codigo": "100.10",
+    "titulo": "Elaboração de diplomas jurídico-normativos",
+    "descricao": "Compreende os processos de elaboração/alteração de legislação, de regulamentos e de diretivas políticas ou operacionais portuguesas.",
+    "status": "A",
+    "filhos": [],
+    "notasAp": [
+        {
+            "idNota": "http://jcr.di.uminho.pt/m51-clav#na_c100.10_MRIKl-RBu_2sz5u9FzPqH",
+            "nota": "Qualquer despacho com diretrizes gerais e abstratas"
+        }
+    ],
+    "exemplosNotasAp": [],
+    "notasEx": [
+        {
+            "idNota": "http://jcr.di.uminho.pt/m51-clav#ne_c100.10_bXM5qoj-hKZt6cijQktaj",
+            "nota": "- Procedimentos administrativos de classificação do património cultural devem ser considerados em \"Reconhecimentos e permissões/ Classificação e declaração de interesse ou utilidade pública\" (450.20)"
+        }
+    ],
+    "termosInd": [],
+    "temSubclasses4Nivel": false,
+    "temSubclasses4NivelPCA": false,
+    "temSubclasses4NivelDF": false,
+    "subdivisao4Nivel01Sintetiza02": true,
+    "tipoProc": "",
+    "procTrans": "",
+    "donos": [],
+    "participantes": [],
+    "processosRelacionados": [],
+    "legislacao": [],
+    "pca": {
+        "valores": "",
+        "notas": "",
+        "formaContagem": "",
+        "subFormaContagem": "",
+        "justificacao": []
+    },
+    "df": {
+        "valor": "NE",
+        "nota": null,
+        "justificacao": []
+    }
+}
+\end{lstlisting}
+
+\subsection{\acrshort{xml} gerado}
+\begin{lstlisting}[language=xml, caption=\acrshort{xml} resultante da conversão do \acrshort{json} presente em~\ref{exem:json}]
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <nivel type="number">2</nivel>
+    <pai type="object">
+        <codigo type="string">100</codigo>
+        <titulo type="string">ORDENAMENTO JURÍDICO E NORMATIVO</titulo>
+    </pai>
+    <codigo type="string">100.10</codigo>
+    <titulo type="string">Elaboração de diplomas jurídico-normativos e de normas técnicas</titulo>
+    <descricao type="string">Compreende os processos de elaboração/alteração de legislação, de regulamentos e de diretivas políticas ou operacionais portuguesas...</descricao>
+    <status type="string">A</status>
+    <filhos type="array">
+        <item index="0" type="object">
+            <codigo type="string">100.10.001</codigo>
+            <titulo type="string">Produção e comunicação de atos legislativos</titulo>
+            <id type="string">http://jcr.di.uminho.pt/m51-clav#c100.10.001</id>
+            <status type="string">A</status>
+        </item>
+    </filhos>
+    <notasAp type="array">
+        <item index="0" type="object">
+            <idNota type="string">http://jcr.di.uminho.pt/m51-clav#na_c100.10_MRIKl-RBu_2sz5u9FzPqH</idNota>
+            <nota type="string">Qualquer despacho com diretrizes gerais e abstratas</nota>
+        </item>
+        <item index="1" type="object">
+            <idNota type="string">http://jcr.di.uminho.pt/m51-clav#na_c100.10_2Dp209euc1AdQg7CUnKCN</idNota>
+            <nota type="string">Atos legislativos</nota>
+        </item>
+    </notasAp>
+    <exemplosNotasAp type="array">
+    </exemplosNotasAp>
+    <notasEx type="array">
+        <item index="0" type="object">
+            <idNota type="string">http://jcr.di.uminho.pt/m51-clav#ne_c100.10_bXM5qoj-hKZt6cijQktaj</idNota>
+            <nota type="string">- Procedimentos administrativos de classificação do património cultural devem ser considerados em &quot;Reconhecimentos e permissões/ Classificação e declaração de interesse ou utilidade pública&quot; (450.20)</nota>
+        </item>
+    </notasEx>
+    <termosInd type="array">
+    </termosInd>
+    <temSubclasses4Nivel type="boolean">false</temSubclasses4Nivel>
+    <temSubclasses4NivelPCA type="boolean">false</temSubclasses4NivelPCA>
+    <temSubclasses4NivelDF type="boolean">false</temSubclasses4NivelDF>
+    <subdivisao4Nivel01Sintetiza02 type="boolean">true</subdivisao4Nivel01Sintetiza02>
+    <tipoProc type="string"></tipoProc>
+    <procTrans type="string"></procTrans>
+    <donos type="array">
+    </donos>
+    <participantes type="array">
+    </participantes>
+    <processosRelacionados type="array">
+    </processosRelacionados>
+    <legislacao type="array">
+    </legislacao>
+    <pca type="object">
+        <valores type="string"></valores>
+        <notas type="string"></notas>
+        <formaContagem type="string"></formaContagem>
+        <subFormaContagem type="string"></subFormaContagem>
+        <justificacao type="array">
+        </justificacao>
+    </pca>
+    <df type="object">
+        <valor type="string">NE</valor>
+        <nota type="object">
+        </nota>
+        <justificacao type="array">
+        </justificacao>
+    </df>
+</root>
+\end{lstlisting}
+
+\section{Conversão de \acrshort{json} para \acrshort{csv}}\label{conv:jsonTOcsv}
+
+\subsection{\acrshort{csv} gerado}
+\begin{lstlisting}[language=pseudocode, caption=\acrshort{csv} resultante da conversão do \acrshort{json} presente em~\ref{exem:json}]
+"Código";"Título";"Descrição";"Notas de aplicação";"Exemplos de NA";"Notas de exclusão";"Termos Indice";"Tipo de processo";"Processo transversal (S/N)";"Donos do processo";"Participante no processo";"Tipo de intervenção do participante";"Código do processo relacionado";"Título do processo relacionado";"Tipo de relação entre processos";"Diplomas jurídico-administrativos REF Ids";"Diplomas jurídico-administrativos REF Títulos";"Prazo de conservação administrativa";"Nota ao PCA";"Forma de contagem do PCA";"Sub Forma de contagem do PCA";"Critério PCA";"ProcRefs/LegRefs PCA";"Destino final";"Notas ao DF";"Critério DF";"ProcRefs/LegRefs DF"
+"100.10";"Elaboração de diplomas jurídico-normativos e de normas técnicas";"Compreende os processos de elaboração/alteração de legislação, de regulamentos e de diretivas políticas ou operacionais portuguesas...";"Qualquer despacho com diretrizes gerais e abstratas#
+Atos legislativos";"";"- Procedimentos administrativos de classificação do património cultural devem ser considerados em ""Reconhecimentos e permissões/ Classificação e declaração de interesse ou utilidade pública"" (450.20)";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";""
+"100.10.001";"Produção e comunicação de atos legislativos"
+\end{lstlisting}
+
 %%\chapter{Tooling}
 %Tooling: Should this be the case.
 
