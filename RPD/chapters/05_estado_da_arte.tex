@@ -17,10 +17,10 @@ Através da figura~\ref{fig:clav_struct} é possível ver o possível fluxo tant
     \begin{center}
         \includegraphics[width=0.7\textwidth]{img/clav_struct.png}
     \end{center}
-    \caption{Estrutura da \acrshort{clav} incluíndo a interação de um utilizador com a mesma}\label{fig:clav_struct}
+    \caption{Estrutura da \acrshort{clav} incluindo a interação de um utilizador com a mesma}\label{fig:clav_struct}
 \end{figure}
 
-Esta estrutura evoluiu depois para a estrutura presente na figura~\ref{fig:clav_struct2} em que tanto a interface como o \textit{back-end} estão ``por trás'' do \textit{Nginx} o que leva a que todos os pedidos passem por este, seja para obter a interface (onde o \textit{Nginx} devolve esta) como para a aceder a \acrshort{api} de dados (onde o \textit{Nginx} reencaminha o pedido para a \acrshort{api}).
+Esta estrutura evoluiu depois para a estrutura presente na figura~\ref{fig:clav_struct2} em que tanto a interface como o \textit{back-end} estão ``por trás'' do \textit{Nginx} o que leva a que todos os pedidos passem por este, seja para obter a interface (onde o \textit{Nginx} devolve esta) como para aceder a \acrshort{api} de dados (onde o \textit{Nginx} reencaminha o pedido para a \acrshort{api}).
 
 \begin{figure}[H]
     \begin{center}
@@ -130,7 +130,7 @@ Sendo assim em que casos é útil o uso de \acrshort{jwt}s? Dois dos casos são 
 
 \subsection{Estrutura do \acrshort{jwt}}
 
-Os \acrshort{jwt}s são construídos a partir de três elementos, o \textit{header} (objeto \acrshort{json} também conhecido por \acrshort{jose} \textit{header}), o \textit{payload} (objeto \acrshort{json}) e os dados de assinatura/encriptação (depende do algoritmo usado). Estes elementos são depois codificados em representações compactas (\texttt{Base64 URL-safe}\footnote{Variante da codificação \texttt{Base64} onde a codificação gerada é segura para ser usada em \textit{URL}s. Basicamente para a codificação \texttt{Base64} gerada substitui os caracteres '+' e '/' pelos caracteres '-' e '\_' respetivamente. Além disso, remove o caracter de \textit{padding} e proibe separadores de linha}). As codificações \texttt{Base64 URL-safe} de cada elemento são depois concatenadas através de pontos dando origem a uma representação final compacta do \acrshort{jwt} (\textit{JWS/JWE Compact Serialization}). Na secção~\ref{sec:criacaojwt} está presente dois diagramas referentes à construção de dois \acrshort{jwt}s sendo um deles assinado.
+Os \acrshort{jwt}s são construídos a partir de três elementos, o \textit{header} (objeto \acrshort{json} também conhecido por \acrshort{jose} \textit{header}), o \textit{payload} (objeto \acrshort{json}) e os dados de assinatura/encriptação (depende do algoritmo usado). Estes elementos são depois codificados em representações compactas (\texttt{Base64 URL-safe}\footnote{Variante da codificação \texttt{Base64} onde a codificação gerada é segura para ser usada em \textit{URL}s. Basicamente para a codificação \texttt{Base64} gerada substitui os caracteres '+' e '/' pelos caracteres '-' e '\_' respetivamente. Além disso, remove o caractere de \textit{padding} e proíbe separadores de linha}). As codificações \texttt{Base64 URL-safe} de cada elemento são depois concatenadas através de pontos dando origem a uma representação final compacta do \acrshort{jwt} (\textit{JWS/JWE Compact Serialization}). Na secção~\ref{sec:criacaojwt} está presente dois diagramas referentes à construção de dois \acrshort{jwt}s sendo um deles assinado.
 
 \begin{figure}[H]
     \centering
@@ -147,7 +147,7 @@ De seguida vamos aprofundar cada elemento referido:
 
     O cabeçalho (a vermelho na figura~\ref{fig:exemjwt}) consiste nos seguintes atributos:
     \begin{itemize}
-        \item O atributo obrigatório (único campo obrigatório para o caso de um \acrshort{jwt} não encriptado) \texttt{alg} (algorítmo) onde é indicado que algoritmo é usado para assinar e/ou desencriptar. O seu valor pode ser por exemplo HS256 (\acrshort{hmac} com o auxilio do SHA-256\footnote{Função pertencente ao conjunto de funções \textit{hash} criptográficas \acrfull{sha2} desenhadas pela \acrshort{nsa}}) ou \acrshort{rsa}.
+        \item O atributo obrigatório (único campo obrigatório para o caso de um \acrshort{jwt} não encriptado) \texttt{alg} (algoritmo) onde é indicado que algoritmo é usado para assinar e/ou desencriptar. O seu valor pode ser por exemplo HS256 (\acrshort{hmac} com o auxilio do SHA-256\footnote{Função pertencente ao conjunto de funções \textit{hash} criptográficas \acrfull{sha2} desenhadas pela \acrshort{nsa}}) ou \acrshort{rsa}.
         \item O atributo opcional \texttt{typ} (tipo do \textit{token}) em que o seu valor é ``JWT''. Serve apenas para distinguir os \acrshort{jwt}s de outros objetos que têm um \acrshort{jose} \textit{header}.
         \item O atributo opcional \texttt{cty} (tipo do conteúdo (\textit{payload})). Se o \textit{payload} conter atributos arbitrários este atributo não deve ser colocado. Caso o \textit{payload} seja um \acrshort{jwt}\footnote{\acrshort{jwt} aninhado (\textit{nested \acrshort{jwt}})} então este atributo deve ter o valor de ``JWT''.
     \end{itemize}
@@ -198,7 +198,7 @@ De seguida vamos aprofundar cada elemento referido:
 
 \subsection{Criação de \acrshort{jwt}/\acrshort{jws}}\label{sec:criacaojwt}
 
-Na figura~\ref{fig:buildJWT} é apresentada a construção de um \acrshort{jwt} em que o atributo \texttt{alg} (algorítmo) tem o seu valor igual a \texttt{none}, ou seja, o \acrshort{jwt} não é assinado nem encriptado.
+Na figura~\ref{fig:buildJWT} é apresentada a construção de um \acrshort{jwt} em que o atributo \texttt{alg} (algoritmo) tem o seu valor igual a \texttt{none}, ou seja, o \acrshort{jwt} não é assinado nem encriptado.
 
 \begin{figure}[H]
     \begin{center}
@@ -220,7 +220,7 @@ Já na figura~\ref{fig:buildJWS} é demonstrada a construção de um \acrshort{j
 
 Algumas alternativas ao \acrshort{jwt} passam pelo uso de \acrfull{swt} ou \acrfull{saml}. Se compararmos o \acrshort{jwt} ao \acrshort{saml}, o \acrshort{json} é menos verboso que o \acrshort{xml} e mesmo quando codificado o seu tamanho é menor. 
 
-De um ponto de vista de segurança o \acrshort{swt} apenas pode ser assinado simetricamente por um segredo partilhado usando o algoritmo \acrshort{hmac}. Já o \acrshort{jwt} e o \acrshort{saml} podem usar pares de chaves pública/privada para assinar. Contudo assinar \acrshort{xml} com \textit{\acrshort{xml} Digital Signature} sem introduzir buracos de segurança é mais dificil quando comparado com a simplicidade de assinar \acrshort{json}.~\cite{jwtio}
+De um ponto de vista de segurança o \acrshort{swt} apenas pode ser assinado simetricamente por um segredo partilhado usando o algoritmo \acrshort{hmac}. Já o \acrshort{jwt} e o \acrshort{saml} podem usar pares de chaves pública/privada para assinar. Contudo assinar \acrshort{xml} com \textit{\acrshort{xml} Digital Signature} sem introduzir buracos de segurança é mais difícil quando comparado com a simplicidade de assinar \acrshort{json}.~\cite{jwtio}
 
 Houve contudo algumas bibliotecas de \acrshort{jwt} com vulnerabilidades devido ao atributo \texttt{alg} da \textit{header} do \acrshort{jwt}. Havia duas situações de vulnerabilidade:
 \begin{itemize}
@@ -257,7 +257,7 @@ Na \textit{header} \textit{Authorization} irá ser usado o esquema de autentica�
     \item Caso seja uma Chave \acrshort{api} é:\newline
         \verb|apikey <Chave API>|
 \end{itemize}
-ao invés do esquema de autenticação predefenido do \textit{Bearer}: \verb|Bearer <token/Chave API>|
+ao invés do esquema de autenticação predefinido do \textit{Bearer}: \verb|Bearer <token/Chave API>|
 
 Convém referir que a Chave \acrshort{api} é também um \textit{token}. A divisão entre utilizadores e chaves \acrshort{api} permite uma mais fácil gestão dos \textit{tokens} recebidos pela \acrshort{api} bem como usar duas formas diferentes de os gerar/verificar com o possível benefício de melhorar a segurança da \acrshort{api}.
 
@@ -497,7 +497,7 @@ O \textit{Swagger} é um ecossistema de ferramentas para desenvolver \acrshort{a
 
 Até 2015 o \textit{Swagger} consistia numa especificação e num ecossistema de ferramentas para implementar a especificação. Em 2015 a fundadora do \textit{Swagger}, \textit{SmartBear Software}, doou a especificação \textit{Swagger} para a \textit{Linux Foundation} e renomeou a especificação para \acrlong{oas}.~\cite{wiswagger}
 
-A especificação \textit{OpenAPI} é agora desenvolvida pela \textit{OpenAPI Initiative} que envolve várias empresas tecnológias entre as quais \textit{Microsoft}, \textit{Google}, \textit{IBM} e a fundadora \textit{Smartbear Software}.
+A especificação \textit{OpenAPI} é agora desenvolvida pela \textit{OpenAPI Initiative} que envolve várias empresas tecnológicas entre as quais \textit{Microsoft}, \textit{Google}, \textit{IBM} e a fundadora \textit{Smartbear Software}.
 
 Já o conjunto de ferramentas \textit{Swagger} inclui ferramentas \textit{open-source}, gratuitas e comerciais que podem ser usadas em diferentes estágios do ciclo de vida de uma \acrshort{api}, que inclui documentação, desenho, testes e \textit{deployment}. Algumas das ferramentas são:~\cite{swaggerVSoas}
 \begin{itemize}
@@ -505,7 +505,7 @@ Já o conjunto de ferramentas \textit{Swagger} inclui ferramentas \textit{open-s
     \item \textbf{\textit{Swagger \acrshort{ui}}}: Coleção de \textit{assets} \textit{\acrshort{html}}, \textit{JavaScript} e \textit{\acrshort{css}} que geram dinamicamente documentação a partir de uma especificação \textit{OpenAPI} de uma \acrshort{api}
     \item \textbf{\textit{Swagger Codegen}}: Permite a geração de bibliotecas cliente (geração de \acrshort{sdk}), \textit{server stubs} e documentação automática a partir de especificações \textit{OpenAPI}
     \item \textbf{\textit{Swagger Inspector}} (gratuita): Ferramenta de testes de \acrshort{api}s que permite validar as \acrshort{api}s e gerar definições \textit{OpenAPI} de \acrshort{api}s existentes
-    \item \textbf{\textit{SwaggerHub}} (gratuita e comercial): Desenho e documentação de \acrshort{api}s, construido para equipas que trabalham com \textit{OpenAPI}
+    \item \textbf{\textit{SwaggerHub}} (gratuita e comercial): Desenho e documentação de \acrshort{api}s, construído para equipas que trabalham com \textit{OpenAPI}
 \end{itemize}
 
 O \textit{Swagger} possui duas abordagens:~\cite{swaggerNode}
@@ -528,7 +528,7 @@ O primeiro passo é escolher a versão da especificação \textit{OpenAPI} que i
 openapi: 3.0.0
 \end{lstlisting}
 
-Depois na secção \texttt{info} é possivel descrever um pouco sobre a \acrshort{api} que estamos a documentar, indicando o título, a descrição e a versão da \acrshort{api}. As propriedades \texttt{title} e \texttt{version} são obrigatórias. É possível também colocar informação sobre os contactos disponíveis, termos de uso e a licença:\footnote{Ver mais em \url{https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md\#infoObject}}
+Depois na secção \texttt{info} é possível descrever um pouco sobre a \acrshort{api} que estamos a documentar, indicando o título, a descrição e a versão da \acrshort{api}. As propriedades \texttt{title} e \texttt{version} são obrigatórias. É possível também colocar informação sobre os contactos disponíveis, termos de uso e a licença:\footnote{Ver mais em \url{https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md\#infoObject}}
 \begin{lstlisting}[language=yaml, caption={Exemplo de secção \texttt{info} indicando título, descrição e versão da \acrshort{api} na especificação \textit{OpenAPI}}]
 info:
   title: CLAV API
@@ -627,7 +627,7 @@ Como já exemplificado no exemplo~\ref{exem:oapiRota} os parâmetros de uma rota
     \item Parâmetros no cabeçalho da \textit{Cookie}: A propriedade \texttt{in} tem o valor de \textit{cookie}.
 \end{itemize}
 
-Cada parâmetro tem várias propriedades que permitem definí-lo:\footnote{Mais detalhes em \url{https://swagger.io/docs/specification/describing-parameters/}}
+Cada parâmetro tem várias propriedades que permitem defini-lo:\footnote{Mais detalhes em \url{https://swagger.io/docs/specification/describing-parameters/}}
 \begin{itemize}
     \item \texttt{required}: Indica se o parâmetro é obrigatório ou opcional. Possíveis valores são \textit{true} ou \textit{false}.
     \item Na propriedade \texttt{schema}:
@@ -652,10 +652,10 @@ O \textit{request body} é definido em cada rota na secção \texttt{requestBody
 \end{itemize}
 
 \subsubsection{Respostas}
-Nesta seccção, propriedade \texttt{responses} de cada rota, é descrita as possíveis respostas de cada rota. Na propriedade será definido as várias respostas, uma resposta por cada \acrshort{http} \textit{status code} possível de ser devolvido pela rota. Cada resposta pode possuir as seguintes propriedades:\footnote{Mais detalhes em \url{https://swagger.io/docs/specification/describing-responses/}}
+Nesta secção, propriedade \texttt{responses} de cada rota, é descrita as possíveis respostas de cada rota. Na propriedade será definido as várias respostas, uma resposta por cada \acrshort{http} \textit{status code} possível de ser devolvido pela rota. Cada resposta pode possuir as seguintes propriedades:\footnote{Mais detalhes em \url{https://swagger.io/docs/specification/describing-responses/}}
 \begin{itemize}
     \item \texttt{description}: Obrigatório, descrição da resposta
-    \item \texttt{content}: Opcional, semelhante ao \texttt{content} do \textit{request body} e define o contéudo que é devolvido.
+    \item \texttt{content}: Opcional, semelhante ao \texttt{content} do \textit{request body} e define o conteúdo que é devolvido.
     \item \texttt{headers}: Opcional, define as \textit{headers} que são devolvidas na resposta
 \end{itemize}
 
@@ -696,7 +696,7 @@ Nesta secção será demonstrada como se pode adicionar a autenticação e autor
     \item \textit{OpenID Connect Discovery} (\texttt{type} = \texttt{openIdConnect})
 \end{itemize}
 
-Após definir os esquemas de segurança é necessário aplicá-los nas rotas que devem estar protegidas por esses esquemas. Paral tal em cada rota pode ser definida a propriedade \texttt{security} e indicar os esquemas de segurança que essa rota suporta.\footnote{Mais detalhes em \url{https://swagger.io/docs/specification/authentication/}}
+Após definir os esquemas de segurança é necessário aplicá-los nas rotas que devem estar protegidas por esses esquemas. Para tal em cada rota pode ser definida a propriedade \texttt{security} e indicar os esquemas de segurança que essa rota suporta.\footnote{Mais detalhes em \url{https://swagger.io/docs/specification/authentication/}}
 
 \subsubsection{Alternativas}
 Em termos de alternativas à especificação \textit{OpenAPI} existem duas concorrentes: \textit{\acrshort{raml}}\footnote{Ver \url{https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md/}} e \textit{\acrshort{api} Blueprint}\footnote{Ver \url{https://github.com/apiaryio/api-blueprint/blob/master/API\%20Blueprint\%20Specification.md}}.
@@ -756,7 +756,7 @@ Comparemos as três hipóteses:~\cite{specsComp}
     \caption{Comparação entre especificações de documentação de \acrshort{api}s}
 \end{table}
 
-Além das vantages apresentadas as três são \textit{open-source}. Para além disso, o \textit{OpenAPI} pode ser escrito em \acrshort{json} ou \acrshort{yaml}, o \acrshort{raml} é escrito em \acrshort{yaml} e o \textit{\acrshort{api} Blueprint} é escrito em \textit{Markdown}. Escolheu-se a especificação \textit{OpenAPI} devido à sua grande adoção e por permitir usar o ecossistema de ferramentas \textit{Swagger}.
+Além das vantagens apresentadas as três são \textit{open-source}. Para além disso, o \textit{OpenAPI} pode ser escrito em \acrshort{json} ou \acrshort{yaml}, o \acrshort{raml} é escrito em \acrshort{yaml} e o \textit{\acrshort{api} Blueprint} é escrito em \textit{Markdown}. Escolheu-se a especificação \textit{OpenAPI} devido à sua grande adoção e por permitir usar o ecossistema de ferramentas \textit{Swagger}.
 
 \subsection{\textit{Swagger \acrshort{ui}}}
 
@@ -1009,7 +1009,7 @@ Para a primeira parte foi necessário desenvolver dois conversores, de \acrshort
 \subsection{\acrshort{xml}}
 O conversor de \acrshort{json} para \acrshort{xml} criado é representado pelo algoritmo presente no anexo~\ref{exem:convXML}.
 
-Com este algoritmo, os dados exportados estarão sempre encapsolados na \textit{tag} \texttt{root} por forma a garantir que só existe um elemento \textit{root} no documento \acrshort{xml} gerado respeitando as regras do \acrshort{xml}. Cada tipo de dados do \acrshort{json} é convertido da seguinte forma:
+Com este algoritmo, os dados exportados estarão sempre encapsulados na \textit{tag} \texttt{root} por forma a garantir que só existe um elemento \textit{root} no documento \acrshort{xml} gerado respeitando as regras do \acrshort{xml}. Cada tipo de dados do \acrshort{json} é convertido da seguinte forma:
 \begin{itemize}
     \item \textit{string}: Mantém-se igual tirando os caracteres ``\texttt{<}'', ``\texttt{>}'', ``\texttt{\&}'', ``\texttt{'}'' e ``\texttt{"}'' que são convertidos para a \textit{Entity Reference}\footnote{``\texttt{<}'' para ``\texttt{\&lt;}'', ``\texttt{>}'' para ``\texttt{\&gt;}'', ``\texttt{\&}'' para ``\texttt{\&amp;}'', ``\texttt{'}'' para ``\texttt{\&apos;}'' e ``\texttt{"}'' para ``\texttt{\&quot;}''} correspondente
     \item \textit{number}: Mantém-se igual
@@ -1025,7 +1025,7 @@ Apresenta-se no anexo~\ref{conv:jsonTOxml} uma conversão exemplo.
 
 Da mesma forma que o \acrshort{xml}, o \acrshort{csv} é convertido sem recurso a uma biblioteca que converta já de si o \acrshort{json} para \acrshort{csv} visto que cada objeto \acrshort{json} a exportar necessita de uma exportação personalizada para \acrshort{csv}. Ao contrário do conversor desenvolvido para \acrshort{xml}, o conversor para \acrshort{csv} não converte qualquer objeto para \acrshort{csv} mas apenas um conjunto restrito de objetos \acrshort{json}.
 
-O algorítmo de conversão de \acrshort{json} para \acrshort{csv} desenvolvido pode ser visualizado no anexo~\ref{exem:convCSV}.
+O algoritmo de conversão de \acrshort{json} para \acrshort{csv} desenvolvido pode ser visualizado no anexo~\ref{exem:convCSV}.
 
 O conjunto de objetos permitidos é lista de classes, de entidades, de tipologias e de legislações e objeto de classe, de entidade, de tipologia e de legislação.
 
@@ -1063,11 +1063,11 @@ Assim, o \textit{GraphDB} possui uma \acrshort{rest} \acrshort{api} do servidor 
 \end{verbatim}
 indicando no cabeçalho \acrshort{http} \textit{Accept} o formato de serialização \acrshort{rdf}\footnoteref{fnRDF} de saída (\textit{\acrshort{mime} type}\footnote{\textit{Standard} que indica a natureza e o formato de um documento, ficheiro ou conjunto de \textit{bytes}. Ver \href{https://tools.ietf.org/html/rfc6838}{RFC 6838}}) dos triplos. Dos vários formatos de serialização \acrshort{rdf} serão apenas suportados (acessíveis) na \acrshort{clav}, como já indicado, o \acrshort{turtle} (\texttt{text/turtle}), o \acrshort{json-ld} (\texttt{application/ld+json}) e o \acrshort{rdf}/\acrshort{xml} (\texttt{application/rdf+xml}).
 
-Apesar da facilidade de exportação da ontologia estes pedidos de exportação originam um grande consumo de recursos de \textit{hardware} por parte do \textit{GraphDB} visto que cada pedido devolve todos os triplos de uma \acrshort{bd} (a atual \acrshort{bd} da \acrshort{clav} possui já cerca de 150 000 triplos explicitos e cerca de 85 000 triplos implicitos) para além da conversão necessária desses triplos para o formato de serialização \acrshort{rdf} de saída. Deve-se então limitar o número de pedidos de exportação realizados ao \textit{GraphDB}. Para tal irá ser usado o seguinte mecanismo de controlo/\textit{cache}:
+Apesar da facilidade de exportação da ontologia estes pedidos de exportação originam um grande consumo de recursos de \textit{hardware} por parte do \textit{GraphDB} visto que cada pedido devolve todos os triplos de uma \acrshort{bd} (a atual \acrshort{bd} da \acrshort{clav} possui já cerca de 150 000 triplos explícitos e cerca de 85 000 triplos implícitos) para além da conversão necessária desses triplos para o formato de serialização \acrshort{rdf} de saída. Deve-se então limitar o número de pedidos de exportação realizados ao \textit{GraphDB}. Para tal irá ser usado o seguinte mecanismo de controlo/\textit{cache}:
 
 \begin{itemize}
     \item Os ficheiros exportados são mantidos pela \acrshort{api} da \acrshort{clav}
-    \item Mantém-se dois ficheiros por cada serialização \acrshort{rdf}, um com os triplos explicitos e outro com os triplos explicitos e implicitos.
+    \item Mantém-se dois ficheiros por cada serialização \acrshort{rdf}, um com os triplos explícitos e outro com os triplos explícitos e implícitos.
     \item Se o ficheiro pretendido não existe na \acrshort{api} da \acrshort{clav} realiza-se o pedido de exportação ao \textit{GraphDB}
     \item Se o ficheiro pretendido existe na \acrshort{api} da \acrshort{clav} mas não é atualizado há sete dias realiza-se o pedido de exportação ao \textit{GraphDB}
     \item Se o ficheiro pretendido existe na \acrshort{api} da \acrshort{clav} e foi atualizado há menos de sete dias devolve-se ao utilizador o ficheiro guardado na \acrshort{api} da \acrshort{clav}
@@ -1080,7 +1080,7 @@ Assim, respeitando todas estas restrições, são mantidas pela \acrshort{api} d
 \subsection{Exportação na \acrshort{api} de dados}
 Nesta secção será explicado de que forma será possível exportar os dados da \acrshort{api}. Para tal definiu-se a \textit{query string} \texttt{fs} (formato de saída) onde é possível indicar claro está o formato de saída. Esta \textit{query string} estará presente nas rotas onde será possível exportar os dados. Para além disso, nestas rotas também se pode indicar o formato de saída através do cabeçalho \texttt{Accept}.
 
-De sequida são apresentadas as rotas onde é possível realizar exportação, os formatos de saída disponíveis para cada rota bem como os valores a usar de forma a obter uma exportação nesse formato:
+De seguida são apresentadas as rotas onde é possível realizar exportação, os formatos de saída disponíveis para cada rota bem como os valores a usar de forma a obter uma exportação nesse formato:
 \begin{table}[H]
     \footnotesize
     \begin{center}
