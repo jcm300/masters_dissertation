@@ -1,0 +1,127 @@
+% example for dissertation.sty
+\documentclass[
+  % Replace oneside by twoside if you are printing your thesis on both sides
+  % of the paper, leave as is for single sided prints or for viewing on screen.
+  oneside,
+  %twoside,
+  11pt, a4paper,
+  footinclude=true,
+  headinclude=true,
+  cleardoublepage=empty
+]{scrbook}
+
+\usepackage{dissertation}
+
+% ----------------------------------------------------------------
+
+% Title
+\titleA{CLAV:}
+\titleB{API de dados e Autenticação} % (if any)
+\subtitleA{Relatório de Pré-Dissertação}
+%\subtitleB{Second part of Subtitle} % (if any)
+
+% Author
+\author{José Carlos Lima Martins}
+
+% Supervisor(s)
+\supervisor{José Carlos Leite Ramalho}
+%\cosupervisor{The cosupervisor of the thesis}
+
+% University (uncomment if you need to change default values)
+% \def\school{Escola de Engenharia}
+% \def\department{Departamento de Inform\'{a}tica}
+% \def\university{Universidade do Minho}
+% \def\masterdegree{Computer Science}
+
+% Date
+\date{\myear} % change to text if date is not today
+
+% Keywords
+%\keywords{master thesis}
+
+% Glossaries & Acronyms
+\makeglossaries{}  %  either use this ...
+%\makeindex	   % ... or this
+
+% Define Acronyms
+\input{chapters/glossary_acronyms}
+%\glsaddall[types={\acronymtype}]
+
+\ummetadata{} % add metadata to the document (author, publisher, ...)
+
+\begin{document}
+	% Cover page ---------------------------------------
+    \umfrontcover{}
+    \umtitlepage{}
+	
+	% Add acknowledgements ----------------------------
+	\chapter*{Agradecimentos}
+    \import{chapters/}{01_agradecimentos.tex}
+
+    \chapter*{Direitos de Autor e Condições de Utilização do Trabalho por Terceiros}
+    \import{chapters/}{01_01_direitosDeAutor.tex}
+
+    \chapter*{Declaração de Integridade}
+    \import{chapters/}{01_02_declaracaoDeIntegridade.tex}
+
+	% Add abstracts (en,pt) ---------------------------
+	\chapter*{Abstract}
+    \import{chapters/}{02_resumoEN.tex}
+	
+    \cleardoublepage{}
+	\chapter*{Resumo}
+    \import{chapters/}{03_resumoPT.tex}
+	
+	% Summary Lists ------------------------------------
+	\tableofcontents
+	\listoffigures
+	\listoftables
+	\lstlistoflistings
+	%\listofabbreviations
+    \printglossary[]
+    \printglossary[type=\acronymtype, title=Lista de Acrónimos]
+	
+	\pagenumbering{arabic}
+	
+	% CHAPTER - Introduction -------------------------
+    \chapter{Introdução}
+    \import{chapters/}{04_introducao.tex}
+
+	% CHAPTER - State of the Art ---------------------
+	\chapter{Estado da Arte}
+    \import{chapters/}{05_estado_da_arte.tex}
+
+	% CHAPTER - Problem and Challenges ---------------
+	%\chapter{O problema e os seus desafios}
+    %\import{chapters/}{06_problemas_e_desafios.tex}
+
+	% CHAPTER - Contribution -------------------------
+	%\chapter{Desenvolvimento}
+    %\import{chapters/}{07_desenvolvimento.tex}
+		
+	% CHAPTER - Application -------------------------
+	%\chapter{Casos de Estudo / Experiências}
+    %\import{chapters/}{08_aplicacao.tex}
+
+	% CHAPTER - Conclusion/Future Work --------------
+	\chapter{Conclusões e Trabalho Futuro}
+    \import{chapters/}{09_conclusao.tex}
+			
+	\bookmarksetup{startatroot} % Ends last part.
+	\addtocontents{toc}{\bigskip} % Making the table of contents look good.
+	%\cleardoublepage
+
+	%- Bibliography (needs bibtex) -%
+	\bibliography{dissertation}
+
+	% Index of terms (needs  makeindex) -------------
+	%\printindex
+	
+	% APPENDIX --------------------------------------
+	\umappendix{Appendix}
+    \import{chapters/}{10_apendice.tex}
+	
+	% Back Cover -------------------------------------------
+	%\umbackcover{\import{chapters/}{11_back_cover.tex}}
+
+\end{document}

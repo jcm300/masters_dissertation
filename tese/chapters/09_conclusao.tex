@@ -1,0 +1,15 @@
+%Conclusions and future work.
+%\section{Conclusions}
+%\section{Prospect for future work}
+
+Esta dissertação tem vários objetivos distintos pelo que, nesta pré-dissertação, foram aprofundados vários temas diferentes. Temas estes que variam entre a proteção da \acrshort{api}, à exportação de dados e até à documentação desta \acrshort{api}.
+
+Por forma a perceber o estado atual do projeto \acrshort{clav}, foram inicialmente apresentados os pontos mais importantes da \acrshort{clav} referentes aos objetivos desta dissertação.
+
+De seguida, foi introduzida a noção de \acrshort{jwt}s e de \acrshort{jws}s, com os quais será realizada a proteção da \acrshort{api}. Além disso, foi feita uma pequena introdução ao \texttt{Autenticação.gov} com o objetivo de preparar o desenvolvimento do mecanismo de autenticação com recurso à \acrlong{cmd}.
+
+Com o intuito de explicitar como será realizada a documentação da \acrshort{api}, foi introduzida a especificação \textit{OpenAPI} e o \textit{Swagger \acrshort{ui}}, bem como as suas alternativas.
+
+Ao fim desta introdução, foi aprofundado o processo de exportação da informação da \acrshort{api} da \acrshort{clav} para os vários formatos de saída que serão suportados.
+
+Em termos de trabalho futuro, o mesmo passará por explorar o tema da \textit{\acrshort{api} Gateway}, permitindo avaliar se esta possibilitará a simplificação da comunicação entre utilizadores/interface e a \acrshort{api} de dados. Por outro lado, este trabalho passará ainda por melhorar a documentação existente, com a introdução de mais exemplos e melhorando as descrições já presentes. Para além disso, será alterado o algoritmo usado na verificação dos \acrshort{jws}s, mudando de \texttt{HS256} (\acrshort{hmac} com o auxílio do \texttt{SHA-256}), que usa um segredo, para o \acrshort{rsa}, que usa um par de chaves pública/privada. Será também adicionada a possibilidade de autenticação pelo \texttt{Autenticação.gov}, com recurso ao certificado digital \acrlong{cmd}. Serão ainda implementados alguns mecanismos em falta, como o \textit{refresh} de \textit{caches} e o \textit{backup} da informação da plataforma. Finalmente será realizada a integração da \acrshort{clav} no \acrshort{iap}.
