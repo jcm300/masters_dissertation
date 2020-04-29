@@ -1,0 +1,209 @@
+\section{Exportação de dados}
+
+Apesar das diferentes bibliotecas referidas na secção~\ref{sec:soa}, estas não permitem exportar apenas o que pretendemos nem o texto que se pretende dependendo da chave.
+
+Como tal, foram desenvolvidos dois conversores, de \acrshort{json} para \acrshort{xml} e de \acrshort{json} para \acrshort{csv} que se apresenta de seguida.
+
+\subsection{\acrshort{xml}}
+O conversor de \acrshort{json} para \acrshort{xml} possui a seguinte especificação:
+
+\begin{itemize}
+    \item Os dados exportados devem ser encapsulados com a \textit{tag} \texttt{root} por forma a garantir que só existe um elemento \textit{root} no documento \acrshort{xml} gerado respeitando as regras do \acrshort{xml}
+    \item Para cada tipo de dados do \acrshort{json} deve ser convertido da seguinte forma:
+    \begin{itemize}
+        \item \textit{string}: Manter-se igual tirando os caracteres ``\texttt{<}'', ``\texttt{>}'', ``\texttt{\&}'', ``\texttt{'}'' e ``\texttt{"}'' que devem ser convertidos para a \textit{Entity Reference}\footnote{``\texttt{<}'' para ``\texttt{\&lt;}'', ``\texttt{>}'' para ``\texttt{\&gt;}'', ``\texttt{\&}'' para ``\texttt{\&amp;}'', ``\texttt{'}'' para ``\texttt{\&apos;}'' e ``\texttt{"}'' para ``\texttt{\&quot;}''} correspondente
+        \item \textit{number}: Manter-se igual
+        \item \textit{boolean}: Manter-se igual
+        \item \textit{null}: Origina uma \textit{string} vazia
+        \item \textit{array}: Cada item do \textit{array} deve ser encapsulado numa \textit{tag} \texttt{item} que possui um atributo \texttt{index} que indica a posição do elemento no \textit{array} e um atributo \texttt{type} que indica o tipo do elemento do \textit{array}. O tipo pode ser \textit{number}, \textit{boolean}, \textit{string}, \textit{array} ou \textit{object}.
+        \item \textit{object}: Para cada propriedade deve ser criado uma \textit{tag} com valor igual à chave da propriedade e ao valor da propriedade deve ser aplicado recursivamente uma das transformações desta lista. Esta \textit{tag} deve ter um atributo \texttt{type} em que o seu valor, tal como nos \textit{arrays}, pode ser \textit{number}, \textit{boolean}, \textit{string}, \textit{array} ou \textit{object}.
+    \end{itemize}
+\end{itemize}
+
+\subsection{\acrshort{csv}}
+
+Da mesma forma que o \acrshort{xml}, o \acrshort{csv} é convertido sem recurso a uma biblioteca que converta já de si o \acrshort{json} para \acrshort{csv} visto que cada objeto \acrshort{json} a exportar necessita de uma exportação personalizada para \acrshort{csv}. Ao contrário do conversor desenvolvido para \acrshort{xml}, o conversor para \acrshort{csv} não converte qualquer objeto para \acrshort{csv} mas apenas um conjunto restrito de objetos \acrshort{json}.
+
+O conversor a desenvolver possui a seguinte especificação:
+\begin{itemize}
+    \item O conjunto de objetos permitidos é lista de classes, de entidades, de tipologias e de legislações e objeto de classe, de entidade, de tipologia e de legislação.
+    \item A conversão das listas de classes, de entidades, de tipologias e de legislações deve ser a presença dos títulos na primeira linha e depois um elemento por linha.
+    \item Todos os valores das propriedades tem de ser encapsolados com aspas (\verb|"|)
+    \item Os valores de uma linha devem ser concatenados com ponto e vírgula (\verb|;|)
+    \item As linhas devem ser concatenadas com nova linha (\verb|\n|)
+    \item Caso o valor de uma propriedade a converter seja uma lista, a conversão a realizar irá depender da propriedade e do objeto que está a ser convertido: 
+    \begin{itemize}
+        \item Num objeto Classe:
+        \begin{itemize}
+            \item Propriedade `notasAp':
+            \begin{itemize}
+                \item Título: Notas de aplicação \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `nota' de cada elemento da lista
+            \end{itemize}
+            \item Propriedade `exemplosNotasAp':
+            \begin{itemize}
+                \item Título: Exemplos de NA \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `exemplo' de cada elemento da lista
+            \end{itemize}
+            \item Propriedade `notasEx':
+            \begin{itemize}
+                \item Título: Notas de exclusão \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `nota' de cada elemento da lista
+            \end{itemize}
+            \item Propriedade `termosInd':
+            \begin{itemize}
+                \item Título: Termos Indice \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `termo' de cada elemento da lista
+            \end{itemize}
+            \item Propriedade `donos':
+            \begin{itemize}
+                \item Título: Donos do processo \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `sigla' de cada elemento da lista
+            \end{itemize}
+            \item Propriedade `participantes', gera duas colunas no \acrshort{csv}:
+            \begin{itemize}
+                \item Título: Participante no processo \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `sigla' de cada elemento da lista
+                \item Título: Tipo de intervenção do participante \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `participLabel' de cada elemento da lista
+            \end{itemize}
+            \item Propriedade `processosRelacionados', gera três colunas no \acrshort{csv}:
+            \begin{itemize}
+                \item Título: Código do processo relacionado \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `codigo' de cada elemento da lista
+                \item Título: Título do processo relacionado \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `titulo' de cada elemento da lista
+                \item Título: Tipo de relação entre processos \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `idRel' de cada elemento da lista
+            \end{itemize}
+            \item Propriedade `legislacao', gera duas colunas no \acrshort{csv}:
+            \begin{itemize}
+                \item Título: Diplomas jurídico-administrativos REF Ids \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `idLeg' de cada elemento da lista
+                \item Título: Diplomas jurídico-administrativos REF Títulos \\
+                      Valor: Cada elemento da lista é mapeado para a concatenação da propriedade `tipo' com a propriedade `numero' com um espaço entre as duas propriedades; Concatenação por \verb|#\n| do mapeamento de cada elemento da lista
+            \end{itemize}
+            \item Propriedade `filhos': cada elemento deve ser convertido como se tratasse de um objeto classe; Deve ser ignorado os títulos gerados, mantendo apenas os valores numa nova linha do \acrshort{csv}
+        \end{itemize}
+        \item Num objeto Entidade:
+        \begin{itemize}
+            \item Propriedade `dono':
+            \begin{itemize}
+                \item Título: Dono no processo \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `codigo' de cada elemento da lista
+            \end{itemize}
+            \item Propriedade `participante', gera duas colunas no \acrshort{csv}:
+            \begin{itemize}
+                \item Título: Participante no processo \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `codigo' de cada elemento da lista
+                \item Título: Tipo de intervenção no processo \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `tipoPar' de cada elemento da lista
+            \end{itemize}
+            \item Propriedade `tipologias':
+            \begin{itemize}
+                \item Título: Tipologias da entidade \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `sigla' de cada elemento da lista
+            \end{itemize}
+        \end{itemize}
+        \item Num objeto Tipologia:
+        \begin{itemize}
+            \item Propriedade `dono':
+            \begin{itemize}
+                \item Título: Dono no processo \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `codigo' de cada elemento da lista
+            \end{itemize}
+            \item Propriedade `participante', gera duas colunas no \acrshort{csv}:
+            \begin{itemize}
+                \item Título: Participante no processo \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `codigo' de cada elemento da lista
+                \item Título: Tipo de intervenção no processo \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `tipoPar' de cada elemento da lista
+            \end{itemize}
+        \end{itemize}
+        \item Num objeto Legislação:
+        \begin{itemize}
+            \item Propriedade `entidades':
+            \begin{itemize}
+                \item Título: Entidades \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `sigla' de cada elemento da lista
+            \end{itemize}
+            \item Propriedade `regula':
+            \begin{itemize}
+                \item Título: Regula processo \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `codigo' de cada elemento da lista
+            \end{itemize}
+        \end{itemize}
+        \item Na propriedade `pca' de um objeto Classe:
+        \begin{itemize}
+            \item Propriedade `justificacao', gera duas colunas no \acrshort{csv}:
+            \begin{itemize}
+                \item Título: Critério PCA \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `tipoId' de cada elemento da lista
+                \item Título: ProcRefs/LegRefs PCA \\
+                      Valor: Cada elemento da lista é mapeado para a concatenação por \verb|#\n| da lista presente na propriedade `processos' ou na propriedade `legs' sendo a concatenação encapsolada por parênteses curvos; Concatenação por \verb|#\n| do mapeamento de cada elemento da lista               
+            \end{itemize}
+        \end{itemize}
+        \item Na propriedade `df' de um objeto Classe:
+        \begin{itemize}
+            \item Propriedade `justificacao', gera duas colunas no \acrshort{csv}:
+            \begin{itemize}
+                \item Título: Critério DF \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `tipoId' de cada elemento da lista
+                \item Título: ProcRefs/LegRefs DF \\
+                      Valor: Cada elemento da lista é mapeado para a concatenação por \verb|#\n| da lista presente na propriedade `processos' ou na propriedade `legs' sendo a concatenação encapsolada por parênteses curvos; Concatenação por \verb|#\n| do mapeamento de cada elemento da lista               
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+    \item Caso o valor de uma propriedade seja um objeto, as propriedades do objeto aninhado devem ser processadas como se tratassem de propriedades do objeto possuidor da propriedade com o objeto aninhado
+    \item Nos casos em que o valor não é uma lista nem um objeto deve ser mantido o valor (apenas encapsolado por \verb|"|) e associado o seguinte título:
+    \begin{itemize}
+        \item Num objeto Classe:
+        \begin{itemize}
+            \item Propriedade `codigo': Código
+            \item Propriedade `titulo': Título
+            \item Propriedade `descricao': Descrição
+            \item Propriedade `tipoProc': Tipo de processo
+            \item Propriedade `procTrans': Processo transversal (S/N)
+            \item Propriedade `dono': Dono
+            \item Propriedade `participante': Participante
+        \end{itemize}
+        \item Num objeto Entidade:
+        \begin{itemize}
+            \item Propriedade `sigla': Sigla
+            \item Propriedade `designacao': Designação
+            \item Propriedade `estado': Estado
+            \item Propriedade `sioe': ID SIOE
+            \item Propriedade `internacional': Internacional
+        \end{itemize}
+        \item Num objeto Tipologia:
+        \begin{itemize}
+            \item Propriedade `sigla': Sigla
+            \item Propriedade `designacao': Designação
+            \item Propriedade `estado': Estado
+        \end{itemize}
+        \item Num objeto Legislação:
+        \begin{itemize}
+            \item Propriedade `tipo': Tipo
+            \item Propriedade `numero': Número
+            \item Propriedade `data': Data
+            \item Propriedade `sumario': Sumário
+            \item Propriedade `fonte': Fonte
+            \item Propriedade `link': Link
+        \end{itemize}
+        \item Na propriedade `pca' de um objeto Classe:
+        \begin{itemize}
+            \item Propriedade `valores': Prazo de conservação administrativa
+            \item Propriedade `notas': Nota ao PCA
+            \item Propriedade `formaContagem': Forma de contagem do PCA
+            \item Propriedade `subFormaContagem': Sub Forma de contagem do PCA
+        \end{itemize}
+        \item Na propriedade `df' de um objeto Classe:
+        \begin{itemize}
+            \item Propriedade `valor': Destino Final
+            \item Propriedade `notas': Notas ao DF
+        \end{itemize}
+    \end{itemize}
+    \item Na exportação para Excel as concatenações \verb|#\n| devem ser apenas \verb|#|
+    \item As propriedades não referidas nesta especificação devem ser ignoradas
+\end{itemize}
+%TODO
