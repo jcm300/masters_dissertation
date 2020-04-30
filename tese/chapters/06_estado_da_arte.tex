@@ -766,11 +766,69 @@ A \acrshort{api} de dados já devolve a sua informação em \acrshort{json}. Por
 
 \subsection{\acrshort{xml}}
 
-\subsubsection{O que é \acrshort{xml}}
-%TODO
-TODO
+Comecemos por perceber o que é o \acrfull{xml}. Como se pode perceber pelo nome o \acrshort{xml} é uma linguagem \textit{Markup}, ou seja, uma linguagem que anota o texto para que a máquina possa manipular o texto de acordo com as anotações. O \acrshort{xml} foi desenhado para ser de fácil leitura tanto para humanos como para máquinas e tem como principal intuito o armazenamento e transporte de informação (o tal texto anotado). Além disso é extensível visto que permite que criemos as nossas tags.
 
-\subsubsection{Bibliotecas}
+\begin{lstlisting}[language=xml, caption=Pequeno exemplo em \acrshort{xml}]
+<?xml version = "1.0" encoding = "UTF-8"?>
+<pessoa>
+    <nome>Maria</nome>
+    <idade tipo="numero">23</idade>
+    <morada>
+        <pais>Portugal</pais>
+        <cidade>Braga</cidade>
+    </morada>
+    <altura unidade="cm">160</altura>
+    <!--Isto é um comentário-->
+</pessoa>
+\end{lstlisting}
+
+De seguida serão apresentadas, de forma simplificada, as regras de sintaxe aplicadas ao \acrshort{xml} para cada componente deste.
+
+\begin{itemize}
+    \item \textbf{Declaração \acrshort{xml}} \\
+    \verb|<?xml version = "1.0" encoding = "UTF-8"?>| \\
+    Opcional, especifica a versão do \acrshort{xml} e o encoding usado no documento
+    \begin{itemize}
+        \item A declaração é \textit{case-sensitive} pelo que deve começar obrigatoriamente por \texttt{xml}
+        \item Se presente no documento, a declaração tem de ser obrigatoriamente o primeiro componente
+    \end{itemize}
+    \item \textbf{Tags e elementos} \\
+    \verb|<nome>Maria</nome>| ou \verb|<semnome/>|
+    \begin{itemize}
+        \item Cada elemento tem de ser fechado seja por uma tag (tag final), ou como apresentado acima pela própria tag.
+        \item Os elementos \acrshort{xml} podem conter elementos filhos mas estes não se podem sobrepor, ou seja, uma tag final de um elemento tem de ter o mesmo nome que a última tag inicial ainda sem tag final. 
+        \item Um documento \acrshort{xml} apenas pode ter um elemento na raíz do documento (elemento \textit{root})
+        \item Os nomes das tags são \textit{case-sensitive}, portanto, a tag inicial e final de um elemento tem de ser exatamente iguais
+    \end{itemize}
+    \item \textbf{Atributos} \\
+    \verb|<altura unidade="cm">160</altura>| \\
+    onde `unidade' é o nome do atributo e `cm' é o valor do atributo. Um atributo especifica uma propriedade de um elemento
+    \begin{itemize}
+        \item Um elemento pode ter zero, um ou mais atributos
+        \item Os nomes dos atributos são \textit{case-sensitive}
+        \item Um atributo não pode ter dois valores num elemento, ou seja, não pode ser declarado duas ou mais vezes num mesmo elemento
+        \item Os nomes dos atributos não podem possuir aspas, mas os valores tem de ser encapsolados por aspas
+    \end{itemize}
+    \item \textbf{Referências \acrshort{xml}} \\
+    \verb|&amp;| ou \verb|&#65| \\
+    Há dois tipos de referências, Referências Entidade ou Referências Caractere. A primeira existe por forma a serem representadas por estas referências os caracteres não permitidos no texto anotado visto representarem parte da sintaxe do \acrshort{xml}.
+    \begin{center}
+        \begin{tabular}{|c|c|}
+            \hline
+            Caractere não permitido & Entidade \\ \hline
+            < & \&lt; \\ \hline
+            > & \&gt; \\ \hline
+            \& & \&amp; \\ \hline
+            ' & \&apos; \\ \hline
+            " & \&quot; \\ \hline
+        \end{tabular}
+    \end{center}
+    O segundo tipo de referências tem o mesmo intuito mas permite que seja representado qualquer caractere representável em \textit{Unicode}. O número que se segue ao hashtag é referente ao código decimal em \textit{Unicode}. Assim \verb|&#65| representa o caractere `A'.
+    \item \textbf{Texto anotado} \\
+    Espaços em branco, tabs, ou novas linhas, são ignoradas quando presentes entre elementos e entre atributos. Como já referido há caracteres reservados pelo que se pretende usá-los no texto anotado deve trocar esses caracteres pelas suas referências.
+\end{itemize}
+
+\subsubsection{Bibliotecas de conversão}
 
 Existe uma grande quantidade de conversores de \acrshort{json} para \acrshort{xml}. Por essa razão foram apenas aprofundadas as bibliotecas que em média são mais populares, com melhor qualidade e com mais manutenção segundo o \acrshort{npm}. Para tal, foram consideradas as seguintes bibliotecas:
 \begin{itemize}
