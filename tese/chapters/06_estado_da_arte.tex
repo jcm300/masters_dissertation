@@ -223,25 +223,6 @@ No projeto \acrshort{clav} o utilizador final é o utilizador da \acrshort{clav}
 %\section{mongoose}
 %procurar "semelhantes" para cada um
 
-%TODO
-%\section{Web Semântica}
-%~\cite{lsparql}
-
-%TODO
-%\subsection{RDF}
-%~\cite{lsparql}
-
-%TODO
-%\subsection{SPARQL}
-%~\cite{lsparql}
-
-%TODO
-%se calhar referir algumas packages de ligação ao sparql em vez de usar o que criei
-
-%TODO
-%\section{GraphDB}
-%procurar "semelhantes" para cada um (Neo4j)
-
 \section{Swagger}
 O \textit{Swagger} é um ecossistema de ferramentas para desenvolver \acrshort{api}s com a \acrfull{oas}.
 
@@ -768,7 +749,7 @@ A \acrshort{api} de dados já devolve a sua informação em \acrshort{json}. Por
 
 Comecemos por perceber o que é o \acrfull{xml}. Como se pode perceber pelo nome o \acrshort{xml} é uma linguagem \textit{Markup}, ou seja, uma linguagem que anota o texto para que a máquina possa manipular o texto de acordo com as anotações. O \acrshort{xml} foi desenhado para ser de fácil leitura tanto para humanos como para máquinas e tem como principal intuito o armazenamento e transporte de informação (o tal texto anotado). Além disso é extensível visto que permite que criemos as nossas tags.
 
-\begin{lstlisting}[language=xml, caption=Pequeno exemplo em \acrshort{xml}]
+\begin{lstlisting}[language=xml, caption=Pequeno exemplo em \acrshort{xml}, label=exem:xmlEx]
 <?xml version = "1.0" encoding = "UTF-8"?>
 <pessoa>
     <nome>Maria</nome>
@@ -830,62 +811,299 @@ De seguida serão apresentadas, de forma simplificada, as regras de sintaxe apli
 
 \subsubsection{Bibliotecas de conversão}
 
-Existe uma grande quantidade de conversores de \acrshort{json} para \acrshort{xml}. Por essa razão foram apenas aprofundadas as bibliotecas que em média são mais populares, com melhor qualidade e com mais manutenção segundo o \acrshort{npm}. Para tal, foram consideradas as seguintes bibliotecas:
+Nesta secção serão abordadas algumas bibliotecas de conversão de \acrshort{json} para \acrshort{xml}, aquelas com maior popularidade e adesão no \acrshort{npm}.
+
+Por forma a ter uma ideia do resultado devolvido por cada biblioteca será usado o seguinte exemplo:
+\begin{lstlisting}[language=json, caption=Exemplo em \acrshort{json} a converter, label=exem:jsonBib]
+[
+    {
+        "nome": "Maria",
+        "idade": "22",
+        "morada": {
+            "pais": "Portugal",
+            "cidade": "Braga"
+        }
+    },
+    {
+        "nome": "João",
+        "idade": "24",
+        "morada": {
+            "pais": "Portugal",
+            "cidade": "Vila Real"
+        }
+    }
+]
+\end{lstlisting}
+
+\paragraph{\href{https://www.npmjs.com/package/xml-js}{\texttt{xml-js}}} \mbox{} \\
+
+Esta biblioteca permite a conversão nos dois sentidos, ou seja, de \acrshort{json} para \acrshort{xml} e de \acrshort{xml} para \acrshort{json}.
+
+As principais características que esta biblioteca possui para uma conversão de \acrshort{json} para \acrshort{xml} são:
 \begin{itemize}
-    \item \href{https://www.npmjs.com/package/xml-js}{\texttt{xml-js}}: 50.3\% (41p+94q+16m)
-    \item \href{https://www.npmjs.com/package/jsontoxml}{\texttt{jsontoxml}}: 39.3\% (24p+91q+3m)
-    \item \href{https://www.npmjs.com/package/xmlbuilder}{\texttt{xmlbuilder}}: 52.7\% (63p+62q+33m)
-    \item \href{https://www.npmjs.com/package/easyxml}{\texttt{easyxml}}: 32.7\% (15p+83q+0m)
-    \item \href{https://www.npmjs.com/package/js2xmlparser}{\texttt{js2xmlparser}}: 46\% (42p+63q+33m)
-    \item \href{https://www.npmjs.com/package/fast-xml-parser}{\texttt{fast-xml-parser}}: 43\% (33p+63q+33m)
-    \item \href{https://www.npmjs.com/package/xml2js}{\texttt{xml2js}}: 50.3\% (77p+41q+33m)
-    \item \href{https://www.npmjs.com/package/jxon}{\texttt{jxon}}: 35.7 (16p+91q+0m)
-    \item \href{https://www.npmjs.com/package/jstoxml}{\texttt{jstoxml}}: 48.7\% (19p+94q+33m)
-    \item \href{https://www.npmjs.com/package/export-from-json}{\texttt{export-from-json}}: 31\% (7p+64q+22m)
+    \item Mantém a ordem dos elementos
+    \item Totalmente compatível com \acrshort{xml}
+    \item Reversível, é possível reverter o resultado para o original
+    \item Podem ser fornecidas funções personalizadas para processamento adicional para diferentes partes do \acrshort{xml} ou do \acrshort{json} a converter
 \end{itemize}
 
-Assim, serão de seguida aprofundadas as bibliotecas \texttt{xml-js}, \texttt{xmlbuilder} e \texttt{xml2js}.
+\begin{lstlisting}[language=xml, caption=Resultado da conversão do exemplo~\ref{exem:jsonBib} usando o conversor \texttt{xml-js}]
+<0>
+    <nome>Maria</nome>
+    <idade>22</idade>
+    <morada>
+        <pais>Portugal</pais>
+        <cidade>Braga</cidade>
+    </morada>
+</0>
+<1>
+    <nome>João</nome>
+    <idade>24</idade>
+    <morada>
+        <pais>Portugal</pais>
+        <cidade>Vila Real</cidade>
+    </morada>
+</1>
+\end{lstlisting}
 
-%TODO
-TODO
+\paragraph{\href{https://www.npmjs.com/package/xmlbuilder}{\texttt{xmlbuilder}}} \mbox{} \\
+
+A biblioteca tem como intuito principal a construção de documentos \acrshort{xml} através do uso de funções, como se pode comprovar de seguida:
+
+\begin{lstlisting}[language=javascript, caption=Código para a construção em \acrshort{xml} do exemplo~\ref{exem:xmlEx} usando o \texttt{xmlbuilder}]
+var builder = require('xmlbuilder');
+ 
+var xml = builder.create('pessoa')
+    .ele('nome', 'Maria')
+    .up()
+    .ele('idade', {'tipo': 'numero'}, '23')
+    .up()
+    .ele('morada')
+    .ele('pais', 'Portugal')
+    .up()
+    .ele('cidade', 'Braga')
+    .up()
+    .up()
+    .ele('altura', {'unidade': 'cm'}, '160')
+    .up()
+    .com('Isto é um comentário')
+    .end({ pretty: true});
+\end{lstlisting}
+
+Além disso, permite a geração do \acrshort{xml} a partir de um objeto \acrshort{json} o que permite, como tal, a conversão de \acrshort{json} para \acrshort{xml} que se necessita.
+
+\begin{lstlisting}[language=xml, caption=Resultado da conversão do exemplo~\ref{exem:jsonBib} usando o conversor \texttt{xmlbuilder}]
+<?xml version="1.0" encoding="utf-8"?>
+<nome>Maria</nome>
+<idade>22</idade>
+<morada>
+  <pais>Portugal</pais>
+  <cidade>Braga</cidade>
+</morada>
+<nome>João</nome>
+<idade>24</idade>
+<morada>
+  <pais>Portugal</pais>
+  <cidade>Vila Real</cidade>
+</morada>
+\end{lstlisting}
+
+Na construção do documento a partir de um objecto, quando se pretende que um elemento tenha um atributo, é necessário que o objeto para essa chave possua um objeto em vez de apenas o valor. Nesse objeto, as propriedades começadas por `@' indicam atributos (\verb|'@unidade':'cm'| onde `unidade' é o nome do atributo e `cm' é o valor do atributo) e a propriedade '\#text' representa o valor do elemento.
+
+Há também a possibilidade de sobescrever as funções usadas para escrever o documento \acrshort{xml} (funções de escrita dos elementos, comentários, etc) bem como as funções que convertem os valores (texto anotado, nome de elementos e atributos, etc).
+
+Por fim, convém referir que esta biblioteca já possui uma sucessora, \href{https://www.npmjs.com/package/xmlbuilder2}{\texttt{xmlbuilder2}}, que foi redesenhada por forma a estar em total conformidade com a especificação moderna do \acrshort{dom}.
+
+\paragraph{\href{https://www.npmjs.com/package/xml2js}{\texttt{xml2js}}} \mbox{} \\
+
+De igual forma como a biblioteca \texttt{xml-js}, esta biblioteca consegue converter de \acrshort{json} para \acrshort{xml} como de \acrshort{xml} para \acrshort{json}. 
+
+\begin{lstlisting}[language=xml, caption=Resultado da conversão do exemplo~\ref{exem:jsonBib} usando o conversor \texttt{xml2js}]
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<root>
+  <nome>Maria</nome>
+  <idade>22</idade>
+  <morada>
+    <pais>Portugal</pais>
+    <cidade>Braga</cidade>
+  </morada>
+  <nome>João</nome>
+  <idade>24</idade>
+  <morada>
+    <pais>Portugal</pais>
+    <cidade>Vila Real</cidade>
+  </morada>
+</root>
+\end{lstlisting}
+
+Se se pretende que um determinado elemento possua atributos é necessário que o objeto para esse elemento seja um objeto (\verb|{$: {unidade: 'cm'}, _: '160'}|) onde `\_' é o texto anotado e os vários atributos devem estar no objeto da propriedade `\$' em que o nome da propriedade é o nome do atributo e o valor da propriedade e o valor do atributo.
 
 \subsection{\acrshort{csv}}
 
-\subsubsection{O que é \acrshort{csv}}
-%TODO
-TODO
+\acrfull{csv} como o seu acrónimo indica é um documento em que os campos de um registo são separados por uma vírgula. Contudo, os campos não precisam de ser obrigatoriamente separados por vírgula já que podem também ser separados por ponto e vírgula, tabs, pipes (`|') ou ainda outro qualquer caractere que se pretenda usar. Quando se usa o caractere separador ou uma nova linha (`\backslash{}n') no campo de um registo, por forma a não ser considerado como um separador de campos ou de registos respetivamente, pode-se encapsolar os valores por aspas (`"') sendo que também se pode usar outro caractere em vez das aspas. Já quando se usa o caractere de encapsolamento no campo de um registo este deve ser protegido (\texttt{escaped}) repetindo o mesmo caractere de encapsolamento.
 
-\subsubsection{Bibliotecas}
+Um documento \acrshort{csv} é nada mais que uma tabela que guarda dados em texto. É usado essencialmente para a troca de dados.
 
-Da mesma forma como no caso anterior antes de cada biblioteca ser aprofundada serão escolhidas aquelas que em média são mais populares, com melhor qualidade e com mais manutenção segundo o \acrshort{npm}. Para tal, foram consideradas as seguintes bibliotecas:
+Após esta pequena introdução ao \acrshort{csv} apresenta-se as regras de sintaxe para a criação de um documento \acrshort{csv}:
 \begin{itemize}
-    \item \href{https://www.npmjs.com/package/papaparse}{\texttt{papaparse}}: 56.7\% (43p+94q+33m)
-    \item \href{https://www.npmjs.com/package/json2csv}{\texttt{json2csv}}: 46.3\% (42p+64q+33m)
-    \item \href{https://www.npmjs.com/package/json-csv}{\texttt{json-csv}}: 46.7\% (16p+91q+33m)
-    \item \href{https://www.npmjs.com/package/jsonexport}{\texttt{jsonexport}}: 32.7\% (25p+95q+10m)
+    \item Campos separados com um separador, normalmente uma vírgula
+    \item Cada registo deve estar numa linha. Cada registo deve começar numa linha, mas cada registo pode ter várias linhas, desde que os campos multi linha sejam encapsolados por aspas
+    \item Após o último registo não deve estar presente um \textit{carriage return}
+    \item Opcionalmente, na primeira linha do documento, deve estar presente o cabeçalho com os nomes das colunas separados pelo separador usado no resto do documento
+    \item O caractere de encapsolamente deve ser usado para encapsolar um campo quando necessário (pode ser usado sempre), isto é, quando o caractere separador ou uma nova linha (`\backslash{}n') são usados num campo de um registo
 \end{itemize}
-%TODO
-TODO
+
+\begin{lstlisting}[caption=Pequeno exemplo em \acrshort{csv}, label=exem:csvEx]
+Nome,Idade,País,Cidade,Altura
+"Silva, Maria",23,Portugal,Braga,160cm
+\end{lstlisting}
+
+\subsubsection{Bibliotecas de conversão}
+
+Nesta secção irá também ser aprofundada algumas bibliotecas de conversão de \acrshort{json} para \acrshort{csv}, aquelas com maior popularidade no \acrshort{npm}.
+
+\paragraph{\href{https://www.npmjs.com/package/papaparse}{\texttt{papaparse}}} \mbox{} \\
+
+O \texttt{papaparse} tem como principal objetivo realizar o \textit{parse} de ficheiros \acrshort{csv}. Consegue contudo reverter, convertendo de \acrshort{json} para \acrshort{csv}.
+
+\begin{lstlisting}[caption=Resultado da conversão do exemplo~\ref{exem:jsonBib} usando o conversor \texttt{papaparse}, label=exem:papaparse]
+nome,idade,morada
+Maria,22,[object Object]
+João,24,[object Object]
+\end{lstlisting}
+
+Olhando para o resultado~\ref{exem:papaparse} consegue-se perceber que o conversor não consegue converter objetos aninhados. Para além disso, apesar de haver a possibilidade de alterar o caractere separador, o caracter de \textit{escape}, o caractere de nova linha bem como definir o nome das colunas no cabeçalho, não é possível definir uma função por forma a alterar a conversão dos campos de cada propriedade.
+
+\paragraph{\href{https://www.npmjs.com/package/json2csv}{\texttt{json2csv}}} \mbox{} \\
+
+Biblioteca totalmente dedicada à conversão de \acrshort{json} para \acrshort{csv}. Tem como principais características:
+\begin{itemize}
+    \item Permite a alteração dos carecteres de separação, de encapsolamento e de nova linha
+    \item \textit{Escape} automático
+    \item Permite escolher que campos devolver (mesmo em objetos aninhados ou listas aninhadas) e que cabeçalho associar a cada campo
+    \item Aceita funções de transformação para cada campo
+\end{itemize}
+
+\begin{lstlisting}[caption=Resultado da conversão do exemplo~\ref{exem:jsonBib} usando o conversor \texttt{json2csv}, label=exem:json2csv]
+"nome","idade","morada.pais","morada.cidade"
+"Maria","22","Portugal","Braga"
+"João","24","Portugal","Vila Real"
+\end{lstlisting}
+
+Para além disso permite o \textit{unwind} de uma propriedade que possua uma lista, fazendo com que sejam gerados x registos de acordo com o tamanho da lista, sendo alterado apenas os valores que proveem da lista. Infelizmente isto acrecenta mais colunas, não permitindo que no caso de os elementos da lista (filhos) tenham a mesma estrutura que o pai, sejam adicionados como novos registos, sem adicionar novas colunas e sem repetir a informação do pai. 
+
+Por exemplo, se pretendermos converter o seguinte documento \acrshort{json}:
+\begin{lstlisting}[language=json, caption=Outro exemplo em \acrshort{json} a converter, label=exem:jsonBib2]
+[
+    {
+        "nome": "Maria",
+        "idade": "22",
+        "morada": {
+            "pais": "Portugal",
+            "cidade": "Braga"
+        },
+        "filhos": [
+          {
+            "nome": "António",
+            "idade": "24",
+            "morada": {
+                "pais": "Portugal",
+                "cidade": "Aveiro"
+            }
+          }
+        ]
+    },
+    {
+        "nome": "João",
+        "idade": "24",
+        "morada": {
+            "pais": "Portugal",
+            "cidade": "Vila Real"
+        },
+        "filhos": []
+    }
+]
+\end{lstlisting}
+
+Usando este conversor é possível obter:
+\begin{lstlisting}[caption=Resultado da conversão do exemplo~\ref{exem:jsonBib2} usando o conversor \texttt{json2csv}]
+"nome","idade","morada.pais","morada.cidade","filhos.nome","filhos.idade","filhos.morada.pais","filhos.morada.cidade"
+"Maria","22","Portugal","Braga","António","2","Portugal","Braga"
+"João","24","Portugal","Vila Real",,,,
+\end{lstlisting}
+
+Quando o resultado pretendido seria por exemplo:
+\begin{lstlisting}[caption=Resultado pretendido da conversão do exemplo~\ref{exem:jsonBib2}]
+"nome","idade","morada.pais","morada.cidade"
+"Maria","22","Portugal","Braga",
+"António","24","Portugal","Aveiro"
+"João","24","Portugal","Vila Real"
+\end{lstlisting}
 
 \subsection{Exportação da Ontologia}
 
-\subsubsection{O que é uma ontologia}
-%TODO
-TODO
+\subsubsection{O que é uma ontologia?}
 
-\subsubsection{Formatos a Exportar}
-%TODO: explicar os formatos passíveis de exportar
-TODO
+Uma ontologia é uma descrição formal e explícita de conceitos num domínio de discurso (classes, chamado às vezes de conceitos), propriedades de cada conceito que descrevem várias características e atributos do conceito (slots, às vezes chamados de funções ou propriedades) e restrições sobre slots (facetas, às vezes chamadas de restrições de função).~\cite{ontologyProt} Uma ontologia, juntamente com um conjunto de instâncias individuais de classes, constitui uma base de conhecimento.~\cite{ontologyProt}
+
+Uma ontologia pode ser dividida em duas partes:
+\begin{itemize}
+    \item Estrutura: Onde é definido as classes, as propriedades (slots) e as restrições das propriedades (facetas)
+    \item População: Onde é definido indíviduos (de classes) e propriedades dos indíviduos. Esta parte é construída tendo por base a estrutura definída.
+\end{itemize}
+De certa forma, a estrutura é como se fosse o modelo definido e a população a informação guardada respeitando o modelo definido.
+
+Falemos agora um pouco mais sobre cada componente de uma ontologia.
+
+Começando pelas classes, estas correspondem a conceitos, sendo que uma classe pode ter subclasses (onde uma subclasse herda as propriedades da sua superclasse) e superclasses. Para além disso, as classes possuem instâncias (ou indivíduos). Quanto às propriedades das classes existem dois tipos:
+\begin{itemize}
+    \item Atributos: propriedade que permite definir uma característica de uma classe (ou indivíduo) (p.e: Se pessoa for uma classe, o nome será um atributo)
+    \item Relações: propriedade que permite estabelecer relações entre classes (ou indivíduos) (p.e: A relação de pai entre duas pessoas) 
+\end{itemize}
+
+As próprias propriedades podem ser caracterizadas através das restrições. As principais restrições são:
+\begin{itemize}
+    \item Cardinalidade: Indica quantos valores pode ter uma propriedade, \texttt{0} a \texttt{n} (p.e: Uma pessoa só tem um pai biológico.; outro exemplo: Uma pessoa pode ter várias nacionalidades)
+    \item Tipo de valor: Indica que tipo de valor terá a propriedade (atributo), \textit{string}, número, \textit{boolean}, etc (p.e: A idade de uma pessoa é um número; outro exemplo: O nome de uma pessoa é uma \textit{string})
+    \item \textit{Domain} e \textit{Range}: Indica que tipo de instâncias podem ser relacionadas por uma propriedade. O \textit{Domain} indica a quem pertence a propriedade (atributo ou relação). Já o \textit{Range} indica para uma relação o tipo de instâncias que podem ser relacionadas com o \textit{Domain} (p.e: Na relação pai, o seu \textit{Domain} e o seu \textit{Range} são iguais a Pessoa.; outro exemplo: Seja Animal outra classe, a relação tem dono tem como \textit{Domain} Animal e como \textit{Range} Pessoa; ainda outro exemplo: O \textit{Domain} do atributo nome é Pessoa)
+\end{itemize}
+
+Existem várias linguagens de ontologia, contudo, quando se trata de informação semântica na \textit{Web}, destaca-se a família de especificações \acrfull{rdf}. É esta a usada pelo \textit{GraphDB} onde este usa o \acrfull{sparql} por forma a questionar as bases de dados, como protocolo e como linguagem para descrever as questões a realizar. O \acrshort{rdf} tem como ideia a criação de afirmações acerca de recursos em expressões do tipo \verb|sujeito predicado objeto|. Além disso o \acrshort{rdf} possui vários formatos de serialização tais como \acrshort{turtle}, N-Triples, N-Quads, \acrshort{json-ld}, \acrshort{n3}, \acrshort{rdf}/\acrshort{xml} e \acrshort{rdf}/\acrshort{json}.
+
+%TODO
+%\section{Web Semântica}
+%~\cite{lsparql}
+
+%TODO
+%\subsection{RDF}
+%~\cite{lsparql}
+
+%TODO
+%\subsection{SPARQL}
+%~\cite{lsparql}
+
+%TODO
+%\section{GraphDB}
+%procurar "semelhantes" para cada um (Neo4j)
+
+\subsubsection{\textit{GraphDB}}
+
+Por fim quanto à exportação da ontologia, das três é a mais simples visto que o \textit{GraphDB}\footnote{\acrfull{bd} Semântica baseada em grafos compatível com os padrões \acrshort{w3c}. Suporta \acrshort{rdf} e \acrshort{sparql}} possui funcionalidades de exportação dos triplos presentes numa \acrshort{bd} armazenada no \textit{GraphDB}.
+
+Para um fácil uso e compatibilidade com os \textit{standards} da indústria, o \textit{GraphDB} implementou as interfaces da \textit{framework} \textit{RDF4J}, a especificação do protocolo \acrshort{w3c} \acrshort{sparql}\footnote{Ver \url{https://www.w3.org/TR/sparql11-protocol/}} e suporta vários formatos de serialização \acrshort{rdf}\footnote{\label{fnRDF}\textit{TriG}, \textit{BinaryRDF}, \textit{TriX}, \textit{N-Triples}, \textit{N-Quads}, \acrshort{n3}, \acrshort{rdf}/\acrshort{xml}, \acrshort{rdf}/\acrshort{json}, \acrshort{json-ld} e \acrshort{turtle}}.~\cite{graphdbAbout}
+
+O \textit{GraphDB} é um \textit{plugin} \acrshort{sail} para a \textit{framework} \textit{RDF4J} fazendo uso extensivo dos recursos e infraestrutura do \textit{RDF4J} especialmente do modelo \acrshort{rdf}, dos \textit{parsers} \acrshort{rdf} e dos motores de pesquisa.~\cite{graphdbArch}
+
+Assim, o \textit{GraphDB} possui uma \acrshort{rest} \acrshort{api} do servidor RDF4J\footnote{Ver \url{https://rdf4j.org/documentation/rest-api/}} a partir da qual é possível obter todos os triplos de uma \acrshort{bd} através da rota
+\begin{verbatim}
+<url do GraphDB>/repositories/<id do repositório (BD)>/statements
+\end{verbatim}
+indicando no cabeçalho \acrshort{http} \textit{Accept} o formato de serialização \acrshort{rdf}\footnoteref{fnRDF} de saída (\textit{\acrshort{mime} type}\footnote{\textit{Standard} que indica a natureza e o formato de um documento, ficheiro ou conjunto de \textit{bytes}. Ver \href{https://tools.ietf.org/html/rfc6838}{RFC 6838}}) dos triplos. Dos vários formatos de serialização \acrshort{rdf} serão apenas suportados (acessíveis) na \acrshort{clav}, como já indicado, o \acrshort{turtle} (\texttt{text/turtle}), o \acrshort{json-ld} (\texttt{application/ld+json}) e o \acrshort{rdf}/\acrshort{xml} (\texttt{application/rdf+xml}).
 
 %TODO
 %\section{Nginx}
 %~\cite{nginxcook}
 %procurar "semelhantes" para cada um
-
-%TODO
-%\section{Ontologia}
-%~\cite{bontology}
-%conceito
 
 %TODO
 %\section{Docker}

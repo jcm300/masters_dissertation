@@ -190,7 +190,7 @@ No caso da conversão de um objeto e consoante a transformação (ou seja, o tí
 
 No caso da conversão de uma lista de objetos, para cada objeto será feita a conversão já apresentada para um objeto, onde depois é ignorada a linha dos títulos em todos os objetos exceto no primeiro objeto da lista onde é mantido os títulos gerados. Ou seja, na primeira linha estará presente os títulos e nas seguintes linhas, em cada linha estará presente os valores de um objeto.
 
-O último passo seja para uma lista ou para um único objeto é transformar a estrutura interna no \acrshort{csv}. Este papel é desempenhado pela função \texttt{joinLines} em que os elementos de cada lista da lista são juntos de acordo com um separador (neste caso é usado o ponto e vírgula, ``\texttt{;}'') tornando a lista de listas numa lista de \textit{strings}. Por fim, as \textit{strings} desta lista são juntas através da inserção de novas linhas (\texttt{``\textbackslash{}n}'') entre cada \textit{string} gerando o \acrshort{csv} final.
+O último passo seja para uma lista ou para um único objeto é transformar a estrutura interna no \acrshort{csv}. Este papel é desempenhado pela função \texttt{joinLines} em que os elementos de cada lista da lista são juntos de acordo com um separador (neste caso é usado o ponto e vírgula, ``\texttt{;}'') tornando a lista de listas numa lista de \textit{strings}. Por fim, as \textit{strings} desta lista são juntas através da inserção de novas linhas (``\texttt{\textbackslash{}n}'') entre cada \textit{string} gerando o \acrshort{csv} final.
 
 No anexo~\ref{conv:jsonTOcsv} apresenta-se um exemplo de uma conversão, onde o ficheiro \acrshort{json} a converter é o mesmo usado para exemplificar a conversão de \acrshort{xml} presente em~\ref{exem:json}.
 
@@ -228,29 +228,29 @@ De seguida são apresentadas as rotas onde é possível realizar exportação, o
 \begin{table}[H]
     \footnotesize
     \begin{center}
-    \begin{tabular}{| m{4cm} | m{9cm}|}
+    \begin{tabular}{| m{5cm} | m{8cm}|}
     \hline
     Rota & Formato de saída (valor a usar) \\ \hline
-    \texttt{GET /api/classes} & \multirow{8}{9cm}{
+    \texttt{GET /<versãoAPI>/classes} & \multirow{8}{8cm}{
         \begin{itemize}
             \setlength\itemsep{0em}
-            \item \acrshort{json} (\texttt{json} ou \texttt{application/json})
-            \item \acrshort{xml} (\texttt{xml} ou \texttt{application/xml})
-            \item \acrshort{csv} (\texttt{csv} ou \texttt{text/csv} ou ainda \texttt{excel/csv} se se pretender o \acrshort{csv} no formato para o \textit{Excel})
+            \item \acrshort{json} (\texttt{application/json})
+            \item \acrshort{xml} (\texttt{application/xml})
+            \item \acrshort{csv} (\texttt{text/csv} ou ainda \texttt{excel/csv} se se pretender o \acrshort{csv} no formato para o \textit{Excel})
         \end{itemize}} \\ \cline{1-1}
-    \texttt{GET /api/classes/:id} & \\ \cline{1-1}
-    \texttt{GET /api/entidades} & \\ \cline{1-1}
-    \texttt{GET /api/entidades/:id} & \\ \cline{1-1}
-    \texttt{GET /api/tipologias} & \\ \cline{1-1}
-    \texttt{GET /api/tipologias/:id} & \\ \cline{1-1}
-    \texttt{GET /api/legislacao} & \\ \cline{1-1}
-    \texttt{GET /api/legislacao/:id} & \\ \hline
-    \texttt{GET /api/ontologia} &
+    \texttt{GET /<versãoAPI>/classes/:id} & \\ \cline{1-1}
+    \texttt{GET /<versãoAPI>/entidades} & \\ \cline{1-1}
+    \texttt{GET /<versãoAPI>/entidades/:id} & \\ \cline{1-1}
+    \texttt{GET /<versãoAPI>/tipologias} & \\ \cline{1-1}
+    \texttt{GET /<versãoAPI>/tipologias/:id} & \\ \cline{1-1}
+    \texttt{GET /<versãoAPI>/legislacao} & \\ \cline{1-1}
+    \texttt{GET /<versãoAPI>/legislacao/:id} & \\ \hline
+    \texttt{GET /<versãoAPI>/ontologia} &
         \begin{itemize}
             \setlength\itemsep{0em}
-            \item \acrshort{turtle} (\texttt{turtle} ou \texttt{text/turtle})
-            \item \acrshort{json-ld} (\texttt{json-ld} ou \texttt{application/ld+json})
-            \item \acrshort{rdf}/\acrshort{xml} (\texttt{rdf-xml} ou \texttt{application/rdf+xml})
+            \item \acrshort{turtle} (\texttt{text/turtle})
+            \item \acrshort{json-ld} (\texttt{application/ld+json})
+            \item \acrshort{rdf}/\acrshort{xml} (\texttt{application/rdf+xml})
         \end{itemize} \\ \hline
     \end{tabular}
     \end{center}
@@ -258,9 +258,12 @@ De seguida são apresentadas as rotas onde é possível realizar exportação, o
     \label{table:rotasExp}
 \end{table}
 
-Portanto, por exemplo para obter as Classes em \acrshort{csv} basta realizar o seguinte pedido à \acrshort{api}: \verb|GET /api/classes?fs=json|
+Portanto, por exemplo para obter as Classes em \acrshort{csv} basta realizar o seguinte pedido à \acrshort{api}: \verb|GET /versãoAPI/classes?fs=application/json|
 
 Já em termos de fluxo dos dados durante esta exportação, para as 8 primeiras rotas da tabela~\ref{table:rotasExp} inicialmente os dados são obtidos da \acrshort{bd}, caso o formato de saída seja o \acrshort{json} é devolvido a quem pediu sem qualquer conversão. Caso contrário os dados são convertidos através de um dos conversores já descritos para o formato de saída apropriado. Na última rota, a da exportação da ontologia, a informação é devolvida no formato apropriado pela própria \acrshort{bd} (\textit{GraphDB}) de acordo com o pedido.
+
+%TODO: apresentar e falar da interface de exportação
+TODO
 
 \section{Migração de \acrshort{http} para \acrshort{https}}
 

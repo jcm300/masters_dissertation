@@ -1,12 +1,10 @@
 \section{Exportação de dados}
 
-Apesar das diferentes bibliotecas referidas na secção~\ref{sec:soa}, estas não permitem exportar apenas o que pretendemos nem o texto que se pretende dependendo da chave.
-
-Como tal, foram desenvolvidos dois conversores, de \acrshort{json} para \acrshort{xml} e de \acrshort{json} para \acrshort{csv} que se apresenta de seguida.
+Nesta secção será apresentado a especificação dos documentos finais das exportações a realizar, decidindo se algumas das bibliotecas apontadas no estado da arte (\ref{sec:soa}) permitem auxiliar ou realizar as conversões necessárias.
 
 \subsection{\acrshort{xml}}
-O conversor de \acrshort{json} para \acrshort{xml} possui a seguinte especificação:
 
+De seguida, apresenta-se a especificação do documento final em \acrshort{xml}:
 \begin{itemize}
     \item Os dados exportados devem ser encapsulados com a \textit{tag} \texttt{root} por forma a garantir que só existe um elemento \textit{root} no documento \acrshort{xml} gerado respeitando as regras do \acrshort{xml}
     \item Para cada tipo de dados do \acrshort{json} deve ser convertido da seguinte forma:
@@ -20,14 +18,14 @@ O conversor de \acrshort{json} para \acrshort{xml} possui a seguinte especifica�
     \end{itemize}
 \end{itemize}
 
+Depois de compreendida a especificação se observarmos as bibliotecas exploradas na secção do estado da arte percebemos que não há nenhuma que permita obter esta especificação sem alterar o objeto \acrshort{json} a exportar (a converter) o que acaba por em certas situações ser mais complicado do que construir um conversor específico para esta especificação. Assim, decidiu-se que seria criado um conversor de \acrshort{json} para \acrshort{xml}.
+
 \subsection{\acrshort{csv}}
 
-Da mesma forma que o \acrshort{xml}, o \acrshort{csv} é convertido sem recurso a uma biblioteca que converta já de si o \acrshort{json} para \acrshort{csv} visto que cada objeto \acrshort{json} a exportar necessita de uma exportação personalizada para \acrshort{csv}. Ao contrário do conversor desenvolvido para \acrshort{xml}, o conversor para \acrshort{csv} não converte qualquer objeto para \acrshort{csv} mas apenas um conjunto restrito de objetos \acrshort{json}.
-
-O conversor a desenvolver possui a seguinte especificação:
+O documento \acrshort{csv} exportado deve respeitar a seguinte especificação:
 \begin{itemize}
     \item O conjunto de objetos permitidos é lista de classes, de entidades, de tipologias e de legislações e objeto de classe, de entidade, de tipologia e de legislação.
-    \item A conversão das listas de classes, de entidades, de tipologias e de legislações deve ser a presença dos títulos na primeira linha e depois um elemento por linha.
+    \item A conversão das listas de classes, de entidades, de tipologias e de legislações deve ter a presença dos títulos na primeira linha e depois um elemento por linha.
     \item Todos os valores das propriedades tem de ser encapsolados com aspas (\verb|"|)
     \item Os valores de uma linha devem ser concatenados com ponto e vírgula (\verb|;|)
     \item As linhas devem ser concatenadas com nova linha (\verb|\n|)
@@ -206,4 +204,5 @@ O conversor a desenvolver possui a seguinte especificação:
     \item Na exportação para Excel as concatenações \verb|#\n| devem ser apenas \verb|#|
     \item As propriedades não referidas nesta especificação devem ser ignoradas
 \end{itemize}
-%TODO
+
+A partir da especificação e olhando para as bibliotecas de conversão exploradas no estado da arte chegou-se à conclusão que não havia nenhuma biblioteca que contivesse todas as funcionalidades necessárias. Contudo, é importante assinalar que a biblioteca \texttt{json2csv} possui grande parte das funcionalidades necessárias permitindo respeitar grande parte da especificação. Apesar disso, não é possível respeitar ``\textit{Propriedade `filhos': cada elemento deve ser convertido como se tratasse de um objeto classe; Deve ser ignorado os títulos gerados, mantendo apenas os valores numa nova linha do \acrshort{csv}''}. Além disso, o uso da biblioteca em questão obrigaria à criação de várias funções de transformação de dados por forma a respeitar a especificação. Por estas duas razões, decidiu-se que era mais conveniente, mais rápido e mais fácil criar um conversor próprio de \acrshort{json} para \acrshort{csv}.
