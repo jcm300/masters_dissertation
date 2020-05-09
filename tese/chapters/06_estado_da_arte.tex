@@ -141,21 +141,6 @@ Outra alternativa ao \acrshort{jwt} seria \textit{sessionIDs}. As \textit{sessio
 
 Por fim, uma outra alternativa bastante semelhante ao \acrshort{jwt} é \textit{Branca}. \textit{Branca} usa o algoritmo simétrico \textit{\acrshort{ietf} XChaCha20-Poly1305 \acrshort{aead}} que permite criar \textit{tokens} encriptados e que garantem integridade. Tem também uma região de \textit{payload} como \acrshort{jwt} com a única diferença é que este \textit{payload} não tem um estrutura definida. Não necessita da \textit{header} visto que o algoritmo usado não varia. Em vez de usar codificação em \texttt{Base64 URL-safe} usa \texttt{Base62} que também é \textit{URL-safe}. Para além disso o \textit{token} gerado é geralmente de menor dimensão do que o gerado pelo \acrshort{jwt} sendo como tal mais compacto que o \acrshort{jwt}.~\cite{branca} Visto que o \textit{Branca} encripta e garante integridade de uma forma mais simples que o \acrshort{jwt} permite (para isso era necessário recorrer a um \acrshort{jwe} que tem no seu \textit{payload} um \acrshort{jws}), sendo como tal propenso a menos erros de programação. Contudo, o \textit{Branca} ainda não é muito conhecido nem um \textit{standard} da indústria, ao contrário do \acrshort{jwt}, mas não deixa de ser algo a ter em conta para o futuro. 
 
-%TODO
-%\section{CORS}
-%falar da package e do conceito CORS
-%procurar "semelhantes" para cada um
-
-%TODO
-%\section{axios}
-%procurar "semelhantes" para cada um
-
-%TODO
-%\section{HTTP Status}
-
-%TODO
-%\section{Headers do HTTP}
-
 \section{Autenticação.gov}
 O Autenticação.gov surgiu da necessidade de identificação unívoca de um utilizador perante sítios na Web.~\cite{agov} Será esta quem realiza o processo de autenticação do utilizador e que fornecerá os atributos do utilizador necessários para identificar o utilizador numa entidade (\textit{website}/portal).
 
@@ -211,17 +196,13 @@ O documento \acrshort{xml} enviado pelo \textit{Identity Provider} para o \texti
 
 No projeto \acrshort{clav} o utilizador final é o utilizador da \acrshort{clav}, o \textit{Identity Provider} é representado pelo Autenticação.gov e o \textit{Service Provider} é representado pela \acrshort{clav}.
 
+\subsection{Especificação}
+%TODO
+TODO: Explicar de forma geral como é efetuado o pedido ao autenticação.gov; Explicar as extensões usadas para a CMD
+
 %TODO
 %\section{exceljs}
     %procurar "semelhantes" para cada um
-
-%TODO
-%\section{MongoDB}
-%~\cite{wdmongo}
-
-%TODO
-%\section{mongoose}
-%procurar "semelhantes" para cada um
 
 \section{Swagger}
 O \textit{Swagger} é um ecossistema de ferramentas para desenvolver \acrshort{api}s com a \acrfull{oas}.
@@ -586,25 +567,15 @@ Existem várias alternativas ao \textit{Swagger \acrshort{ui}}:
     \end{tabular}
     \end{center}
     \caption{Comparação entre ferramentas de \acrshort{api}s}
+    \label{table:swaggerUI}
 \end{table}
 \end{savenotes}
 
-De forma a escolher a ferramenta apropriada é necessário ter em conta que:
-\begin{itemize}
-    \item Não há financiamento
-    \item Já existe uma \acrshort{api} desenvolvida
-    \item A documentação deve estar acessível de um domínio próprio
-    \item A documentação deve ser fácil de criar, de editar e de manter
-    \item Será usada a especificação \textit{OpenAPI}
-\end{itemize}
-
-As escolhas ficam como tal reduzidas ao \textit{Swagger \acrshort{ui}} e ao \textit{ReDoc}. Optou-se por escolher o \textit{Swagger \acrshort{ui}} visto ser a ferramenta mais amplamente usada para além de que é possível obter também uma fácil integração no \textit{Swagger \acrshort{ui}} com recurso à package \texttt{swagger-ui-express} que falaremos na próxima secção.
-
 \section{Documentação da \acrshort{api} da \acrshort{clav}}
 
-Agora sabendo que será usada a especificação \textit{OpenAPI} e o \textit{Swagger \acrshort{ui}} é importante perceber que bibliotecas devem ser usadas para a produção da documentação. 
+Neste secção são aprofundadas algumas bibliotecas que podem ser usadas para a produção da documentação com a especificação \textit{OpenAPI} e o \textit{Swagger \acrshort{ui}}. 
 
-Existem duas \textit{packages} que podem ser usadas para criar documentação interativa para uma \acrshort{api} \acrshort{rest} criada com \textit{Node.js} e \textit{Express.js}:~\cite{swaggerNode}
+De seguida são aprofundadas duas \textit{packages} que podem ser usadas para criar documentação interativa (integração do \textit{Swagger UI}) para uma \acrshort{api} \acrshort{rest} criada com \textit{Node.js} e \textit{Express.js}:~\cite{swaggerNode}
 \begin{itemize}
     \item \texttt{swagger-node-express}
     \begin{itemize}
@@ -637,7 +608,7 @@ Existem duas \textit{packages} que podem ser usadas para criar documentação in
     \end{itemize}
 \end{itemize}
 
-Das duas foi escolhida a \texttt{swagger-ui-express} visto ser de mais simples implementação e de mais fácil manutenção.
+Das duas, a \texttt{swagger-ui-express} é a de mais simples implementação e de mais fácil manutenção.
 
 \begin{lstlisting}[language=javascript, caption=Exemplo de uso do \texttt{swagger-ui-express}, label=exem:suie]
 var swaggerUI = require('swagger-ui-express')
@@ -659,7 +630,7 @@ Agora há duas abordagens possíveis de realizar a documentação:
     \item Documentação à parte do código
 \end{itemize}
 
-A abordagem escolhida foi a da documentação à parte do código por forma a modularizar a documentação. A modularização da documentação foi realizada através do uso da \textit{package} \texttt{yaml-include}\footnote{Ver \url{https://github.com/claylo/yaml-include}}. Esta \textit{package} permite que o documento \acrshort{yaml} da especificação \textit{OpenAPI} possa ser dividida por vários ficheiros para além do que já é permitido através do \verb|$ref| da especificação \textit{OpenAPI}. Ela permite a inclusão de arquivos \acrshort{yaml} externos ou a inclusão de pastas de ficheiros \acrshort{yaml}. Esta funcionalidade é desaprovada pela equipa de desenvolvimento do \acrshort{yaml} contudo é de grande ajuda e de simplificação da construção do ficheiro de especificação \textit{OpenAPI}.
+A abordagem da documentação à parte do código permite modularizar a documentação. A modularização da documentação pode ser realizada através do uso da \textit{package} \texttt{yaml-include}\footnote{Ver \url{https://github.com/claylo/yaml-include}}. Esta \textit{package} permite que o documento \acrshort{yaml} da especificação \textit{OpenAPI} possa ser dividida por vários ficheiros para além do que já é permitido através do uso de \verb|$ref| da especificação \textit{OpenAPI}. A \textit{package} permite a inclusão de arquivos \acrshort{yaml} externos ou a inclusão de pastas de ficheiros \acrshort{yaml}. Esta funcionalidade é desaprovada pela equipa de desenvolvimento do \acrshort{yaml} contudo é de grande ajuda e de simplificação da construção do ficheiro de especificação \textit{OpenAPI}.
 
 \begin{lstlisting}[language=yaml, caption=Exemplo de uso do \texttt{yaml-include} no documento de especificação \textit{OpenAPI}(\textit{index.yaml}), label=exem:yamli]
 openapi: 3.0.0
@@ -1040,7 +1011,7 @@ Quando o resultado pretendido seria por exemplo:
 "João","24","Portugal","Vila Real"
 \end{lstlisting}
 
-\subsection{Exportação da Ontologia}
+\subsection{Ontologia}
 
 \subsubsection{O que é uma ontologia?}
 
@@ -1068,27 +1039,25 @@ As próprias propriedades podem ser caracterizadas através das restrições. As
     \item \textit{Domain} e \textit{Range}: Indica que tipo de instâncias podem ser relacionadas por uma propriedade. O \textit{Domain} indica a quem pertence a propriedade (atributo ou relação). Já o \textit{Range} indica para uma relação o tipo de instâncias que podem ser relacionadas com o \textit{Domain} (p.e: Na relação pai, o seu \textit{Domain} e o seu \textit{Range} são iguais a Pessoa.; outro exemplo: Seja Animal outra classe, a relação tem dono tem como \textit{Domain} Animal e como \textit{Range} Pessoa; ainda outro exemplo: O \textit{Domain} do atributo nome é Pessoa)
 \end{itemize}
 
-Existem várias linguagens de ontologia, contudo, quando se trata de informação semântica na \textit{Web}, destaca-se a família de especificações \acrfull{rdf}. É esta a usada pelo \textit{GraphDB} onde este usa o \acrfull{sparql} por forma a questionar as bases de dados, como protocolo e como linguagem para descrever as questões a realizar. O \acrshort{rdf} tem como ideia a criação de afirmações acerca de recursos em expressões do tipo \verb|sujeito predicado objeto|. Além disso o \acrshort{rdf} possui vários formatos de serialização tais como \acrshort{turtle}, N-Triples, N-Quads, \acrshort{json-ld}, \acrshort{n3}, \acrshort{rdf}/\acrshort{xml} e \acrshort{rdf}/\acrshort{json}.
+\subsubsection{\textit{Web} Semântica}
 
-%TODO
-%\section{Web Semântica}
-%~\cite{lsparql}
+A \textit{web} semântica é uma extensão da \acrshort{www} com o objetivo de tornar a informação da internet legível por máquinas (\textit{machine-readable}).
 
-%TODO
-%\subsection{RDF}
-%~\cite{lsparql}
+Para isso a \acrfull{w3c} está a ajudar a criar a \textit{stack} tecnológica necessária. O termo \textit{web} semântica é a visão da \acrshort{w3c} acerca da \textit{Linked Data} na \textit{Web}, ou seja, é a web dos dados em que a coleção de tecnologias da \textit{web} semântica (\acrshort{rdf}, \acrshort{sparql}, \acrshort{owl}, \acrshort{skos}, etc) oferece um ambiente onde as pessoas podem criar bases de dados na \textit{web}, construir ontologias e escrever regras para manipular os dados; e onde as aplicações podem questionar esses dados e desenhar inferências usando vocabulários.
 
-%TODO
-%\subsection{SPARQL}
-%~\cite{lsparql}
+Para tornar a \textit{web} dos dados uma realidade é necessário existir uma grande quantidade de dados na \textit{web} num formato \textit{standard} (\acrshort{rdf}), acessível e gerível pelas ferramentas da \textit{web} semântica. Além disso, a \textit{web} semântica necessita também que exista relações entre os dados para criar a \textit{web} dos dados (\textit{Linked Data}). É também importante ser possível configurar \textit{query endpoints} para aceder aos dados mais convenientemente. A \acrshort{w3c} fornece uma palete de tecnologias, das quais se destaca o \acrshort{sparql}, para obter acesso aos dados.
 
-%TODO
-%\section{GraphDB}
-%procurar "semelhantes" para cada um (Neo4j)
+A \textit{Linked Data} é usada para a integração em grande escala e o \textit{reasoning}\footnote{Em \textit{web} semântica é a inferência de informação (triplos) a partir de um conjunto de factos (triplos), ou seja, a descoberta de novos factos (triplos)} dos dados na \textit{web}.
+
+Na \textit{web} semântica, os vocabulários definem os conceitos e os relacionamentos usados para descrever e representar uma área de interesse. Não há uma divisão clara entre o que é referido como ``vocabulários'' e ``ontologias''. A tendência é usar a palavra ``ontologia'' para coleções de termos mais complexos e mais formais, enquanto que ``vocabulário'' nas coleções menos formais. A \acrshort{w3c} oferece várias técnicas para descrever e definir diferentes formas de vocabulários num formato \textit{standard}. Estas incluem \acrshort{rdf} e \acrshort{rdf} Schemas, \acrshort{skos}, \acrshort{owl} e \acrshort{rif}. A escolha da tecnologia depende da complexidade e do rigor necessário.
+
+Tal como as bases de dados relacionais ou o \acrshort{xml} necessitam de linguagens de pesquisa (query) específicas (SQL e XQuery, respetivamente), a \textit{web} dos dados, tipicamente representada usado \acrshort{rdf} como formato de dados, necessita também de uma linguagem de pesquisa. Isto é providenciado pelo \acrshort{sparql}, que é também um protocolo de comunicação, permitindo enviar queries e receber resultados, por exemplo, através de \acrshort{http} ou \acrshort{soap}.
+
+As queries \acrshort{sparql} são baseadas em padrões (triplos). O \acrshort{rdf} pode ser visto como um conjunto de relacionamentos entre recursos (triplos \acrshort{rdf}). As queries \acrshort{sparql} posuem um ou mais padrões semelhantes aos triplos \acrshort{rdf}, exceto que um ou mais dos recursos constituintes referenciados são variáveis. Um motor \acrshort{sparql} retornará os recursos que para todos os triplos correspondem a esses padrões. A informação devolvida pelos endpoints SPARQL pode ser uma tabela ou por exemplo \acrshort{json}.
 
 \subsubsection{\textit{GraphDB}}
 
-Por fim quanto à exportação da ontologia, das três é a mais simples visto que o \textit{GraphDB}\footnote{\acrfull{bd} Semântica baseada em grafos compatível com os padrões \acrshort{w3c}. Suporta \acrshort{rdf} e \acrshort{sparql}} possui funcionalidades de exportação dos triplos presentes numa \acrshort{bd} armazenada no \textit{GraphDB}.
+O \textit{GraphDB} é uma \acrfull{bd} Semântica baseada em grafos compatível com os padrões \acrshort{w3c}. É a base de dados principal quando se pretende trabalhar com a \textit{web} semântica. Suporta \acrshort{rdf} e \acrshort{sparql} e possui funcionalidades de exportação dos triplos presentes numa \acrshort{bd} armazenada no \textit{GraphDB}.
 
 Para um fácil uso e compatibilidade com os \textit{standards} da indústria, o \textit{GraphDB} implementou as interfaces da \textit{framework} \textit{RDF4J}, a especificação do protocolo \acrshort{w3c} \acrshort{sparql}\footnote{Ver \url{https://www.w3.org/TR/sparql11-protocol/}} e suporta vários formatos de serialização \acrshort{rdf}\footnote{\label{fnRDF}\textit{TriG}, \textit{BinaryRDF}, \textit{TriX}, \textit{N-Triples}, \textit{N-Quads}, \acrshort{n3}, \acrshort{rdf}/\acrshort{xml}, \acrshort{rdf}/\acrshort{json}, \acrshort{json-ld} e \acrshort{turtle}}.~\cite{graphdbAbout}
 
@@ -1098,19 +1067,35 @@ Assim, o \textit{GraphDB} possui uma \acrshort{rest} \acrshort{api} do servidor 
 \begin{verbatim}
 <url do GraphDB>/repositories/<id do repositório (BD)>/statements
 \end{verbatim}
-indicando no cabeçalho \acrshort{http} \textit{Accept} o formato de serialização \acrshort{rdf}\footnoteref{fnRDF} de saída (\textit{\acrshort{mime} type}\footnote{\textit{Standard} que indica a natureza e o formato de um documento, ficheiro ou conjunto de \textit{bytes}. Ver \href{https://tools.ietf.org/html/rfc6838}{RFC 6838}}) dos triplos. Dos vários formatos de serialização \acrshort{rdf} serão apenas suportados (acessíveis) na \acrshort{clav}, como já indicado, o \acrshort{turtle} (\texttt{text/turtle}), o \acrshort{json-ld} (\texttt{application/ld+json}) e o \acrshort{rdf}/\acrshort{xml} (\texttt{application/rdf+xml}).
+indicando no cabeçalho \acrshort{http} \textit{Accept} o formato de serialização \acrshort{rdf}\footnoteref{fnRDF} de saída (\textit{\acrshort{mime} type}\footnote{\textit{Standard} que indica a natureza e o formato de um documento, ficheiro ou conjunto de \textit{bytes}. Ver \href{https://tools.ietf.org/html/rfc6838}{RFC 6838}}) dos triplos.
 
+\section{Migração HTTP para HTTPS}
+
+\subsection{Let's Encrypt}
 %TODO
-%\section{Nginx}
+TODO
+
+\subsection{Nginx}
 %~\cite{nginxcook}
-%procurar "semelhantes" para cada um
-
 %TODO
-%\section{Docker}
-%~\cite{udocker}
-%procurar "semelhantes" para cada um
+TODO
 
+\subsection{acme.sh}
 %TODO
-%\section{Docker Compose}
+TODO: o que é e alternativas
+
+\section{API Gateway}
+%TODO
+TODO: Explorar as várias alternativas: Kong, Nginx Plus, Express Gateway, Moleculer API Gateway
+
+\section{Instalação/Migração/Integração}
+
+\subsection{Docker}
 %~\cite{udocker}
-%procurar "semelhantes" para cada um
+%TODO
+TODO
+
+\subsection{Docker Compose}
+%~\cite{udocker}
+%TODO
+TODO

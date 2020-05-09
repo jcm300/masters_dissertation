@@ -4,73 +4,7 @@
 %Main result(s) and their scientific evidence
 %\section{Summary}
 
-\section{Autorização de pedidos à \acrshort{api}}
-
-Quanto à forma como os pedidos serão feitos à \acrshort{api} poderão ser feitos de duas formas, através da \textit{header} \acrshort{http} \textit{Authorization} ou através da \textit{query string} do pedido em um dos seguintes campos:
-\begin{itemize}[leftmargin=3cm]
-    \item[\textbf{\texttt{token}}] caso seja o \texttt{token} de um utilizador:\newline
-        \verb|http://example.com/path/page?token=<token>|
-    \item[\textbf{\texttt{apikey}}] caso seja uma Chave \acrshort{api}:\newline
-        \verb|http://example.com/path/page?apikey=<Chave API>|
-\end{itemize}
-
-Na \textit{header} \textit{Authorization} irá ser usado o esquema de autenticação \textit{Bearer}\footnote{Mais informação em \url{https://tools.ietf.org/html/rfc6750}} com umas pequenas alterações. Portanto o conteúdo da \textit{header} \textit{Authorization}:
-\begin{itemize}[leftmargin=2cm]
-    \item Caso seja o \texttt{token} de um utilizador é:\newline
-        \verb|token <token>|
-    \item Caso seja uma Chave \acrshort{api} é:\newline
-        \verb|apikey <Chave API>|
-\end{itemize}
-ao invés do esquema de autenticação predefinido do \textit{Bearer}: \verb|Bearer <token/Chave API>|
-
-Convém referir que a Chave \acrshort{api} é também um \textit{token}. A divisão entre utilizadores e chaves \acrshort{api} permite uma mais fácil gestão dos \textit{tokens} recebidos pela \acrshort{api} bem como usar duas formas diferentes de os gerar/verificar com o possível benefício de melhorar a segurança da \acrshort{api}.
-
-Os \textit{token}s gerados pela \acrshort{api} serão \acrshort{jwt}s. Contudo poderiam ser outro tipo de \textit{tokens} (por exemplo uma \textit{string} aleatória e única) que o processo de envio dos \textit{tokens} para a \acrshort{api} manter-se-ia igual.
-
-Após descrito como poderão ser feitos os pedidos à \acrshort{api}, irá ser apresentado possíveis fluxos de interação entre utilizadores (\textit{browser}, \textit{app}, etc) e o servidor da \acrshort{api}.
-
-O fluxo de autenticação de um utilizador na \acrshort{api} a ser implementado será o seguinte:
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=0.5\textwidth]{img/userAuth.png}
-    \end{center}
-    \caption{Fluxo de autenticação e posteriores pedidos de um utilizador}\label{fig:userAuth}
-\end{figure}
-
-\begin{enumerate}
-    \item Utilizador autentica-se ao providenciar o seu \textit{email} e a sua \textit{password}
-    \item Caso o utilizador se autentique com sucesso é devolvido um \textit{token} que deve ser usado nos restantes pedidos até expirar
-    \item Utilizador realiza um pedido para obter as classes, colocando o token na \textit{header} \textit{Authorization}
-    \item Caso o \textit{token} enviado seja válido e não tenha expirado são devolvidas as classes
-    \item \textit{Token} expirou após o tempo definido
-    \item Utilizador realiza uma nova autenticação por forma a obter um novo \textit{token}
-    \item Caso o utilizador se autentique com sucesso é devolvido um \textit{token} que deve ser usado nos restantes pedidos até expirar
-    \item Utilizador realiza um pedido para obter as entidades, colocando o token na \textit{header} \textit{Authorization}
-    \item Caso o \textit{token} enviado seja válido e não tenha expirado são devolvidas as entidades
-\end{enumerate}
-
-O fluxo de autenticação e renovação de uma Chave \acrshort{api} na \acrshort{api} a ser implementado será o seguinte:
-\begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=0.5\textwidth]{img/chaveAuth.png}
-    \end{center}
-    \caption{Fluxo de autenticação e posteriores pedidos de uma chave \acrshort{api}}\label{fig:chaveAuth}
-\end{figure}
-
-\begin{enumerate}
-    \item Utilizador cria uma chave \acrshort{api} ao providenciar o nome, email e entidade
-    \item A Chave \acrshort{api} é enviada para o email fornecido pelo utilizador com o objetivo de ser usada nos próximos pedidos
-    \item O utilizador obtém a chave \acrshort{api} do email enviado
-    \item Utilizador realiza um pedido para obter as classes, colocando a chave \acrshort{api} na \textit{header} \textit{Authorization}
-    \item Caso a Chave \acrshort{api} enviada seja válida e não tenha expirado são devolvidas as classes
-    \item Chave \acrshort{api} expirou após o tempo definido
-    \item Utilizador renova a Chave \acrshort{api} ao providenciar o email usado para criar a Chave \acrshort{api}
-    \item A nova (renovada) Chave \acrshort{api} é devolvida para ser usada nos restantes pedidos
-    \item Utilizador realiza um pedido para obter as entidades, colocando a Chave \acrshort{api} na \textit{header} \textit{Authorization}
-    \item Caso a Chave \acrshort{api} enviada seja válida e não tenha expirado são devolvidas as entidades
-\end{enumerate}
-
-\subsection{Verificação dos \textit{tokens} no servidor \acrshort{api}}
+\section{Proteção da API com múltiplos níveis}
 
 Para proteger as rotas da \acrshort{api} é necessário haver métodos de verificação dos \textit{tokens} com o objetivo de decidir se o utilizador/Chave \acrshort{api} pode aceder a uma determinada rota. De seguida será apresentado o pseudo-código de verificação dos \textit{tokens} tendo em conta que os utilizadores registados conseguem aceder a todas as rotas que as Chaves \acrshort{api} conseguem mas que o inverso não acontece. Ou seja, um utilizador registado até o de nível mais baixo por exemplo, consegue aceder a todas as rotas que as Chaves \acrshort{api} tem acesso e mais algumas nas quais as Chaves \acrshort{api} não têm permissões de acesso.
 
@@ -155,6 +89,17 @@ Ou seja, a variável \texttt{clearance} poderá ser uma lista de números ou ape
 
 Com estas três funções (\texttt{isLoggedInKey}, \texttt{isLoggedInUser} e \texttt{checkLevel}) é possível proceder à proteção da \acrshort{api} da \acrshort{clav} garantindo que utilizadores com diferentes níveis de acesso apenas conseguem aceder ao que lhes é permitido.
 
+%TODO
+TODO: completar
+
+\section{Autenticação através de Chave Móvel Digital}
+%TODO
+TODO
+
+\section{Documentação}
+%TODO
+TODO: Apresentar imagens do swagger UI
+
 \section{Exportação de dados}
 Um dos requisitos da \acrshort{api} da \acrshort{clav} é permitir a exportação de Classes, Entidades, Tipologias e Legislações em formato \acrshort{json}, \acrshort{xml} e \acrshort{csv}. Deve também permitir exportar toda a ontologia do projeto nos formatos \acrshort{turtle}, \acrshort{json-ld} e \acrshort{rdf}/\acrshort{xml}.
 
@@ -195,75 +140,23 @@ O último passo seja para uma lista ou para um único objeto é transformar a es
 No anexo~\ref{conv:jsonTOcsv} apresenta-se um exemplo de uma conversão, onde o ficheiro \acrshort{json} a converter é o mesmo usado para exemplificar a conversão de \acrshort{xml} presente em~\ref{exem:json}.
 
 \subsection{Exportação da Ontologia}
-Por fim quanto à exportação da ontologia, das três é a mais simples visto que o \textit{GraphDB}\footnote{\acrfull{bd} Semântica baseada em grafos compatível com os padrões \acrshort{w3c}. Suporta \acrshort{rdf} e \acrshort{sparql}} possui funcionalidades de exportação dos triplos presentes numa \acrshort{bd} armazenada no \textit{GraphDB}.
 
-Para um fácil uso e compatibilidade com os \textit{standards} da indústria, o \textit{GraphDB} implementou as interfaces da \textit{framework} \textit{RDF4J}, a especificação do protocolo \acrshort{w3c} \acrshort{sparql}\footnote{Ver \url{https://www.w3.org/TR/sparql11-protocol/}} e suporta vários formatos de serialização \acrshort{rdf}\footnote{\label{fnRDF}\textit{TriG}, \textit{BinaryRDF}, \textit{TriX}, \textit{N-Triples}, \textit{N-Quads}, \acrshort{n3}, \acrshort{rdf}/\acrshort{xml}, \acrshort{rdf}/\acrshort{json}, \acrshort{json-ld} e \acrshort{turtle}}.~\cite{graphdbAbout}
-
-O \textit{GraphDB} é um \textit{plugin} \acrshort{sail} para a \textit{framework} \textit{RDF4J} fazendo uso extensivo dos recursos e infraestrutura do \textit{RDF4J} especialmente do modelo \acrshort{rdf}, dos \textit{parsers} \acrshort{rdf} e dos motores de pesquisa.~\cite{graphdbArch}
-
-Assim, o \textit{GraphDB} possui uma \acrshort{rest} \acrshort{api} do servidor RDF4J\footnote{Ver \url{https://rdf4j.org/documentation/rest-api/}} a partir da qual é possível obter todos os triplos de uma \acrshort{bd} através da rota
-\begin{verbatim}
-<url do GraphDB>/repositories/<id do repositório (BD)>/statements
-\end{verbatim}
-indicando no cabeçalho \acrshort{http} \textit{Accept} o formato de serialização \acrshort{rdf}\footnoteref{fnRDF} de saída (\textit{\acrshort{mime} type}\footnote{\textit{Standard} que indica a natureza e o formato de um documento, ficheiro ou conjunto de \textit{bytes}. Ver \href{https://tools.ietf.org/html/rfc6838}{RFC 6838}}) dos triplos. Dos vários formatos de serialização \acrshort{rdf} serão apenas suportados (acessíveis) na \acrshort{clav}, como já indicado, o \acrshort{turtle} (\texttt{text/turtle}), o \acrshort{json-ld} (\texttt{application/ld+json}) e o \acrshort{rdf}/\acrshort{xml} (\texttt{application/rdf+xml}).
-
-Apesar da facilidade de exportação da ontologia estes pedidos de exportação originam um grande consumo de recursos de \textit{hardware} por parte do \textit{GraphDB} visto que cada pedido devolve todos os triplos de uma \acrshort{bd} (a atual \acrshort{bd} da \acrshort{clav} possui já cerca de 150 000 triplos explícitos e cerca de 85 000 triplos implícitos) para além da conversão necessária desses triplos para o formato de serialização \acrshort{rdf} de saída. Deve-se então limitar o número de pedidos de exportação realizados ao \textit{GraphDB}. Para tal irá ser usado o seguinte mecanismo de controlo/\textit{cache}:
-
-\begin{itemize}
-    \item Os ficheiros exportados são mantidos pela \acrshort{api} da \acrshort{clav}
-    \item Mantém-se dois ficheiros por cada serialização \acrshort{rdf}, um com os triplos explícitos e outro com os triplos explícitos e implícitos.
-    \item Se o ficheiro pretendido não existe na \acrshort{api} da \acrshort{clav} realiza-se o pedido de exportação ao \textit{GraphDB}
-    \item Se o ficheiro pretendido existe na \acrshort{api} da \acrshort{clav} mas não é atualizado há sete dias realiza-se o pedido de exportação ao \textit{GraphDB}
-    \item Se o ficheiro pretendido existe na \acrshort{api} da \acrshort{clav} e foi atualizado há menos de sete dias devolve-se ao utilizador o ficheiro guardado na \acrshort{api} da \acrshort{clav}
-    \item Mantém-se na \acrshort{api} da \acrshort{clav} apenas o ficheiro mais recente para cada versão de cada serialização \acrshort{rdf}
-    \item Cada ficheiro é apenas atualizado (removendo o antigo) quando é feito um pedido por um utilizador desse ficheiro
-\end{itemize}
-
-Assim, respeitando todas estas restrições, são mantidas pela \acrshort{api} da \acrshort{clav} no máximo seis ficheiros, dois por cada serialização \acrshort{rdf}. Para além disso estes ficheiros são atualizados no melhor caso de sete em sete dias e no pior caso nunca se o ficheiro nunca for requisitado pelos utilizadores.
+%TODO: o que colocar?
+TODO
 
 \subsection{Exportação na \acrshort{api} de dados}
-Nesta secção será explicado de que forma será possível exportar os dados da \acrshort{api}. Para tal definiu-se a \textit{query string} \texttt{fs} (formato de saída) onde é possível indicar claro está o formato de saída. Esta \textit{query string} estará presente nas rotas onde será possível exportar os dados. Para além disso, nestas rotas também se pode indicar o formato de saída através do cabeçalho \texttt{Accept}.
 
-De seguida são apresentadas as rotas onde é possível realizar exportação, os formatos de saída disponíveis para cada rota bem como os valores a usar de forma a obter uma exportação nesse formato:
-\begin{table}[H]
-    \footnotesize
-    \begin{center}
-    \begin{tabular}{| m{5cm} | m{8cm}|}
-    \hline
-    Rota & Formato de saída (valor a usar) \\ \hline
-    \texttt{GET /<versãoAPI>/classes} & \multirow{8}{8cm}{
-        \begin{itemize}
-            \setlength\itemsep{0em}
-            \item \acrshort{json} (\texttt{application/json})
-            \item \acrshort{xml} (\texttt{application/xml})
-            \item \acrshort{csv} (\texttt{text/csv} ou ainda \texttt{excel/csv} se se pretender o \acrshort{csv} no formato para o \textit{Excel})
-        \end{itemize}} \\ \cline{1-1}
-    \texttt{GET /<versãoAPI>/classes/:id} & \\ \cline{1-1}
-    \texttt{GET /<versãoAPI>/entidades} & \\ \cline{1-1}
-    \texttt{GET /<versãoAPI>/entidades/:id} & \\ \cline{1-1}
-    \texttt{GET /<versãoAPI>/tipologias} & \\ \cline{1-1}
-    \texttt{GET /<versãoAPI>/tipologias/:id} & \\ \cline{1-1}
-    \texttt{GET /<versãoAPI>/legislacao} & \\ \cline{1-1}
-    \texttt{GET /<versãoAPI>/legislacao/:id} & \\ \hline
-    \texttt{GET /<versãoAPI>/ontologia} &
-        \begin{itemize}
-            \setlength\itemsep{0em}
-            \item \acrshort{turtle} (\texttt{text/turtle})
-            \item \acrshort{json-ld} (\texttt{application/ld+json})
-            \item \acrshort{rdf}/\acrshort{xml} (\texttt{application/rdf+xml})
-        \end{itemize} \\ \hline
-    \end{tabular}
-    \end{center}
-    \caption{Rotas com exportação, formatos de saída disponíveis para cada rota e valores a usar por forma a exportar nesse formato de saída}
-    \label{table:rotasExp}
-\end{table}
+%TODO: explicar como foi colocado esta parte na API, como middleware
+TODO
 
-Portanto, por exemplo para obter as Classes em \acrshort{csv} basta realizar o seguinte pedido à \acrshort{api}: \verb|GET /versãoAPI/classes?fs=application/json|
-
-Já em termos de fluxo dos dados durante esta exportação, para as 8 primeiras rotas da tabela~\ref{table:rotasExp} inicialmente os dados são obtidos da \acrshort{bd}, caso o formato de saída seja o \acrshort{json} é devolvido a quem pediu sem qualquer conversão. Caso contrário os dados são convertidos através de um dos conversores já descritos para o formato de saída apropriado. Na última rota, a da exportação da ontologia, a informação é devolvida no formato apropriado pela própria \acrshort{bd} (\textit{GraphDB}) de acordo com o pedido.
+\subsection{Interface de Exportação}
 
 %TODO: apresentar e falar da interface de exportação
-TODO
+TODO: apresentar e falar da interface de exportação
+
+\section{API Gateway}
+%TODO
+TODO: Explicar implementação
 
 \section{Migração de \acrshort{http} para \acrshort{https}}
 
@@ -280,5 +173,9 @@ Após se decidir que será usado o \acrshort{ca} \textit{Let's Encrypt} é neces
 O \texttt{acme.sh} é quem irá tratar de toda a gestão dos certificados, renovando-os quando necessário (a renovação é feita a cada 60 dias).
 Por forma a usar o \texttt{acme.sh} é necessário realizar o \textit{download} do \textit{script}, proceder à instalação do \textit{acme.sh}, fazer a primeira geração do certificado para os domínio(s) pretendido(s) e instalar estes certificados no local final. A partir daí, o \textit{acme.sh} é auto gerido bem como os certificados gerados como já referido. Para tratar automaticamente deste processo todo bem como gerar \textit{\acrshort{df} parameters} mais fortes, algo que iremos referir mais à frente, foi criada a \textit{script} presente no anexo~\ref{script:acme}.
 
+%TODO
+TODO
+
+\section{Instalação/Migração/Integração}
 %TODO
 TODO

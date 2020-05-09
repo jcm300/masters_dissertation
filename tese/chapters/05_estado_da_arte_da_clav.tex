@@ -1,6 +1,17 @@
 Quando esta dissertação teve início o projeto \acrshort{clav} já tinha cerca de 2 anos de desenvolvimento. Assim nesta secção será apresentado o estado da arte do \acrshort{clav} quando esta dissertação iniciou aprofundando principalmente os pontos mais importantes sobre o tema desta dissertação.
 
-\subsection{Estrutura}
+\section{Conceitos}
+%TODO
+TODO
+O que é a a classificação e a avaliação
+o que é um processo de negócio
+exemplos
+
+\section{Iniciativas Semelhantes à CLAV}
+%TODO
+TODO
+
+\section{Estrutura}
 A \acrshort{clav} está dividida em duas partes:
 \begin{itemize}
     \item interface (\textit{front-end}) presente em \url{http://clav.dglab.gov.pt}
@@ -27,7 +38,10 @@ Esta estrutura evoluiu depois para a estrutura presente na figura~\ref{fig:clav_
     \caption{Estrutura evoluída da \acrshort{clav}}\label{fig:clav_struct2}
 \end{figure}
 
-\subsection{Formas de autenticação}\label{sec:autenticacao}
+%TODO
+TODO: Explicar onde está cada informação: ontologia, utilizadores, classes, etc
+
+\section{Formas de autenticação}\label{sec:autenticacao}
 A \acrshort{api} de dados e a interface estavam inicialmente ``juntas'' (aplicação monolítica) onde as rotas eram protegidas contudo, com a separação da aplicação em duas partes, ambas partes deixaram de estar protegidas. Devido à plataforma já ter estado protegida esta já possui duas formas de autenticação, através de chaves \acrshort{api} e através de utilizadores registados. Ou seja, tanto o registo de utilizadores e de chaves API já se encontra implementado bem como o \textit{login} de utilizadores.
 
 As chaves \acrshort{api} existem por forma a dar acesso a certas rotas da \acrshort{api} a aplicações que interajam com a mesma (por exemplo sistemas de informação) sem a necessidade de interação humana.
@@ -52,7 +66,7 @@ Já os utilizadores poderão realizar todos os pedidos que as chaves \acrshort{a
 
 A proteção da \acrshort{api} terá de ter esta hierarquia em conta.
 
-\subsubsection{Registo}
+\subsection{Registo}
 
 Como já referido, tanto o registo de chaves \acrshort{api} como de utilizadores já se encontra implementado.
 
@@ -75,7 +89,10 @@ Durante esta tese com a proteção da \acrshort{api} ficará apenas possível o 
     \item A autenticação, no primeiro acesso, deve ser efetuada com o \acrlong{cc}.
 \end{itemize}
 
-\subsubsection{\textit{Login}}
+%TODO
+TODO: explicar melhor a parte de autenticacao.gov
+
+\subsection{\textit{Login}}
 
 O \textit{login} apenas está presente para o caso dos utilizadores visto que assim que uma chave \acrshort{api} é registada é enviado por email um \acrshort{jwt} com a duração de 30 dias a ser usado nos pedidos a realizar à \acrshort{api}. O utilizador poderá ao fim dos 30 dias renovar a sua chave \acrshort{api}, onde é gerado um novo \acrshort{jwt}.
 
@@ -94,3 +111,6 @@ No caso do \textit{login} através do Autenticação.gov, o utilizador tem de se
 \end{figure}
 
 No \textit{login} do utilizador é gerado um \acrshort{jwt} com a duração de 8 horas que deve ser usado nos pedidos a realizar à \acrshort{api}. No fim das 8 horas o utilizador necessita de se autenticar de novo.
+
+%TODO
+TODO: explicar melhor a parte de autenticacao.gov
