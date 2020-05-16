@@ -359,9 +359,53 @@ Portanto, por exemplo para obter as Classes em \acrshort{csv} basta realizar o s
 
 Já em termos de fluxo dos dados durante esta exportação, para as 8 primeiras rotas da tabela~\ref{table:rotasExp} inicialmente os dados são obtidos da \acrshort{bd}, caso o formato de saída seja o \acrshort{json} é devolvido a quem pediu sem qualquer conversão. Caso contrário os dados são convertidos através de um dos conversores já descritos para o formato de saída apropriado. Na última rota, a da exportação da ontologia, a informação é devolvida no formato apropriado pela própria \acrshort{bd} (\textit{GraphDB}) de acordo com o pedido.
 
-\section{API Gateway}
-%TODO
-TODO: Escolher a tecnologia, explicando porquê
+\section{\acrshort{api} Gateway}
+
+Nesta secção é escolhida a tecnologia \textit{\acrshort{api} Gateway} a usar de acordo com os requisitos necessários.
+
+Apresenta-se de seguida os requisitos que a \textit{\acrshort{api} Gateway} deve possuir:
+\begin{itemize}
+    \item Ser gratuita e \textit{open-source}
+    \item Suportar \acrshort{https}, \acrshort{cors} e \acrshort{jwt}
+    \item Suportar Autenticação e Autorização personalizada (Criação de \textit{plugin}/middleware)
+    \item Possível automatização ao definir apenas ficheiros de configuração sem qualquer uso de \acrshort{cli}s, \acrshort{gui}s ou \acrshort{api}s
+    \item Suportar deployment em \textit{Docker}
+    \item Suportar \textit{rate limit} e \textit{cache}
+    \item Suportar versionamento da \acrshort{api}
+    \item Balanceamento de carga e servir de \textit{reverse proxy}
+    \item \textit{Logs} e métricas
+    \item Integração da documentação desenvolvida na especificação \textit{OpenAPI}
+\end{itemize}
+
+Antes de fazer uma comparação entre as várias \textit{\acrshort{api} Gateway}s exploradas no estado de arte (~\ref{sec:api_gateway}) há uma que é imediatamente descartada, a \textit{Moleculer \acrshort{api} Gateway}. Esta \textit{\acrshort{api} Gateway} tem um melhor caso de uso quando a(s) \acrshort{api}(s) desenvolvida(s) usam a \textit{framework} \textit{Moleculer}. Como este não é o caso da \acrshort{clav} não teremos em consideração esta \textit{\acrshort{api} Gateway} na próxima tabela.
+
+\begin{table}[H]
+    \footnotesize
+    \begin{center}
+    \begin{tabular}{|>{\centering\arraybackslash}p{0.3\textwidth}|>{\centering\arraybackslash}p{0.14\textwidth}|>{\centering\arraybackslash}p{0.14\textwidth}|>{\centering\arraybackslash}p{0.14\textwidth}|>{\centering\arraybackslash}p{0.14\textwidth}|}
+    \hline
+        Requisito & \textit{Nginx} & \textit{Kong} & \textit{Tyk} & \textit{Express Gateway} \\ \hline
+        Ser gratuita e \textit{open-source} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} \\ \hline
+        Suportar \acrshort{https}, \acrshort{cors} e \acrshort{jwt} & \acrshort{jwt} apenas na versão paga. Necessário usar \textit{plugin} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} \\ \hline
+        Suportar Autenticação e Autorização personalizada (Criação de \textit{plugin}/middleware) & {\color{green}\ding{52}} (em \textit{Lua}) & {\color{green}\ding{52}} (em \textit{Lua}) & {\color{green}\ding{52}} (em \textit{Python}, \textit{Lua} ou \textit{Javascript}) & {\color{green}\ding{52}} (em \textit{Javascript}) \\ \hline
+        Possível automatização do \textit{deployment} ao definir apenas ficheiros de configuração sem qualquer uso de \acrshort{cli}s, \acrshort{gui}s ou \acrshort{api}s & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{red}\ding{54}} & {\color{green}\ding{52}} \\ \hline
+        Suportar deployment em \textit{Docker} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} \\ \hline
+        Suportar \textit{rate limit} e \textit{cache} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & Não possui \textit{cache} \\ \hline
+        Suportar versionamento da \acrshort{api} & {\color{red}\ding{54}} & {\color{red}\ding{54}} & {\color{green}\ding{52}} & {\color{red}\ding{54}} \\ \hline
+        Balanceamento de carga e servir de \textit{reverse proxy} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} \\ \hline
+        \textit{Logs} e métricas & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} \\ \hline
+        Integração da documentação desenvolvida na especificação \textit{OpenAPI} & {\color{red}\ding{54}} & {\color{red}\ding{54}} & {\color{green}\ding{52}} & {\color{red}\ding{54}} \\ \hline
+    \end{tabular}
+    \end{center}
+    \caption{Comparação entre \textit{\acrshort{api} Gateway}s~\cite{compAPIGat,kong,tyk}}
+    \label{table:APIGateway}
+\end{table}
+
+Infelizmente nenhuma das tecnologias suporta todos os requisitos. Assim a partir da tabela~\ref{table:APIGateway} irá ser escolhida a tecnologia a usar tendo em conta a importância de cada requisito.
+
+Das quatro tecnologias presentes na tabela, podemos desde já descartar o \textit{Tyk} visto não permitir automatizar o \textit{deployment}. Sobram, assim, o \textit{Nginx}, o \textit{Kong} e o \textit{Express Gateway}. Destas três, verifica-se que a última possui menos funcionalidades e portanto não será a tecnologia escolhida.
+
+Entre o \textit{Nginx} e o \textit{Kong} a escolha irá prender-se com a facilidade e poder de configuração visto que os requisitos presentes em cada tecnologia são muito semelhantes. O \textit{Kong} é construido a partir do \textit{Nginx} (daí as suas parecenças em termos de requisitos presentes) e é possível configurar o \textit{Nginx} a partir do \textit{Kong}. Para além disso, o \textit{Kong} possui vários \textit{plugins} por forma a permitir certas funcionalidades que no \textit{Nginx} seria necessário configurar manualmente para atingir essas funcionalidades. Portanto a escolha tecnológica para a \textit{\acrshort{api} Gateway} recai sobre o \textit{Kong}.
 
 \section{Migração de HTTP para HTTPS}
 %TODO

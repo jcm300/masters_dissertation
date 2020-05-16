@@ -1084,9 +1084,188 @@ TODO
 %TODO
 TODO: o que é e alternativas
 
-\section{API Gateway}
-%TODO
-TODO: Explorar as várias alternativas: Kong, Nginx Plus, Express Gateway, Moleculer API Gateway
+\section{\acrshort{api} Gateway}\label{sec:api_gateway}
+
+Uma \textit{\acrshort{api} Gateway} encapsula a arquitetura interna em microserviços de uma aplicação, expondo uma única e simples \acrshort{api} através de um único \acrshort{url}, ou seja, um único ponto de entrada para a aplicação. Em arquiteturas baseadas em microserviços o não uso de uma \textit{\acrshort{api} Gateway} implica que os utilizadores da aplicação tenham provavelmente de agregar dados de diferentes serviços, manter vários \textit{endpoints}, realizar uma maior quantidade de pedidos e ter possivelmente uma autenticação diferente para cada serviço.
+
+Uma \textit{\acrshort{api} Gateway} inclui normalmente~\cite{apiGatInfo,apiGatInfo2}:
+\begin{itemize}
+    \item Segurança (Autenticação e Autorização)
+    \item Gestão de cotas e \textit{throttling}
+    \item Caching
+    \item Processamento e composição da \acrshort{api}
+    \item Roteamento
+    \item Monitorização da \acrshort{api}
+    \item Versionamento (possível automatização)
+    \item Balanceamento de carga
+    \item \textit{Rate Limit}
+\end{itemize}
+
+Além disso, a \textit{\acrshort{api} Gateway} tem como vantagens:~\cite{apiGatInfo, apiGatInfo3}
+\begin{itemize}
+    \item Simplifica o código da \acrshort{api}
+    \item Oferece um vista única e central da \acrshort{api} e, portanto, é mais provável que permita uma política consistente
+    \item Agregação e transformação de dados para simplificar a interação dos clientes com os microserviços distribuídos. A agregação de dados permite também reduzir o número de pedidos
+    \item Esconder a arquitetura interna e distribuir as aplicações baseadas em microserviços reduzindo, geralmente a sobrecarga de configuração 
+    \item Código do cliente mais simples e limpo: quando os serviços cliente e \textit{backend} são separados, o cliente não necessita de saber os vários serviços infividuais do \textit{backend} facilitando a manutenção do código bem como a refaturação dos serviços sem que estas tenham impacto entre cliente e \textit{backend}. Além disso, com uma \textit{\acrshort{api} Gateway} não é necessário construir lógica por forma a acompanhar os \textit{endpoints}.
+    \item Menos latência é igual a uma melhor experiência do utilizador: uma operação do lado do cliente pode necessitar de realizar vários pedidos aos serviços de \textit{backend}, aumentando a latência da operação. Com a presença de uma \textit{\acrshort{api} Gateway} pode ser efetuado um único pedido a esta que irá realizar os pedidos internos necessários, agregar os resultados e devolver a resposta ao cliente.
+    \item Autenticação e Encriptação simplificada: Sem o uso de uma \textit{\acrshort{api} Gateway} cada serviço de \textit{backend} necessita de tomar as suas decisões de segurança o que aumenta a complexidade do código a desenvolver para um microserviço. Com o aumento da complexidade do código aumenta a possibilidade de erros bem como o aumento da superfícide de ataque por utilizadores mal intencionados. Com o uso de uma \textit{\acrshort{api} Gateway} toda a segurança está centralizada num único serviço.
+\end{itemize}
+
+Contudo, tem como desvantagens~\cite{apiGatInfo}:
+\begin{itemize}
+    \item Possível ponto único de falha ou de \textit{bottleneck}
+    \item Risco de complexidade já que todas as regras da \acrshort{api} estão num único local
+    \item Risco de \textit{lock-in} e a migração pode não ser simples
+\end{itemize}
+
+Olhando um pouco mais da perspetiva da segurança o controlo de acesso é a principal vantagem de segurança de uma \textit{\acrshort{api} Gateway} permitindo a uma organização gerir quem pode aceder à \acrshort{api} e estabelecer regras de como os pedidos de dados são tratados. O acesso de controlo estende-se também a outras políticas como o \textit{rate limit} às rotas da \acrshort{api} ou até o pagamento para aceder a certos recursos da \acrshort{api}.
+
+Como todo o tráfego das rotas da \acrshort{api} passa por um \textit{gateway}, os especialistas de segurança sentem-se mais confiantes de que têm no ``no pulso'' a \acrshort{api}.~\cite{apiGatInfo}
+
+A \textit{\acrshort{api} Gateway} pode introduzir segurança nas mensagens enviadas entre os serviços internos através de encriptação tornando os serviços internos mais seguros. Além disso, é necessário um correto mecanismo de autenticação em conjunto com o uso de \acrshort{tls} por forma a evitar o acesso a rotas de pessoas não autorizadas. O uso de um mau mecanismo de autenticação (p.e. ser apenas necessário fornecer o número de telemóvel) pode levar a que qualquer pessoa consiga obter os dados de outra por exemplo.
+
+Outro ponto a ter em conta em relação à proteção de uma \acrshort{api} é a proteção contra ameaças. Sem esta, a \textit{\acrshort{api} Gateway}, a(s) \acrshort{api}(e) e outros serviços estão inseguros. Ou seja, potenciais hackers ou malware podem facilmente tentar propagar ataques tais como \acrshort{ddos} ou injeções de \acrshort{sql}, \textit{RegEx}, \acrshort{xml} ou ainda no caso específico da \acrshort{clav} injeções de \acrshort{sparql}. É assim importante realizar validação de \textit{input} da \acrshort{api}. As validações de \textit{input} mais comuns são:
+\begin{itemize}
+    \item Tamanho da mensagem
+    \item Proteção contra injeções \acrshort{sql}
+    \item Proteção contra \textit{content-level attacks} do \acrshort{json}. Estes ataques são o uso de grandes ficheiros \acrshort{json} por forma a sobrecarregar o \acrshort{json} \textit{parser} e este eventualmente \textit{crashar}.
+    \item Proteção contra ameaças em \acrshort{xml}. Estes ataques envolvem normalmente \textit{payloads} recursivos, injeções \acrshort{sql} ou \textit{XPath}/\acrshort{xslt} com o mesmo intuito de sobrecarregar o \acrshort{xml} \textit{parser} e este eventualmente \textit{crashar}.
+\end{itemize}
+
+Já no caso do tratamento de erros e do código de estado \acrshort{http} em resposta aos pedidos, é uma boa prática que sejam devolvidos os códigos de estado corretos e com mensagens de erro curtas (apenas o necessário) sem incluirem o \textit{stack trace} visto ser um ponto de insegurança ao permitir qualquer intruso saber por exemplo, as \textit{packages} e as \textit{frameworks} usadas. A \textit{\acrshort{api} Gateway} pode ser usada para uniformizar as mensagens de erro devolvidas, impedindo também a possível exposição do código do \textit{backend}.
+
+Por último, ao obrigar a autenticação de todos os utilizadores da \acrshort{api} e ao manter \textit{logs} dos acessos à \acrshort{api} torna possível limitar a taxa de consumo da \acrshort{api} para os utilizadores desta. Muitas \textit{\acrshort{api} Gateway}s permitem limitar o número de acessos que podem ser feitos para cada recurso da \acrshort{api} por segundo, minuto, dia ou outra restrição relevante.
+
+Existem várias \textit{\acrshort{api} Gateway}s das quais se destacam Express Gateway, Kong, Moleculer \acrshort{api} Gateway, Tyk \acrshort{api} Gateway e Nginx Plus. Iremos explorar um pouco de cada. Existem outras como, por exemplo, \textit{Amazon's \acrshort{api} Gateway}, contudo é apenas utilizável se pretendermos usar \acrshort{aws} e as suas máquinas para o \textit{deployment}. Como não é o caso, não a iremos explorar nesta secção.
+
+\subsection{Express Gateway}
+
+\textit{Express Gateway} é uma \textit{\acrshort{api} Gateway} que pode ser colocada em qualquer arquitetura de microserviços, independentemente da linguagem ou plataforma que se use. O \textit{Express Gateway} protege e expõe os microserviços através de \acrshort{api}s usando \textit{Node.js}, \textit{ExpressJS} e \textit{middleware} \textit{Express}. Além disso é \textit{open-source} e posssui as seguintes funcionalidades:~\cite{kong}
+\begin{itemize}
+    \item Politicas empresariais que são normalmente pagas noutras \textit{\acrshort{api} Gateway}s são aqui gratuitas
+    \item Configuração através de um ficheiro \acrshort{yaml}
+    \item Arquitetura de \textit{plugins}
+    \item Extensível com mais de 3000 módulos
+    \item Corre em qualquer lado (Docker, etc)
+    \item Deteta automaticamente e recarrega quando há alterações na configuração
+    \item Suporta qualquer linguagem e \textit{framework}
+    \item Suporta todos os casos de uso de microserviços, padrões e arquiteturas
+    \item Suporte para \acrshort{https}, \acrshort{cors}, \acrshort{jwt} entre outros
+\end{itemize}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.7\textwidth]{img/expressGatArch.png}
+    \end{center}
+    \caption{Arquitetura do \textit{Express Gateway}. Fonte:~\cite{kongArch}}
+\end{figure}
+
+Por definição, o \textit{Express Gateway} usa uma base de dados em memória para testes e para começar a experimentar. O \textit{Express Gateway} pode correr com ou sem \textit{backend} e se uma base de dados persistente for desejada é suportado o \textit{Redis}. A configuração do \textit{Express Gateway} é armazenada num ficheiro \acrshort{yaml} e como tal o \textit{Express Gateway} apenas guarda dados transacionais como informação de utilizadores e de \textit{tokens} de acesso na base de dados. Ou seja, nem sempre é necesssário o uso da base de dados, depende do caso de uso.
+
+A configuração como já referido é definida num ficheiro \acrshort{yaml} sendo que existe uma \acrshort{api} e uma \acrshort{cli} para gerir utilizadores e credenciais. Oficialmente não existe uma \acrshort{gui} para a \acrshort{api}.
+
+Quanto ao desenvolvimento de \textit{plugins} para o \textit{Express Gateway} o mesmo pode ser feito através de \textit{JavaScript} usando a \textit{framework} \textit{Express}. Os \textit{plugins} são análogos ao \textit{middleware} \textit{Express}. 
+
+\subsection{Kong}
+
+O \textit{Kong} é uma \textit{\acrshort{api} Gateway} \textit{open-source} escalável, escrita em \textit{Lua} e que pode correr à frente de qualquer \acrshort{api}. O \textit{Kong} é construído em cima do \textit{Nginx}, \textit{OpenResty} e \textit{Apache Cassandra} ou \textit{PostgreSQL}. O \textit{core} do \textit{Kong} pode ser expandido em termos de funcionalidades e serviços através de \textit{plugins}.
+
+Algumas das funcionalidades presentes são:~\cite{kong}
+\begin{itemize}
+    \item Tarefas de configuração e administração divididas entre \acrshort{rest} \acrshort{api} e \acrshort{cli}
+    \item Extensível através de 36 \textit{plugins} disponíveis (6 deles são comerciais, o resto é \textit{open-source})
+    \item Corre em qualquer lado (Kubernetes, Docker, etc)
+    \item Escala ao apenas adicionar mais máquinas
+    \item Realiza balanceamento de carga dinamicamente através dos vários serviços de \textit{backend}
+    \item Suporte para um conjunto de políticas para todos os \textit{endpoints} da \acrshort{api} que pode ser modificado com fluxo condicional
+    \item Suporta qualquer \textit{framework} e linguagem
+    \item Suporta todos os casos de uso de microserviços, padrões e arquiteturas
+    \item Suporte para \acrshort{https}, \acrshort{cors}, \acrshort{jwt} entre outros
+\end{itemize}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.85\textwidth]{img/kongArch.png}
+    \end{center}
+    \caption{Arquitetura do \textit{Kong}. Fonte:~\cite{kongArch}}
+\end{figure}
+
+A forma mais fácil de instalar (\textit{deploy}) o \textit{Kong} é através do uso de \textit{Docker} ou de \textit{Kubernetes}.
+
+A configuração do \textit{Kong} é armazenada no \textit{PostgreSQL} ou no \textit{Cassandra}. Há, contudo, a hipótese de usar uma configuração declarativa que não necessita de uma base de dados para manter a configuração. Esta configuração declarativa é definida pelo utilizador num ficheiro \acrshort{yaml} ou \acrshort{json} e tem várias vantagens já que reduz a carga de trabalho da máquina de instalação, reduz o número de dependências, diminui a necessidade de manutenção e permite a automatização do processo de \textit{deploy}.~\cite{KongDBLess} A \acrshort{gui} oficial de administração do \textit{Kong} apenas está disponível na versao paga, contudo é possivel usar uma versão \textit{third-party} como por exemplo o \textit{Konga}.
+
+Como o \textit{Kong} é construído sobre o \textit{Nginx} os vários \textit{plugins} necessitam de ser escritos em \textit{Lua}.
+
+Uma das principais desvantagens do \textit{Kong} é que muitas das funcionalidades tem de ser ativadas através da configuração obrigando a um tempo inicial de \textit{setup}.
+
+\subsection{Moleculer \acrshort{api} Gateway}
+
+\textit{Moleculer} é uma \textit{framework} \textit{open-source} que contém as funcionalidades mais importantes numa arquitetura baseada em microserviços. Ajuda a constuir serviços escaláveis, eficientes e fiáveis oferecendo também várias funcionalidades para construir e gerir os microserviços.
+
+Das várias funcionalidades desta \textit{framework} está presente o módulo da \textit{\acrshort{api} Gateway}.
+
+Esta \textit{\acrshort{api} Gateway} tem como funcionalidades:~\cite{moleculerAPIG}
+\begin{itemize}
+    \item Suporta \acrshort{http} e \acrshort{https}
+    \item Serve ficheiros estáticos
+    \item Suporta \textit{middlewares}
+    \item Suporta o \textit{upload} de ficheiros
+    \item Multiplos \textit{body parsers} (\acrshort{json}, \textit{urlencoded})
+    \item Cabeçalhos \acrshort{cors}
+    \item \acrshort{http}2
+    \item \textit{Rate limiter}
+    \item Suporta autorização
+    \item Modo \textit{middleware}
+\end{itemize}
+
+Para além disso, esta \textit{\acrshort{api} Gateway} pode ser usada como \textit{middleware} numa \acrshort{api} desenvolvida com \textit{Express} (o caso da \acrshort{api} da \acrshort{clav}). Contudo, o recomendável para usar esta \textit{\acrshort{api} Gateway} é que a \acrshort{api} tenha sido desenvolvida com a \textit{framework} \textit{Moleculer}.
+
+\subsection{Tyk \acrshort{api} Gateway}
+
+O \textit{Tyk} é uma \textit{\acrshort{api} Gateway} \textit{open-source} com componentes gratuitos e outros pagos. Esta plataforma é escrita em \textit{Go} e consiste numa \textit{\acrshort{api} Gateway} e num \textit{Dashboard}. Enquanto que o \textit{core} da \textit{\acrshort{api} Gateway} é gratuita e \textit{open-source}, o \textit{dashboard} requere a compra de licensas. A versão gratuita permite o uso de uma instância \textit{\acrshort{api} Gateway}. Para duas ou mais instâncias é necessário pagar. O \textit{Tyk} também possui uma versão \textit{cloud} (\textit{Tyk Cloud}) em que a versão gratuita permite até 50000 pedidos à \acrshort{api} diariamente. Tudo acima disso é também necessário pagar.
+
+Em termos de funcionalidades, o \textit{Tyk} possui:~\cite{tyk}
+\begin{itemize}
+    \item \acrshort{api} \acrshort{rest}ful
+    \item Multiplos protocolos de acesso
+    \item \textit{Rate limiting} e cotas
+    \item Controlo de acesso granular
+    \item Expiração de chaves
+    \item Versionamento da \acrshort{api}
+    \item Logs
+    \item Restarts sem tempo de inatividade
+    \item Suporte para \acrshort{https}, \acrshort{cors}, \acrshort{jwt} entre outros
+\end{itemize}
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.5\textwidth]{img/tykArch.png}
+    \end{center}
+    \caption{Arquitetura do \textit{Tyk}. Fonte:~\cite{tyk}}
+\end{figure}
+
+O \textit{core} da \textit{\acrshort{api} Gateway} apenas necessita do \textit{Redis} contudo o produto todo (incluindo o \textit{dashboard}) necessita também como dependências \textit{MongoDB} e \textit{Tyk Pump}. Isto coloca uma maior carga na máquina do servidor que se pode evitar tornando também mais dificil de instalar e de gerir numa máquina local.
+
+Em termos de administração, o \textit{tyk} possui duas hipóteses, a gestão através da \textit{web} \acrshort{gui} ou através de \acrshort{rest} \acrshort{api}s. A configuração do \textit{Tyk} é armazenada no \textit{Redis}. O \textit{Tyk} é melhor que os seus concorrentes (\textit{Kong} e \textit{Nginx}) para projetos que pretendem ter a maioria das funcionalidades a funcionar desde o dia um (apenas na versão paga) visto não ser necessário explorar as várias opções disponíveis o que pode demorar algum tempo.~\cite{compAPIGat}
+
+\subsection{Nginx Plus}
+
+O \textit{Nginx Controller} disponível permite gerir o \textit{Nginx Plus} por forma a servir de \textit{load balancer}, \textit{proxy} ou ainda de \textit{\acrshort{api} Gateway}. Com o módulo \textit{\acrshort{api} Management} do \textit{Nginx Controller} é possíel definir, publicar, proteger, monitorizar e analizar \acrshort{api}s. Para tal o \textit{Nginx Controller} gera configuração para o \textit{Nginx Plus}.
+
+Numa comparação de performance com o Kong verifica-se que o \textit{Nginx Plus} escala melhor do que o \textit{Kong}.~\cite{nginxPvsKong} Nos testes realizados chegou-se à conclusão que o módulo \textit{\acrshort{api} Management} do \textit{Nginx Plus} adiciona 20\% a 30\% menos latência aos pedidos dos utilizadores se compararmos com o \textit{Kong}. Além disso, usa menos 40\% de \acrshort{cpu} se compararmos com o \textit{Kong} com a mesma carga de trabalho.
+
+Em termos de funcionalidades o \textit{\acrshort{api} Management} do \textit{Nginx Controller} possui:~\cite{nginxP}
+\begin{itemize}
+    \item Definição e publicação da \acrshort{api}: Permite criar múltiplas definições de \acrshort{api} e os seus recursos de componentes, gerenciar servidores \textit{backend}, direcionar recursos e publicar a configuração resultante nas instâncias \textit{Nginx Plus}.
+    \item \textit{Rate limiting}: Permite mitigar ataques de \acrshort{ddos} e protege as aplicações de serem inundadas de pedidos ao definir limites de \textit{bandwith} e de pedidos.
+    \item \textit{Autenticação}: Permite autenticar pedidos usando \textit{\acrshort{api} keys} e \acrshort{jwt}s.
+    \item Monitorização e alerta: Permite analisar a performance e as métricas das instâncias \textit{Nginx Plus}. Permite também definir alertas quando alguma métrica passa certo valor.
+\end{itemize}
+
+Além destas funcionalidades é possível também usar o \textit{Nginx Controller} para criar/gerir \textit{load balancers}. O \textit{Nginx Plus} é uma versão paga e a versão gratuita do \textit{Nginx} não possui o \textit{Nginx Controller} mas é possível usar a versão gratuita através do uso de \textit{plugins} por forma a produzir uma \textit{\acrshort{api} Gateway}~\cite{compAPIGat}. O uso da versão gratuita obriga claro a um maior trabalho e \textit{try and error} por forma a atingir o objetivo final.
+
+A principal dificuldade de usar o \textit{Nginx} é que a configuração pode ser um pouco complicada de usar e de perceber na sua totalidade possuindo uma acentuada curva de aprendizagem.
 
 \section{Instalação/Migração/Integração}
 
