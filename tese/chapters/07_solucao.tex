@@ -387,7 +387,7 @@ Antes de fazer uma comparação entre as várias \textit{\acrshort{api} Gateway}
         Requisito & \textit{Nginx} & \textit{Kong} & \textit{Tyk} & \textit{Express Gateway} \\ \hline
         Ser gratuita e \textit{open-source} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} \\ \hline
         Suportar \acrshort{https}, \acrshort{cors} e \acrshort{jwt} & \acrshort{jwt} apenas na versão paga. Necessário usar \textit{plugin} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} \\ \hline
-        Suportar Autenticação e Autorização personalizada (Criação de \textit{plugin}/middleware) & {\color{green}\ding{52}} (em \textit{Lua}) & {\color{green}\ding{52}} (em \textit{Lua}) & {\color{green}\ding{52}} (em \textit{Python}, \textit{Lua} ou \textit{Javascript}) & {\color{green}\ding{52}} (em \textit{Javascript}) \\ \hline
+        Suportar Autenticação e Autorização personalizada (Criação de \textit{plugin}/middleware) & {\color{green}\ding{52}} (em \textit{Lua}) & {\color{green}\ding{52}} (em \textit{Lua} ou \textit{Go}) & {\color{green}\ding{52}} (em \textit{Python}, \textit{Lua} ou \textit{Javascript}) & {\color{green}\ding{52}} (em \textit{Javascript}) \\ \hline
         Possível automatização do \textit{deployment} ao definir apenas ficheiros de configuração sem qualquer uso de \acrshort{cli}s, \acrshort{gui}s ou \acrshort{api}s & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{red}\ding{54}} & {\color{green}\ding{52}} \\ \hline
         Suportar deployment em \textit{Docker} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} \\ \hline
         Suportar \textit{rate limit} e \textit{cache} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & Não possui \textit{cache} \\ \hline
@@ -406,6 +406,30 @@ Infelizmente nenhuma das tecnologias suporta todos os requisitos. Assim a partir
 Das quatro tecnologias presentes na tabela, podemos desde já descartar o \textit{Tyk} visto não permitir automatizar o \textit{deployment}. Sobram, assim, o \textit{Nginx}, o \textit{Kong} e o \textit{Express Gateway}. Destas três, verifica-se que a última possui menos funcionalidades e portanto não será a tecnologia escolhida.
 
 Entre o \textit{Nginx} e o \textit{Kong} a escolha irá prender-se com a facilidade e poder de configuração visto que os requisitos presentes em cada tecnologia são muito semelhantes. O \textit{Kong} é construido a partir do \textit{Nginx} (daí as suas parecenças em termos de requisitos presentes) e é possível configurar o \textit{Nginx} a partir do \textit{Kong}. Para além disso, o \textit{Kong} possui vários \textit{plugins} por forma a permitir certas funcionalidades que no \textit{Nginx} seria necessário configurar manualmente para atingir essas funcionalidades. Portanto a escolha tecnológica para a \textit{\acrshort{api} Gateway} recai sobre o \textit{Kong}.
+
+\subsection{Arquitetura}
+
+Após a escolha da \textit{\acrshort{api} Gateway} a usar (\textit{Kong}) é necessário proceder ao esboço de uma arquitetura base a desenvolver. Esta arquitetura apresenta-se de seguida:
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{img/apiGatewayArch.png}
+    \end{center}
+    \caption{Arquitetura a desenvolver com \textit{\acrshort{api} Gateway}}\label{fig:apiGatewayArch}
+\end{figure}
+
+Apesar das várias vantagens do \textit{Kong} não é possível, através dos plugins fornecidos por este, realizar uma proteção das rotas semelhante à presente na \acrshort{api} de dados da \acrshort{clav}. Portanto, com o intuito de simplificar a \acrshort{api} de dados, a ideia passa por retirar da \acrshort{api} de dados da \acrshort{clav} tudo que envolva proteção desta, tais como a verificação de tokens (autenticação), a geração de tokens bem como a verificação da autorização de um utilizador (verificar se o nível do utilizador é suficiente para aceder determinada rota), e colocar estas funcionalidades noutro servidor independente da \acrshort{api} de dados. Este servidor está representado na arquitetura como Serviço de Auth que procederá então à autenticação e autorização dos pedidos realizados pelos clientes.
+
+Com esta separação a \acrshort{api} de dados precisará de realizar pedidos ao Serviço de Auth para a verificação e geração de tokens em casos particulares como o \textit{login} de um utilizador ou a \textit{criação} de uma Chave \acrshort{api}.
+
+Todos os pedidos realizados pelos clientes e pela interface da \acrshort{clav} tem como ponto de entrada o \textit{Kong}. Este, através de um plugin, para cada pedido que recebido irá realizar um pedido ao Serviço de Auth onde:
+
+\begin{enumerate}
+    \item Verifica-se quem pode aceder (que tipo de clientes) à rota do pedido
+    \item Procede-se à autenticação do pedido (se necessário)
+    \item Procede-se à autorização do pedido (se necessário)
+\end{enumerate}
+
+Caso a resposta do Serviço de Auth seja positiva então o \textit{Kong} procederá à realização do pedido à \acrshort{api} de dados. Caso contrário, o pedido à \acrshort{api} de dados não é efetuado e é devolvido ao utilizador a resposta de erro correspondente (erro de autenticação ou de autorização).
 
 \section{Migração de HTTP para HTTPS}
 %TODO
