@@ -161,7 +161,7 @@ De forma a completar a figura~\ref{fig:authgov} apresenta-se de seguida o fluxo 
     \begin{center}
         \includegraphics[width=1\textwidth]{img/fluxoauthgov.png}
     \end{center}
-    \caption{Fluxo de pedidos entre a \acrshort{clav} e o Autenticação.gov de forma a autenticar um utilizador na \acrshort{clav}. Fonte:~\cite{agov}}\label{fig:fluxoauthgov}
+    \caption{Fluxo de pedidos entre a \acrshort{clav} e o Autenticação.gov de forma a autenticar um utilizador na \acrshort{clav}.~\cite{agov}}\label{fig:fluxoauthgov}
 \end{figure}
 
 \begin{enumerate}
@@ -1158,7 +1158,7 @@ Existem várias \textit{\acrshort{api} Gateway}s das quais se destacam Express G
     \begin{center}
         \includegraphics[width=0.7\textwidth]{img/expressGatArch.png}
     \end{center}
-    \caption{Arquitetura do \textit{Express Gateway}. Fonte:~\cite{kongArch}}
+    \caption{Arquitetura do \textit{Express Gateway}.~\cite{kongArch}}
 \end{figure}
 
 Por definição, o \textit{Express Gateway} usa uma base de dados em memória para testes e para começar a experimentar. O \textit{Express Gateway} pode correr com ou sem \textit{backend} e se uma base de dados persistente for desejada é suportado o \textit{Redis}. A configuração do \textit{Express Gateway} é armazenada num ficheiro \acrshort{yaml} e como tal o \textit{Express Gateway} apenas guarda dados transacionais como informação de utilizadores e de \textit{tokens} de acesso na base de dados. Ou seja, nem sempre é necesssário o uso da base de dados, depende do caso de uso.
@@ -1188,7 +1188,7 @@ Algumas das funcionalidades presentes são:~\cite{kong}
     \begin{center}
         \includegraphics[width=0.85\textwidth]{img/kongArch.png}
     \end{center}
-    \caption{Arquitetura do \textit{Kong}. Fonte:~\cite{kongArch}}
+    \caption{Arquitetura do \textit{Kong}.~\cite{kongArch}}
 \end{figure}
 
 A forma mais fácil de instalar (\textit{deploy}) o \textit{Kong} é através do uso de \textit{Docker} ou de \textit{Kubernetes}.
@@ -1242,7 +1242,7 @@ Em termos de funcionalidades, o \textit{Tyk} possui:~\cite{tyk}
     \begin{center}
         \includegraphics[width=0.5\textwidth]{img/tykArch.png}
     \end{center}
-    \caption{Arquitetura do \textit{Tyk}. Fonte:~\cite{tyk}}
+    \caption{Arquitetura do \textit{Tyk}.~\cite{tyk}}
 \end{figure}
 
 O \textit{core} da \textit{\acrshort{api} Gateway} apenas necessita do \textit{Redis} contudo o produto todo (incluindo o \textit{dashboard}) necessita também como dependências \textit{MongoDB} e \textit{Tyk Pump}. Isto coloca uma maior carga na máquina do servidor que se pode evitar tornando também mais dificil de instalar e de gerir numa máquina local.

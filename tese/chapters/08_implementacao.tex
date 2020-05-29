@@ -317,17 +317,104 @@ routes:
 \end{lstlisting}
 A propriedade \texttt{strip\_path} com valor falso impede que o \textit{Kong} associe (parecido com um \textit{bind}) o caminho \texttt{/<Versão API>/docs} do \textit{Kong} ao caminho \texttt{/} da \acrshort{api} de dados. Assim, quando se faz o pedido a esta rota o pedido que é feito na \acrshort{api} de dados é no caminho \texttt{/<Versão API>/docs} desta. 
 
-Por fim, o mais dificil para o final, procedeu-se à configuração do \acrshort{https} no \textit{Kong}.
-TODO
+Por fim, procedeu-se à configuração do \acrshort{https} no \textit{Kong}. Como se usa os certificados do \textit{Let's Encrpyt} pode-se usar o \textit{plugin} \texttt{acme} do \textit{Kong}\cite{kongACME}:
+\begin{lstlisting}[language=yaml, caption=Configuração declarativa do \textit{Kong}: \textit{plugin} \texttt{acme}]
+plugins:
+  - name: acme
+    config:
+      account_email: $EMAIL
+      domains: $DOMAINS_LIST
+      renew_threshold_days: 15
+      storage: redis
+      storage_config:
+        redis:
+          auth: "redisPass123"
+          port: 6379
+          database: 0
+          host: $REDIS_HOST
+      tos_accepted: true
+\end{lstlisting}
+Para manter a configuração e os certificados do \textit{plugin} após reunícios do \textit{Kong} usa-se o \textit{Redis} para guardar a configuração bem como os certificados. Convém referir que este \textit{plugin} tem de ser global na configuração declarativa e não associado a um único serviço. Além disso, para permitir a geração dos certificados pelo \textit{Let's Encrypt} é necessário permitir o acesso à rota que começa em \texttt{/.well-known/acme-challenge}. Assim foi adicionado o seguinte serviço à configuração declarativa:
+\begin{lstlisting}[language=yaml, caption=Configuração declarativa do \textit{Kong}: Serviço para a geração de certificados \acrshort{tls}]
+services:
+  - name: acme-dummy
+    url: http://127.0.0.1:65535
+    routes:
+      - name: acme-dummy
+        paths:
+          - /.well-known/acme-challenge
+  - name: API
+    ...
+\end{lstlisting}
+Para ativar também o uso do \textit{plugin} \texttt{acme} é necessário no ficheiro \texttt{.conf} indicar onde estão os certificados confiáveis por forma a ser possível o \textit{Kong} iniciar inicialmente para depois puder obter os certificados do \textit{Let's Encrypt}. Para tal, é indicado na diretiva \texttt{nginx\_proxy\_lua\_ssl\_trusted\_certificate} o valor \texttt{/etc/ssl/certs/ca-certificates.crt} (esta é a localização no caso de uma distribuição Ubuntu, poderá ser diferente noutras distribuições e \acrshort{os}'s).
 
-TODO: explicar a config feita tanto o .conf como o .yaml
-TODO: explicar as variaveis ambiente
+Além disso, por forma a que quando alguém tente aceder às rotas através de \acrshort{http} seja redirecionado para o \acrshort{https} foi adicionado as seguintes propriedades nas rotas:
+\begin{lstlisting}[language=yaml, caption=Configuração declarativa do \textit{Kong}: Serviço para a geração de certificados \acrshort{tls}]
+services:
+  ...
+  - name: API
+    ...
+    routes:
+      - name: TodasRotas
+        protocols:
+          - https
+        https_redirect_status_code: 301
+        ...
+    ...
 
-Na imagem~\ref{fig:apiGatewayArch} apresentou-se uma visão abstrata da arquitetura. Apresenta-se de seguida a arquitetura final com \textit{Kong}: 
+routes:
+  - name: docs
+    ...
+    protocols:
+      - https
+    https_redirect_status_code: 301
+    ...
+\end{lstlisting}
+A propriedade \texttt{protocols} indica que protocolos deverão estar disponíveis na rota e a propriedade \texttt{https\_redirect\_status\_code} indica o \textit{status code} nos casos em que os pedidos são efetuados para o \acrshort{http}. Como este \textit{status code} é 301 os cliente serão redirecionados para o \acrshort{https}.
 
-%TODO
+Por fim, por forma a melhorar a segurança do \acrshort{https} é adicionado no ficheiro de configuração \texttt{.conf} algumas diretivas de configuração do \textit{Nginx}:
+\begin{lstlisting}[caption=Configurações do \textit{Nginx} no ficheiro de configuração \texttt{.conf}]
+#Indicar que se pretende usar ciphers personalizados
+ssl_cipher_suite = custom
+#Ciphers permitidos a usar por ordem de preferência
+sel_ciphers = EECDH+AESGCM:EDH+AESGCM:ECDHE-RSA-AES128-GCM-SHA256:AES256+EECDH:DHE-RSA-AES128-GCM-SHA256:AES256+EDH:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4
 
-TODO: Explicar implementação
+#Protocolos SSL permitidos
+nginx_http_ssl_protocols = TLSv1.2 TLSv1.3
+#Indicar que se deve preferir os ciphers do servidor em vez do cliente
+nginx_http_ssl_prefer_server_ciphers = on
+
+#Uso de DH params mais forte (com 2048 bits)
+nginx_http_ssl_dhparam = /etc/ssl/certs/dhparam.pem
+
+#Especifica a curva a usar para os ciphers ECDHE
+nginx_http_ssl_ecdh_curve = secp384r1
+
+#Ativar stapling, infelizmente não funciona porque o plugin acme usado ainda não suporta
+nginx_http_ssl_stapling = on
+nginx_http_ssl_stapling_verify = on
+
+#Melhorar tolerância quando o endereço de um dominio muda
+nginx_http_resolver = 8.8.8.8 8.8.4.4 valid=300s
+nginx_http_resolver_timeout = 5s
+
+#Tempo em que pode ser reusada uma sessão
+nginx_http_ssl_session_timeout = 1d
+
+#Tempo em que é mantida uma conexão idle a um servidor
+nginx_upstream_keepalive_timeout = 65
+\end{lstlisting}
+
+Uma pequena nota. As variáveis ambiente (\verb|${var}| ou \verb|$var|) serão substituidas antes de serem usadas pelo \textit{Kong} ao aplicar o comando \texttt{envsubst} ao ficheiro da configuração declarativa.
+
+\subsection{Arquitetura}
+Na imagem~\ref{fig:apiGatewayArch} apresentou-se uma visão inicial da arquitetura. Apresenta-se de seguida a arquitetura final com \textit{Kong}: 
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{img/apiGatewayArchFinal.png}
+    \end{center}
+    \caption{Arquitetura desenvolvida com \textit{\acrshort{api} Gateway}}\label{fig:apiGatewayArchFinal}
+\end{figure}
 
 \section{Migração de \acrshort{http} para \acrshort{https}}
 
