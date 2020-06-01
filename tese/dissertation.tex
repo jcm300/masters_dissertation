@@ -40,7 +40,7 @@
 %\keywords{master thesis}
 
 % Glossaries & Acronyms
-\makeglossaries{}  %  either use this ...
+\makeglossaries  %  either use this ...
 %\makeindex	   % ... or this
 
 % Define Acronyms
@@ -71,15 +71,15 @@
     \cleardoublepage{}
 	\chapter*{Resumo}
     \import{chapters/}{03_resumoPT.tex}
-	
+
 	% Summary Lists ------------------------------------
 	\tableofcontents
 	\listoffigures
 	\listoftables
 	\lstlistoflistings
 	%\listofabbreviations
-    \printglossary[]
-    \printglossary[type=\acronymtype, title=Lista de Acrónimos]
+    %\printglossary[]
+    \printglossary[type=\acronymtype, title={Lista de Acrónimos}, style=treenoname]
 	
 	\pagenumbering{arabic}
 	
