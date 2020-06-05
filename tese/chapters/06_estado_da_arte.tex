@@ -1045,26 +1045,47 @@ indicando no cabeçalho \acrshort{http} \textit{Accept} o formato de serializaç
 
 \section{Let's Encrypt}
 
-Para ativar o \acrshort{https} num website ou \acrshort{api}, ou seja num domínio, é necessário um \acrfull{ca} de onde obter os certificados.
+Para ativar o \acrshort{https} num website ou numa \acrshort{api}, ou seja num domínio, é necessário um \acrfull{ca} de onde obter os certificados.
 
-Para o caso da \acrshort{clav} necessita-se de um \acrshort{ca} gratuito e onde seja possível gerar certificados \acrfull{dv} (garantem apenas a validade do domínio e claro da informação trocada entre utilizador e domínio~\cite{certsTypes}).
+Para o caso da \acrshort{clav} necessita-se de um \acrshort{ca} gratuito e onde seja possível gerar certificados \acrfull{dv} (garantem apenas a validade do domínio e da informação trocada entre utilizador e domínio~\cite{certsTypes}).
 
 Assim, a escolha recaiu no \textit{Let's Encrypt}, um dos \acrshort{ca}'s mais populares. O \textit{Let's Encrypt} foi criado pela \textit{Linux Foundation} é gratuito e \textit{open-source}. Além disso, tem como patrocinadores/doadores empresas como a \textit{Mozilla}, a \textit{Cisco}, o \textit{Google Chrome}, o \textit{Facebook}, entre outros. 
 
-Para gerar o certificado \acrshort{dv} é necessário demonstrar que se possui o controlo sobre o domínio. Com o \textit{Let's Encrypt} isto é efetuado através do uso do protocolo \acrfull{acme} que necessita que se corra um agente de gestão de certificados (cliente \acrshort{acme}) no servidor \textit{web} do domínio a gerar o certificado. Assim é possível gerar/renovar certificados automaticamente sem a intervenção humana. Esta automatização é importante porque os certificados do \textit{Let's Encrypt} têm apenas a validade de 3 meses pelo que, se fosse necessario fazer manualmente teria de ser feito pelo menos de 3 em 3 meses.
+Para gerar/renovar o certificado \acrshort{dv} é necessário demonstrar que se possui o controlo sobre o domínio. Com o \textit{Let's Encrypt} isto é efetuado através do uso do protocolo \acrfull{acme} que necessita que se corra um agente de gestão de certificados (cliente \acrshort{acme}) no servidor do domínio a gerar o certificado. Assim é possível gerar/renovar certificados automaticamente sem a intervenção humana. Esta automatização é importante porque os certificados do \textit{Let's Encrypt} têm apenas a validade de 3 meses pelo que, se fosse necessario fazer manualmente teria de ser feito pelo menos de 3 em 3 meses.
 
 A escolha do cliente \acrshort{acme} a usar irá depender se se tem acesso à \textit{shell} da máquina do servidor. Em caso afirmativo o \textit{Let's Encrypt} recomenda o uso do cliente \textit{Certbot}~\cite{letEnc}.
 
 Caso não se tenha acesso à \textit{shell} irá depender se o provedor de \textit{hosting} suporta o \textit{Let's Encrypt} ou não. Se suportar então é fácil obter o certificado através do provedor. Caso contrário, pode-se pedir ao provedor o suporte (que não resolve de imediato o problema nem é de resolução garantida) ou se o provedor permitir o \textit{uploud} de certificados é possível através do \textit{Certbot} gerar um certificado em modo manual mas que acarreta efetuar esta tarefa pelo menos de 3 em 3 meses para renovar o certificado pelo que não é recomendado.
-%TODO
-TODO
 
-\subsection{Nginx}
-%~\cite{nginxcook}
-%TODO
-TODO
+\subsection{Validação do Domínio}
 
-\subsection{acme.sh}
+Nesta secção será explicado como é realizada a validação do domínio para a geração/renovação/revogação dos certificados.
+
+Na primeira vez que o agente (cliente \acrshort{acme}) interage com o \textit{Let's Encrypt} gera um novo par de chaves e prova ao \textit{Let's Encrypt} que o servidor controla um ou mais domínios.~\cite{domainValidation}
+
+Para iniciar o proceso de validação, o cliente \acrshort{acme} questiona o \textit{Let's Encrypt} para que lhe indique o que necessita fazer para provar que controla o domínio~\cite{domainValidation}. Assuma-se que queremos validar o domínio \texttt{example.com}.
+O \textit{Let's Encrypt} irá gerar um ou mais conjuntos de desafios após olhar para o nome do domínio.
+
+Há duas formas (desafios) do cliente \acrshort{acme} provar que controla o domínio perante o \textit{Let's Encrypt}~\cite{domainValidation}:
+\begin{itemize}
+    \item Providenciar um \acrshort{dns} \textit{record} sobre \texttt{example.com}
+    \item Providenciar um recurso \acrshort{http} num \acrshort{uri} conhecido em \texttt{http://example.com/}
+\end{itemize}
+
+Juntanente com os desafios, o \textit{Let's Encrypt} envia um \textit{nonce} (\textit{string} usada uma única vez) que o cliente deve assinar com a chave privada por forma a garantir que este controla o par de chaves evitando \textit{replay attacks}\footnote{Para mais informação ver \url{https://www.kaspersky.com/resource-center/definitions/replay-attack}}.
+
+Veja-se agora um exemplo concreto em que o cliente \acrshort{acme} usa o segundo desafio para provar que controla o domínio (\texttt{example.com}):
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{img/domainValidation.png}
+    \end{center}
+    \caption{Exemplo de validação do domínio pelo \textit{Let's Encrypt} com sucesso}
+\end{figure}
+
+Como o desafio teve sucesso e o \textit{nonce} assinado pelo cliente \acrshort{acme} é válido então o cliente \acrshort{acme} identificado pela chave pública está autorizado a gerir os certificados para o domínio \texttt{example.com}. Assim, para gerar/renovar/revogar o certificado para o domínio basta enviar mensangens de gestão do certificado assinadas com o chave privada (a que assinou o \textit{nonce}) para o \textit{Let's Encrypt}.
+
+\subsection{Cliente acme.sh}
 %TODO
 TODO: o que é e alternativas
 
@@ -1250,15 +1271,3 @@ Em termos de funcionalidades o \textit{\acrshort{api} Management} do \textit{Ngi
 Além destas funcionalidades é possível também usar o \textit{Nginx Controller} para criar/gerir \textit{load balancers}. O \textit{Nginx Plus} é uma versão paga e a versão gratuita do \textit{Nginx} não possui o \textit{Nginx Controller} mas é possível usar a versão gratuita através do uso de \textit{plugins} por forma a produzir uma \textit{\acrshort{api} Gateway}~\cite{compAPIGat}. O uso da versão gratuita obriga claro a um maior trabalho e \textit{try and error} por forma a atingir o objetivo final.
 
 A principal dificuldade de usar o \textit{Nginx} é que a configuração pode ser um pouco complicada de usar e de perceber na sua totalidade possuindo uma acentuada curva de aprendizagem.
-
-\section{Instalação/Migração/Integração}
-
-\subsection{Docker}
-%~\cite{udocker}
-%TODO
-TODO
-
-\subsection{Docker Compose}
-%~\cite{udocker}
-%TODO
-TODO
