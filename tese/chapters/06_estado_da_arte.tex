@@ -1,7 +1,8 @@
-Nesta secção irá ser abordado o estado da arte para a realização dos objetivos referidos na secção de introdução. O objetivo principal desta secção é descrever os conceitos e tecnologias usados, tais como o \acrshort{jwt}, o Autenticação.gov, \textit{Swagger}, entre outros.
+Nesta secção irá ser abordado o estado da arte para a realização dos objetivos referidos na secção de introdução. O objetivo principal desta secção é descrever os conceitos e tecnologias usadas, tais como o \acrshort{jwt}, o Autenticação.gov, o \textit{Swagger}, entre outros. 
 
-%TODO
-TODO: melhorar
+Além disso, pretende-se também fazer alguma investigação em termos de conversores de \acrshort{json} para \acrshort{xml} e de \acrshort{json} para \acrshort{csv} com o objetivo de averiguar aqueles que podem facilitar/ajudar na exportação de dados.
+
+Por fim, são também investigados vários \textit{\acrshort{api} Gateways} para perceber aquele que tem mais requisitos para simplificar a autenticação/proteção da \acrshort{api} de dados.
 
 \section{\acrfull{jwt}}
 O \acrshort{jwt} é um \textit{open standard}\footnote{Mais informação em \url{https://tools.ietf.org/html/rfc7519}} que define uma forma compacta e independente de transmitir com segurança informação entre partes com um objeto \acrshort{json}.~\cite{jwtio} O \acrshort{jwt} pode ser assinado digitalmente (\acrshort{jws}), encriptado (\acrshort{jwe}), assinado e depois encriptado (\acrshort{jws} encriptado, ou seja, um \acrshort{jwe}, ordem recomendada\footnote{Mais informação em \url{https://tools.ietf.org/html/rfc7519\#section-11.2}}) ou encriptado e depois assinado (\acrshort{jwe} assinado, ou seja, um \acrshort{jws}).
@@ -199,8 +200,8 @@ Já o conjunto de ferramentas \textit{Swagger} inclui ferramentas \textit{open-s
     \item \textbf{\textit{Swagger Editor}}: Permite editar especificações \textit{OpenAPI} em \acrshort{yaml} no \textit{browser}\footnote{Aceder \url{https://editor.swagger.io/}}, validar as especificações em relação às regras do \acrshort{oas} bem como pré-visualizar a documentação em tempo real. Facilita o desenho e a documentação de \acrshort{api}s \acrshort{rest}
     \item \textbf{\textit{Swagger \acrshort{ui}}}: Coleção de \textit{assets} \textit{\acrshort{html}}, \textit{JavaScript} e \textit{\acrshort{css}} que geram dinamicamente documentação a partir de uma especificação \textit{OpenAPI} de uma \acrshort{api}
     \item \textbf{\textit{Swagger Codegen}}: Permite a geração de bibliotecas cliente (geração de \acrshort{sdk}), \textit{server stubs} e documentação automática a partir de especificações \textit{OpenAPI}
-    \item \textbf{\textit{Swagger Inspector}} (gratuita): Ferramenta de testes de \acrshort{api}s que permite validar as \acrshort{api}s e gerar definições \textit{OpenAPI} de \acrshort{api}s existentes
-    \item \textbf{\textit{SwaggerHub}} (gratuita e comercial): Desenho e documentação de \acrshort{api}s, construído para equipas que trabalham com \textit{OpenAPI}
+    \item \textbf{\textit{Swagger Inspector}}: Ferramenta de testes de \acrshort{api}s que permite validar as \acrshort{api}s e gerar definições \textit{OpenAPI} de \acrshort{api}s existentes
+    \item \textbf{\textit{SwaggerHub}}: Desenho e documentação de \acrshort{api}s, construído para equipas que trabalham com \textit{OpenAPI}
 \end{itemize}
 
 O \textit{Swagger} possui duas abordagens:~\cite{swaggerNode}
@@ -355,7 +356,7 @@ Nesta secção, propriedade \texttt{responses} de cada rota, é descrita as poss
 \end{itemize}
 
 \subsubsection{Adição de Exemplos}
-Na secção~\ref{sec:paramSwagger} Parâmetros já se referiu como é possível adicionar exemplos aos parâmetros. De forma semelhante o mesmo pode ser realizado tanto no \textit{request body} como nas respostas através da propriedade \texttt{example} (um exemplo) ou \texttt{examples} (múltiplos exemplos) aninhado na propriedade \texttt{schema} ou aninhado na ``propriedade'' \textit{media type} no caso do \texttt{schema} ser uma referência para um modelo presente na secção \texttt{components}. A propriedade \texttt{example} pode também ser usada em objetos ou propriedades de um \texttt{schema}. Por fim, para adicionar exemplos de \acrshort{xml} ou \acrshort{html} os exemplos devem ser exemplificados como \textit{strings}:\footnote{Mais detalhes em \url{https://swagger.io/docs/specification/adding-examples/}}
+Na secção~\ref{sec:paramSwagger} Parâmetros já se referiu como é possível adicionar exemplos aos parâmetros. De forma semelhante o mesmo pode ser realizado tanto no \textit{request body} como nas respostas através da propriedade \texttt{example} (um exemplo) ou \texttt{examples} (múltiplos exemplos) aninhado na propriedade \texttt{schema} ou aninhado na ``propriedade'' \textit{media type} no caso do \texttt{schema} ser uma referência para um modelo presente na secção \texttt{components}. A propriedade \texttt{example} pode também ser usada em objetos ou propriedades de um \texttt{schema}. Por fim, para adicionar exemplos de \acrshort{xml} ou \acrshort{html} os exemplos devem ser \textit{strings}:\footnote{Mais detalhes em \url{https://swagger.io/docs/specification/adding-examples/}}
 \begin{lstlisting}[language=yaml, caption=Exemplo de adição de exemplos para \acrshort{xml} e \acrshort{html} na especificação \textit{OpenAPI}]
 content:
   application/xml:
@@ -383,7 +384,7 @@ Nesta secção será demonstrada como se pode adicionar a autenticação e autor
     \item Esquemas de autenticação \acrshort{http} (usam o cabeçalho \textit{Authorization}) (\texttt{type} = \texttt{http}):
     \begin{itemize}
         \item \textit{Basic} (propriedade \texttt{scheme} = \texttt{basic})
-        \item \textit{Bearer} (propriedade \texttt{scheme} = \texttt{bearer} e pode também ser definido o formato do \textit{Bearer} (a palavra usada antes de indicar o \textit{token}) através da propriedade \texttt{bearerFormat})
+        \item \textit{Bearer} (propriedade \texttt{scheme} = \texttt{bearer})
         \item Outros esquemas \acrshort{http} definidos pelo \href{https://tools.ietf.org/html/rfc7235}{RFC 7235} e pelo registo de esquemas de autenticação \acrshort{http}
     \end{itemize}
     \item Chaves \acrshort{api} no cabeçalho, na \textit{query string} ou em \textit{cookies} (\texttt{type} = \texttt{apiKey} e na propriedade \texttt{in} indicar em que local se encontra, se no cabeçalho (\texttt{header}), se na \textit{query string} (\texttt{query}) ou se nas \textit{cookies} (\texttt{cookie}))
@@ -459,7 +460,7 @@ O \textit{Swagger \acrshort{ui}} permite a qualquer um visualizar uma \acrshort{
 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=0.5\textwidth]{img/swaggerUI.png}
+        \includegraphics[width=0.7\textwidth]{img/swaggerUI.png}
     \end{center}
     \caption{\textit{Swagger \acrshort{ui}} exemplo}
 \end{figure}
@@ -605,7 +606,7 @@ var swaggerDocument = yaml.load(fs.readFileSync('./swagger.yaml'))
 app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 \end{lstlisting}
 
-No exemplo~\ref{exem:suie} a documentação da \acrshort{api} está presente na rota \texttt{'/doc'}. Neste exemplo é exemplificado como carregar uma especificação \textit{OpenAPI} em \acrshort{json} bem como em \acrshort{yaml}. Quanto ao \textit{middleware} \texttt{serve} retorna os ficheiros estáticos necessários para hospedar o \textit{Swagger \acrshort{ui}}. Já o segundo \textit{middleware} \texttt{setup} para além de puder receber o documento com a especificação \textit{OpenAPI} pode também receber um outro parâmetro de opções que o utilizador pode definir para a apresentação interativa da documentação com o \textit{Swagger \acrshort{ui}}\footnote{As opções possíveis estão presentes em \url{https://github.com/scottie1984/swagger-ui-express}. Para o atributo (opção) \texttt{swaggerOptions} as opções possíveis estão presentes em \url{https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/configuration.md}}.
+No exemplo~\ref{exem:suie} a documentação da \acrshort{api} está presente na rota \texttt{'/doc'}. Neste exemplo percebe-se como carregar uma especificação \textit{OpenAPI} em \acrshort{json} bem como em \acrshort{yaml}. Quanto ao \textit{middleware} \texttt{serve} retorna os ficheiros estáticos necessários para hospedar o \textit{Swagger \acrshort{ui}}. Já o segundo \textit{middleware} \texttt{setup} para além de puder receber o documento com a especificação \textit{OpenAPI} pode também receber um outro parâmetro de opções que o utilizador pode definir para a apresentação interativa da documentação com o \textit{Swagger \acrshort{ui}}\footnote{As opções possíveis estão presentes em \url{https://github.com/scottie1984/swagger-ui-express}. Para o atributo (opção) \texttt{swaggerOptions} as opções possíveis estão presentes em \url{https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/configuration.md}}.
 
 Agora há duas abordagens possíveis de realizar a documentação:
 \begin{itemize}
@@ -613,7 +614,7 @@ Agora há duas abordagens possíveis de realizar a documentação:
     \item Documentação à parte do código
 \end{itemize}
 
-A abordagem da documentação à parte do código permite modularizar a documentação. A modularização da documentação pode ser realizada através do uso da \textit{package} \texttt{yaml-include}\footnote{Ver \url{https://github.com/claylo/yaml-include}}. Esta \textit{package} permite que o documento \acrshort{yaml} da especificação \textit{OpenAPI} possa ser dividida por vários ficheiros para além do que já é permitido através do uso de \verb|$ref| da especificação \textit{OpenAPI}. A \textit{package} permite a inclusão de arquivos \acrshort{yaml} externos ou a inclusão de pastas de ficheiros \acrshort{yaml}. Esta funcionalidade é desaprovada pela equipa de desenvolvimento do \acrshort{yaml} contudo é de grande ajuda e de simplificação da construção do ficheiro de especificação \textit{OpenAPI}.
+A abordagem da documentação à parte do código permite modularizar a documentação. A modularização da documentação pode ser realizada através do uso da \textit{package} \texttt{yaml-include}\footnote{Ver \url{https://github.com/claylo/yaml-include}}. Esta \textit{package} permite que o documento \acrshort{yaml} da especificação \textit{OpenAPI} possa ser dividida por vários ficheiros para além do que já é permitido através do uso de \verb|$ref| da especificação \textit{OpenAPI}. A \textit{package} permite a inclusão de arquivos \acrshort{yaml} externos ou a inclusão de pastas de ficheiros \acrshort{yaml}. Esta funcionalidade é desaprovada pela equipa de desenvolvimento do \acrshort{yaml} contudo ajuda e simplifica a construção do ficheiro de especificação \textit{OpenAPI}.
 
 \begin{lstlisting}[language=yaml, caption=Exemplo de uso do \texttt{yaml-include} no documento de especificação \textit{OpenAPI}(\textit{index.yaml}), label=exem:yamli]
 openapi: 3.0.0
@@ -633,7 +634,7 @@ components:
   securitySchemes: !!inc/file '/security/schemes.yaml'
 \end{lstlisting}
 
-O ficheiro \textit{index.yaml} será a raiz do documento de especificação \textit{OpenAPI} a ser gerado com a \textit{package} \texttt{yaml-include}. A estrutura dos ficheiros para gerar o documento de especificação \textit{OpenAPI} final exemplifica como se pode dividir a documentação por vários ficheiros com esta \textit{package}:
+O ficheiro \textit{index.yaml} será a raiz do documento de especificação \textit{OpenAPI} a ser gerado com a \textit{package} \texttt{yaml-include}. A seguinte estrutura dos ficheiros exemplifica como se pode dividir a documentação por vários ficheiros com esta \textit{package} para gerar o documento de especificação \textit{OpenAPI}:
 \begin{lstlisting}[language=pseudocode, caption=Exemplo de estrutura dos ficheiros para gerar o documento de especificação \textit{OpenAPI}, label=exem:faf]
 * index.yaml
 * paths/
@@ -651,7 +652,7 @@ O ficheiro \textit{index.yaml} será a raiz do documento de especificação \tex
     * schemes.yaml
 \end{lstlisting}
 
-Assim, o \texttt{!!inc/dir} fará que no ficheiro \textit{index.yaml} na \textit{tag} \textit{paths} sejam incluídos todos os ficheiros que estão na pasta \textit{paths}. Cada ficheiro corresponderá a uma determinada rota com um determinado método \acrshort{http}. O método \acrshort{http} é definido a partir do nome do ficheiro e o caminho da rota é determinado pelo nome das pastas e do aninhamento destas. Quando o nome da pasta é iniciado por ``\verb|~|'' no caminho será colocado o nome da pasta sem o til entre chavetas (``\{\}'') por forma a indicar um parâmetro que é colocado no caminho do pedido.
+Assim, o \texttt{!!inc/dir} fará com que no ficheiro \textit{index.yaml} na \textit{tag} \textit{paths} sejam incluídos todos os ficheiros que estão na pasta \textit{paths}. Cada ficheiro corresponderá a uma determinada rota com um determinado método \acrshort{http}. O método \acrshort{http} é definido a partir do nome do ficheiro e o caminho da rota é determinado pelo nome das pastas e do aninhamento destas. Quando o nome da pasta é iniciado por ``\verb|~|'' no caminho será colocado o nome da pasta sem o til e entre chavetas (``\{\}'') por forma a indicar um parâmetro que é colocado no caminho do pedido.
 
 Já no caso do \texttt{!!inc/dir} dos \textit{schemas} a opção \texttt{excludeTopLevelDirSeparator} permite que os ficheiros que estejam dentro da pasta \textit{schemas} (mas não aninhados dentro de outras pastas) sejam incluídos sem qualquer aninhamento, assumindo o nome do ficheiro como o atributo a colocar.
 
@@ -691,13 +692,13 @@ No final teremos um ficheiro no formato \acrshort{yaml} com toda a documentaçã
 
 \section{Exportação de dados}
 
-Esta tese tem como um dos objetivos a exportação de dados da \acrshort{api} de Classes, Entidades, Tipologias e Legislações em formato \acrshort{json}, \acrshort{xml} e \acrshort{csv}. Além disso, deve permitir a exportação da ontologia (possuidor da informação das variantes referidas a exportar) nos formatos \acrshort{turtle}, \acrshort{json-ld} e \acrshort{rdf}/\acrshort{xml}.
+Esta tese tem como um dos objetivos a exportação de dados da \acrshort{api} de Classes (\acrshort{lc}), Entidades, Tipologias e Legislações em formato \acrshort{json}, \acrshort{xml} e \acrshort{csv}. Além disso, deve permitir a exportação da ontologia (possuidor da informação das variantes referidas a exportar) nos formatos \acrshort{rdf} seguintes: \acrshort{turtle}, \acrshort{json-ld} e \acrshort{rdf}/\acrshort{xml}.
 
 A \acrshort{api} de dados já devolve a sua informação em \acrshort{json}. Portanto, por forma a realizar a exportação dos dados para outros formatos é necessário realizar a conversão de \acrshort{json} para o formato de saída pretendido. Como tal, nesta secção será aprofundada algumas bibliotecas disponíveis no \acrshort{npm} que têm como objetivo exportar de \acrshort{json} para \acrshort{xml} ou de \acrshort{json} para \acrshort{csv}. É por fim, investigado como poderá ser exportada a ontologia a partir do GraphDB.
 
 \subsection{\acrshort{xml}}
 
-Comecemos por perceber o que é o \acrfull{xml}. Como se pode perceber pelo nome o \acrshort{xml} é uma linguagem \textit{Markup}, ou seja, uma linguagem que anota o texto para que a máquina possa manipular o texto de acordo com as anotações. O \acrshort{xml} foi desenhado para ser de fácil leitura tanto para humanos como para máquinas e tem como principal intuito o armazenamento e transporte de informação (o tal texto anotado). Além disso é extensível visto que permite que criemos as nossas tags.
+Comecemos por perceber o que é o \acrfull{xml}. Como se pode perceber pelo nome o \acrshort{xml} é uma linguagem \textit{Markup}, ou seja, uma linguagem que anota o texto para que a máquina possa manipular o texto de acordo com as anotações. O \acrshort{xml} foi desenhado para ser de fácil leitura tanto para humanos como para máquinas e tem como principal intuito o armazenamento e transporte de informação (o tal texto anotado). Além disso é extensível visto que permite que criemos as nossas \textit{tags}.
 
 \begin{lstlisting}[language=xml, caption=Pequeno exemplo em \acrshort{xml}, label=exem:xmlEx]
 <?xml version = "1.0" encoding = "UTF-8"?>
@@ -718,18 +719,18 @@ De seguida serão apresentadas, de forma simplificada, as regras de sintaxe apli
 \begin{itemize}
     \item \textbf{Declaração \acrshort{xml}} \\
     \verb|<?xml version = "1.0" encoding = "UTF-8"?>| \\
-    Opcional, especifica a versão do \acrshort{xml} e o encoding usado no documento
+    Opcional, especifica a versão do \acrshort{xml} e o \textit{encoding} usado no documento
     \begin{itemize}
         \item A declaração é \textit{case-sensitive} pelo que deve começar obrigatoriamente por \texttt{xml}
         \item Se presente no documento, a declaração tem de ser obrigatoriamente o primeiro componente
     \end{itemize}
-    \item \textbf{Tags e elementos} \\
+    \item \textbf{\textit{Tags} e elementos} \\
     \verb|<nome>Maria</nome>| ou \verb|<semnome/>|
     \begin{itemize}
-        \item Cada elemento tem de ser fechado seja por uma tag (tag final), ou como apresentado acima pela própria tag.
-        \item Os elementos \acrshort{xml} podem conter elementos filhos mas estes não se podem sobrepor, ou seja, uma tag final de um elemento tem de ter o mesmo nome que a última tag inicial ainda sem tag final. 
-        \item Um documento \acrshort{xml} apenas pode ter um elemento na raíz do documento (elemento \textit{root})
-        \item Os nomes das tags são \textit{case-sensitive}, portanto, a tag inicial e final de um elemento tem de ser exatamente iguais
+        \item Cada elemento tem de ser fechado seja por uma \textit{tag} (\textit{tag} final), ou como apresentado acima pela própria \textit{tag}.
+        \item Os elementos \acrshort{xml} podem conter elementos filhos mas estes não se podem sobrepor, ou seja, uma \textit{tag} final de um elemento tem de ter o mesmo nome que a última \textit{tag} inicial ainda sem \textit{tag} final. 
+        \item Um documento \acrshort{xml} apenas pode ter um elemento na raiz do documento (elemento \textit{root})
+        \item Os nomes das \textit{tags} são \textit{case-sensitive}, portanto, a \textit{tag} inicial e final de um elemento têm de ser exatamente iguais
     \end{itemize}
     \item \textbf{Atributos} \\
     \verb|<altura unidade="cm">160</altura>| \\
@@ -738,7 +739,7 @@ De seguida serão apresentadas, de forma simplificada, as regras de sintaxe apli
         \item Um elemento pode ter zero, um ou mais atributos
         \item Os nomes dos atributos são \textit{case-sensitive}
         \item Um atributo não pode ter dois valores num elemento, ou seja, não pode ser declarado duas ou mais vezes num mesmo elemento
-        \item Os nomes dos atributos não podem possuir aspas, mas os valores tem de ser encapsolados por aspas
+        \item Os nomes dos atributos não podem possuir aspas, mas os valores tem de ser encapsulados por aspas
     \end{itemize}
     \item \textbf{Referências \acrshort{xml}} \\
     \verb|&amp;| ou \verb|&#65| \\
@@ -754,9 +755,9 @@ De seguida serão apresentadas, de forma simplificada, as regras de sintaxe apli
             " & \&quot; \\ \hline
         \end{tabular}
     \end{center}
-    O segundo tipo de referências tem o mesmo intuito mas permite que seja representado qualquer caractere representável em \textit{Unicode}. O número que se segue ao hashtag é referente ao código decimal em \textit{Unicode}. Assim \verb|&#65| representa o caractere `A'.
+    O segundo tipo de referências tem o mesmo intuito mas permite que seja representado qualquer caractere representável em \textit{Unicode}. O número que se segue ao \textit{hashtag} é referente ao código decimal em \textit{Unicode}. Assim \verb|&#65| representa o caractere `A'.
     \item \textbf{Texto anotado} \\
-    Espaços em branco, tabs, ou novas linhas, são ignoradas quando presentes entre elementos e entre atributos. Como já referido há caracteres reservados pelo que se pretende usá-los no texto anotado deve trocar esses caracteres pelas suas referências.
+    Espaços em branco, \textit{tabs}, ou novas linhas, são ignoradas quando presentes entre elementos e entre atributos. Como já referido há caracteres reservados pelo que se pretende usá-los no texto anotado deve trocar esses caracteres pelas suas referências.
 \end{itemize}
 
 \subsubsection{Bibliotecas de conversão}
@@ -860,7 +861,7 @@ Além disso, permite a geração do \acrshort{xml} a partir de um objeto \acrsho
 
 Na construção do documento a partir de um objecto, quando se pretende que um elemento tenha um atributo, é necessário que o objeto para essa chave possua um objeto em vez de apenas o valor. Nesse objeto, as propriedades começadas por `@' indicam atributos (\verb|'@unidade':'cm'| onde `unidade' é o nome do atributo e `cm' é o valor do atributo) e a propriedade '\#text' representa o valor do elemento.
 
-Há também a possibilidade de sobescrever as funções usadas para escrever o documento \acrshort{xml} (funções de escrita dos elementos, comentários, etc) bem como as funções que convertem os valores (texto anotado, nome de elementos e atributos, etc).
+Há também a possibilidade de sobrescrever as funções usadas para escrever o documento \acrshort{xml} (funções de escrita dos elementos, comentários, etc) bem como as funções que convertem os valores (texto anotado, nome de elementos e atributos, etc).
 
 Por fim, convém referir que esta biblioteca já possui uma sucessora, \href{https://www.npmjs.com/package/xmlbuilder2}{\texttt{xmlbuilder2}}, que foi redesenhada por forma a estar em total conformidade com a especificação moderna do \acrshort{dom}.
 
@@ -890,17 +891,17 @@ Se se pretende que um determinado elemento possua atributos é necessário que o
 
 \subsection{\acrshort{csv}}
 
-\acrfull{csv} como o seu acrónimo indica é um documento em que os campos de um registo são separados por uma vírgula. Contudo, os campos não precisam de ser obrigatoriamente separados por vírgula já que podem também ser separados por ponto e vírgula, tabs, pipes (`|') ou ainda outro qualquer caractere que se pretenda usar. Quando se usa o caractere separador ou uma nova linha (`\backslash{}n') no campo de um registo, por forma a não ser considerado como um separador de campos ou de registos respetivamente, pode-se encapsolar os valores por aspas (`"') sendo que também se pode usar outro caractere em vez das aspas. Já quando se usa o caractere de encapsolamento no campo de um registo este deve ser protegido (\texttt{escaped}) repetindo o mesmo caractere de encapsolamento.
+\acrfull{csv} como o seu acrónimo indica é um documento em que os campos de um registo são separados por uma vírgula. Contudo, os campos não precisam de ser obrigatoriamente separados por vírgula já que podem também ser separados por ponto e vírgula, \textit{tabs}, \textit{pipes} (`|') ou ainda outro qualquer caractere que se pretenda usar. Quando se usa o caractere separador ou uma nova linha (`\backslash{}n') no campo de um registo, por forma a não ser considerado como um separador de campos ou de registos respetivamente, pode-se encapsular os valores por aspas (`"') sendo que também se pode usar outro caractere em vez das aspas. Já quando se usa o caractere de encapsulamento no campo de um registo este deve ser protegido (\texttt{escaped}) repetindo o mesmo caractere de encapsulamento.
 
 Um documento \acrshort{csv} é nada mais que uma tabela que guarda dados em texto. É usado essencialmente para a troca de dados.
 
 Após esta pequena introdução ao \acrshort{csv} apresenta-se as regras de sintaxe para a criação de um documento \acrshort{csv}:
 \begin{itemize}
     \item Campos separados com um separador, normalmente uma vírgula
-    \item Cada registo deve estar numa linha. Cada registo deve começar numa linha, mas cada registo pode ter várias linhas, desde que os campos multi linha sejam encapsolados por aspas
+    \item Cada registo deve estar numa linha. Cada registo deve começar numa linha, mas cada registo pode ter várias linhas, desde que os campos multi linha sejam encapsulados por aspas
     \item Após o último registo não deve estar presente um \textit{carriage return}
     \item Opcionalmente, na primeira linha do documento, deve estar presente o cabeçalho com os nomes das colunas separados pelo separador usado no resto do documento
-    \item O caractere de encapsolamente deve ser usado para encapsolar um campo quando necessário (pode ser usado sempre), isto é, quando o caractere separador ou uma nova linha (`\backslash{}n') são usados num campo de um registo
+    \item O caractere de encapsulamento deve ser usado para encapsular um campo quando necessário (pode ser usado sempre), isto é, quando o caractere separador ou uma nova linha (`\backslash{}n') são usados num campo de um registo
 \end{itemize}
 
 \begin{lstlisting}[caption=Pequeno exemplo em \acrshort{csv}, label=exem:csvEx]
@@ -922,13 +923,13 @@ Maria,22,[object Object]
 João,24,[object Object]
 \end{lstlisting}
 
-Olhando para o resultado~\ref{exem:papaparse} consegue-se perceber que o conversor não consegue converter objetos aninhados. Para além disso, apesar de haver a possibilidade de alterar o caractere separador, o caracter de \textit{escape}, o caractere de nova linha bem como definir o nome das colunas no cabeçalho, não é possível definir uma função por forma a alterar a conversão dos campos de cada propriedade.
+Olhando para o resultado~\ref{exem:papaparse} consegue-se perceber que o conversor não consegue converter objetos aninhados. Para além disso, apesar de haver a possibilidade de alterar o caractere separador, o caractere de \textit{escape}, o caractere de nova linha bem como definir o nome das colunas no cabeçalho, não é possível definir uma função por forma a alterar a conversão dos campos de cada propriedade.
 
 \paragraph{\href{https://www.npmjs.com/package/json2csv}{\texttt{json2csv}}} \mbox{} \\
 
 Biblioteca totalmente dedicada à conversão de \acrshort{json} para \acrshort{csv}. Tem como principais características:
 \begin{itemize}
-    \item Permite a alteração dos carecteres de separação, de encapsolamento e de nova linha
+    \item Permite a alteração dos caracteres de separação, de encapsulamento e de nova linha
     \item \textit{Escape} automático
     \item Permite escolher que campos devolver (mesmo em objetos aninhados ou listas aninhadas) e que cabeçalho associar a cada campo
     \item Aceita funções de transformação para cada campo
@@ -940,7 +941,7 @@ Biblioteca totalmente dedicada à conversão de \acrshort{json} para \acrshort{c
 "João","24","Portugal","Vila Real"
 \end{lstlisting}
 
-Para além disso permite o \textit{unwind} de uma propriedade que possua uma lista, fazendo com que sejam gerados x registos de acordo com o tamanho da lista, sendo alterado apenas os valores que proveem da lista. Infelizmente isto acrecenta mais colunas, não permitindo que no caso de os elementos da lista (filhos) tenham a mesma estrutura que o pai, sejam adicionados como novos registos, sem adicionar novas colunas e sem repetir a informação do pai. 
+Para além disso permite o \textit{unwind} de uma propriedade que possua uma lista, fazendo com que sejam gerados x registos de acordo com o tamanho da lista, sendo alterado apenas os valores que provêm da lista. Infelizmente isto acrescenta mais colunas, não permitindo que no caso de os elementos da lista (filhos) tenham a mesma estrutura que o pai, sejam adicionados como novos registos, sem adicionar novas colunas e sem repetir a informação do pai. 
 
 Por exemplo, se pretendermos converter o seguinte documento \acrshort{json}:
 \begin{lstlisting}[language=json, caption=Outro exemplo em \acrshort{json} a converter, label=exem:jsonBib2]
@@ -994,12 +995,12 @@ Quando o resultado pretendido seria por exemplo:
 
 \subsubsection{O que é uma ontologia?}
 
-Uma ontologia é uma descrição formal e explícita de conceitos num domínio de discurso (classes, chamado às vezes de conceitos), propriedades de cada conceito que descrevem várias características e atributos do conceito (slots, às vezes chamados de funções ou propriedades) e restrições sobre slots (facetas, às vezes chamadas de restrições de função).~\cite{ontologyProt} Uma ontologia, juntamente com um conjunto de instâncias individuais de classes, constitui uma base de conhecimento.~\cite{ontologyProt}
+Uma ontologia é uma descrição formal e explícita de conceitos num domínio de discurso (classes, chamado às vezes de conceitos), propriedades de cada conceito que descrevem várias características e atributos do conceito (\textit{slots}, às vezes chamados de funções ou propriedades) e restrições sobre \textit{slots} (facetas, às vezes chamadas de restrições de função).~\cite{ontologyProt} Uma ontologia, juntamente com um conjunto de instâncias individuais de classes, constitui uma base de conhecimento.~\cite{ontologyProt}
 
 Uma ontologia pode ser dividida em duas partes:
 \begin{itemize}
-    \item Estrutura: Onde é definido as classes, as propriedades (slots) e as restrições das propriedades (facetas)
-    \item População: Onde é definido indíviduos (de classes) e propriedades dos indíviduos. Esta parte é construída tendo por base a estrutura definída.
+    \item Estrutura: Onde é definido as classes, as propriedades (\textit{slots}) e as restrições das propriedades (facetas)
+    \item População: Onde é definido indivíduos (de classes) e propriedades dos indivíduos. Esta parte é construída tendo por base a estrutura definida.
 \end{itemize}
 De certa forma, a estrutura é como se fosse o modelo definido e a população a informação guardada respeitando o modelo definido.
 
@@ -1024,15 +1025,15 @@ A \textit{web} semântica é uma extensão da \acrshort{www} com o objetivo de t
 
 Para isso a \acrfull{w3c} está a ajudar a criar a \textit{stack} tecnológica necessária. O termo \textit{web} semântica é a visão da \acrshort{w3c} acerca da \textit{Linked Data} na \textit{Web}, ou seja, é a web dos dados em que a coleção de tecnologias da \textit{web} semântica (\acrshort{rdf}, \acrshort{sparql}, \acrshort{owl}, \acrshort{skos}, etc) oferece um ambiente onde as pessoas podem criar bases de dados na \textit{web}, construir ontologias e escrever regras para manipular os dados; e onde as aplicações podem questionar esses dados e desenhar inferências usando vocabulários.
 
-Para tornar a \textit{web} dos dados uma realidade é necessário existir uma grande quantidade de dados na \textit{web} num formato \textit{standard} (\acrshort{rdf}), acessível e gerível pelas ferramentas da \textit{web} semântica. Além disso, a \textit{web} semântica necessita também que exista relações entre os dados para criar a \textit{web} dos dados (\textit{Linked Data}). É também importante ser possível configurar \textit{query endpoints} para aceder aos dados mais convenientemente. A \acrshort{w3c} fornece uma palete de tecnologias, das quais se destaca o \acrshort{sparql}, para obter acesso aos dados.
+Para tornar a \textit{web} dos dados uma realidade é necessário existir uma grande quantidade de dados na \textit{web} num formato \textit{standard} (\acrshort{rdf}), acessível e gerível pelas ferramentas da \textit{web} semântica. Além disso, a \textit{web} semântica necessita também que existam relações entre os dados para criar a \textit{web} dos dados (\textit{Linked Data}). É também importante ser possível configurar \textit{query endpoints} para aceder aos dados mais convenientemente. A \acrshort{w3c} fornece uma palete de tecnologias, das quais se destaca o \acrshort{sparql}, para obter acesso aos dados.
 
 A \textit{Linked Data} é usada para a integração em grande escala e o \textit{reasoning}\footnote{Em \textit{web} semântica é a inferência de informação (triplos) a partir de um conjunto de factos (triplos), ou seja, a descoberta de novos factos (triplos)} dos dados na \textit{web}.
 
 Na \textit{web} semântica, os vocabulários definem os conceitos e os relacionamentos usados para descrever e representar uma área de interesse. Não há uma divisão clara entre o que é referido como ``vocabulários'' e ``ontologias''. A tendência é usar a palavra ``ontologia'' para coleções de termos mais complexos e mais formais, enquanto que ``vocabulário'' nas coleções menos formais. A \acrshort{w3c} oferece várias técnicas para descrever e definir diferentes formas de vocabulários num formato \textit{standard}. Estas incluem \acrshort{rdf} e \acrshort{rdf} Schemas, \acrshort{skos}, \acrshort{owl} e \acrshort{rif}. A escolha da tecnologia depende da complexidade e do rigor necessário.
 
-Tal como as bases de dados relacionais ou o \acrshort{xml} necessitam de linguagens de pesquisa (query) específicas (SQL e XQuery, respetivamente), a \textit{web} dos dados, tipicamente representada usado \acrshort{rdf} como formato de dados, necessita também de uma linguagem de pesquisa. Isto é providenciado pelo \acrshort{sparql}, que é também um protocolo de comunicação, permitindo enviar queries e receber resultados, por exemplo, através de \acrshort{http} ou \acrshort{soap}.
+Tal como as bases de dados relacionais ou o \acrshort{xml} necessitam de linguagens de pesquisa (\textit{query}) específicas (\acrshort{sql} e \textit{XQuery}, respetivamente), a \textit{web} dos dados, tipicamente representada usado \acrshort{rdf} como formato de dados, necessita também de uma linguagem de pesquisa. Isto é providenciado pelo \acrshort{sparql}, que é também um protocolo de comunicação, permitindo enviar \textit{queries} e receber resultados, por exemplo, através de \acrshort{http} ou \acrshort{soap}.
 
-As queries \acrshort{sparql} são baseadas em padrões (triplos). O \acrshort{rdf} pode ser visto como um conjunto de relacionamentos entre recursos (triplos \acrshort{rdf}). As queries \acrshort{sparql} posuem um ou mais padrões semelhantes aos triplos \acrshort{rdf}, exceto que um ou mais dos recursos constituintes referenciados são variáveis. Um motor \acrshort{sparql} retornará os recursos que para todos os triplos correspondem a esses padrões. A informação devolvida pelos endpoints SPARQL pode ser uma tabela ou por exemplo \acrshort{json}.
+As \textit{queries} \acrshort{sparql} são baseadas em padrões (triplos). O \acrshort{rdf} pode ser visto como um conjunto de relacionamentos entre recursos (triplos \acrshort{rdf}). As \textit{queries} \acrshort{sparql} possuem um ou mais padrões semelhantes aos triplos \acrshort{rdf}, exceto que um ou mais dos recursos constituintes referenciados são variáveis. Um motor \acrshort{sparql} retornará os recursos que para todos os triplos correspondem a esses padrões. A informação devolvida pelos \textit{endpoints} \acrshort{sparql} pode ser uma tabela ou por exemplo \acrshort{json}.
 
 \subsubsection{\textit{GraphDB}}
 
@@ -1042,7 +1043,7 @@ Para um fácil uso e compatibilidade com os \textit{standards} da indústria, o 
 
 O \textit{GraphDB} é um \textit{plugin} \acrshort{sail} para a \textit{framework} \textit{RDF4J} fazendo uso extensivo dos recursos e infraestrutura do \textit{RDF4J} especialmente do modelo \acrshort{rdf}, dos \textit{parsers} \acrshort{rdf} e dos motores de pesquisa.~\cite{graphdbArch}
 
-Assim, o \textit{GraphDB} possui uma \acrshort{rest} \acrshort{api} do servidor RDF4J\footnote{Ver \url{https://rdf4j.org/documentation/rest-api/}} a partir da qual é possível obter todos os triplos de uma \acrshort{bd} através da rota
+Assim, o \textit{GraphDB} possui uma \acrshort{rest} \acrshort{api} do servidor \textit{RDF4J}\footnote{Ver \url{https://rdf4j.org/documentation/rest-api/}} a partir da qual é possível obter todos os triplos de uma \acrshort{bd} através da rota
 \begin{verbatim}
 <url do GraphDB>/repositories/<id do repositório (BD)>/statements
 \end{verbatim}
@@ -1056,7 +1057,7 @@ Para o caso da \acrshort{clav} necessita-se de um \acrshort{ca} gratuito e onde 
 
 Assim, a escolha recaiu no \textit{Let's Encrypt}, um dos \acrshort{ca}'s mais populares. O \textit{Let's Encrypt} foi criado pela \textit{Linux Foundation} é gratuito e \textit{open-source}. Além disso, tem como patrocinadores/doadores empresas como a \textit{Mozilla}, a \textit{Cisco}, o \textit{Google Chrome}, o \textit{Facebook}, entre outros. 
 
-Para gerar/renovar o certificado \acrshort{dv} é necessário demonstrar que se possui o controlo sobre o domínio. Com o \textit{Let's Encrypt} isto é efetuado através do uso do protocolo \acrfull{acme} que necessita que se corra um agente de gestão de certificados (cliente \acrshort{acme}) no servidor do domínio a gerar o certificado. Assim é possível gerar/renovar certificados automaticamente sem a intervenção humana. Esta automatização é importante porque os certificados do \textit{Let's Encrypt} têm apenas a validade de 3 meses pelo que, se fosse necessario fazer manualmente teria de ser feito pelo menos de 3 em 3 meses.
+Para gerar/renovar o certificado \acrshort{dv} é necessário demonstrar que se possui o controlo sobre o domínio. Com o \textit{Let's Encrypt} isto é efetuado através do uso do protocolo \acrfull{acme} que necessita que se corra um agente de gestão de certificados (cliente \acrshort{acme}) no servidor do domínio a gerar o certificado. Assim é possível gerar/renovar certificados automaticamente sem a intervenção humana. Esta automatização é importante porque os certificados do \textit{Let's Encrypt} têm apenas a validade de 3 meses pelo que, se fosse necessário fazer manualmente teria de ser feito pelo menos de 3 em 3 meses.
 
 A escolha do cliente \acrshort{acme} a usar irá depender se se tem acesso à \textit{shell} da máquina do servidor. Em caso afirmativo o \textit{Let's Encrypt} recomenda o uso do cliente \textit{Certbot}~\cite{letEnc}.
 
@@ -1070,16 +1071,16 @@ Nesta secção será explicado como é realizada a validação do domínio para 
 
 Na primeira vez que o agente (cliente \acrshort{acme}) interage com o \textit{Let's Encrypt} gera um novo par de chaves e prova ao \textit{Let's Encrypt} que o servidor controla um ou mais domínios.~\cite{domainValidation}
 
-Para iniciar o proceso de validação, o cliente \acrshort{acme} questiona o \textit{Let's Encrypt} para que lhe indique o que necessita fazer para provar que controla o domínio~\cite{domainValidation}. Assuma-se que queremos validar o domínio \texttt{example.com}.
+Para iniciar o processo de validação, o cliente \acrshort{acme} questiona o \textit{Let's Encrypt} para que lhe indique o que necessita fazer para provar que controla o domínio~\cite{domainValidation}. Assuma-se que queremos validar o domínio \texttt{example.com}.
 O \textit{Let's Encrypt} irá gerar um ou mais conjuntos de desafios após olhar para o nome do domínio.
 
 Há duas formas (desafios) do cliente \acrshort{acme} provar que controla o domínio perante o \textit{Let's Encrypt}~\cite{domainValidation}:
 \begin{itemize}
     \item Providenciar um \acrshort{dns} \textit{record} sobre \texttt{example.com}
-    \item Providenciar um recurso \acrshort{http} num \acrshort{uri} conhecido em \texttt{http://example.com/} (são colocados normalmente em \texttt{http://example.com/.well-known/acme-challenge})
+    \item Providenciar um recurso \acrshort{http} num \acrshort{uri} conhecido em \texttt{http://example.com/} (é colocado normalmente em \texttt{http://example.com/.well-known/acme-challenge})
 \end{itemize}
 
-Juntanente com os desafios, o \textit{Let's Encrypt} envia um \textit{nonce} (\textit{string} usada uma única vez) que o cliente deve assinar com a chave privada por forma a garantir que este controla o par de chaves evitando \textit{replay attacks}\footnote{Para mais informação ver \url{https://www.kaspersky.com/resource-center/definitions/replay-attack}}.
+Juntamente com os desafios, o \textit{Let's Encrypt} envia um \textit{nonce} (\textit{string} usada uma única vez) que o cliente deve assinar com a chave privada por forma a garantir que este controla o par de chaves evitando \textit{replay attacks}\footnote{Para mais informação ver \url{https://www.kaspersky.com/resource-center/definitions/replay-attack}}.
 
 Veja-se agora um exemplo concreto em que o cliente \acrshort{acme} usa o segundo desafio para provar que controla o domínio (\texttt{example.com}):
 
@@ -1090,10 +1091,10 @@ Veja-se agora um exemplo concreto em que o cliente \acrshort{acme} usa o segundo
     \caption{Exemplo de validação do domínio pelo \textit{Let's Encrypt} com sucesso}
 \end{figure}
 
-Como o desafio teve sucesso e o \textit{nonce} assinado pelo cliente \acrshort{acme} é válido então o cliente \acrshort{acme} identificado pela chave pública está autorizado a gerir os certificados para o domínio \texttt{example.com}. Assim, para gerar/renovar/revogar o certificado para o domínio basta enviar mensangens de gestão do certificado assinadas com o chave privada (a que assinou o \textit{nonce}) para o \textit{Let's Encrypt}.
+Como o desafio teve sucesso e o \textit{nonce} assinado pelo cliente \acrshort{acme} é válido então o cliente \acrshort{acme} identificado pela chave pública está autorizado a gerir os certificados para o domínio \texttt{example.com}. Assim, para gerar/renovar/revogar o certificado para o domínio basta enviar mensagens de gestão do certificado assinadas com o chave privada (a que assinou o \textit{nonce}) para o \textit{Let's Encrypt}.
 
 \subsection{Cliente \textit{acme.sh}}
-Apesar do cliente recomendado pelo \textit{Let's Encrypt} ser o \textit{Certbot} este necessita de ter permissões \textit{root} bem como tem várias dependências para ser executado. Já o cliente \textit{acme.sh}\footnote{Ver \url{https://github.com/acmesh-official/acme.sh}} é uma script \textit{bash} que para a sua instalação basta efetuar \textit{download} da \textit{script} deste. Além disso, não necessita de quaisquer dependências nem de acesso \textit{root} (apenas necessita em casos especiais). A sua utilização, tal como o \textit{Certbot}, é feita através da execução de comandos \textit{bash}.
+Apesar do cliente recomendado pelo \textit{Let's Encrypt} ser o \textit{Certbot} este necessita de ter permissões \textit{root} bem como tem várias dependências para ser executado. Já o cliente \textit{acme.sh}\footnote{Ver \url{https://github.com/acmesh-official/acme.sh}} é uma \textit{script} \textit{bash} que para a sua instalação basta efetuar \textit{download} da \textit{script} deste. Além disso, não necessita de quaisquer dependências nem de acesso \textit{root} (apenas necessita em casos especiais). A sua utilização, tal como o \textit{Certbot}, é feita através da execução de comandos \textit{bash}.
 
 Para instalar basta:
 \begin{verbatim}
@@ -1117,7 +1118,7 @@ acme.sh --install-cert -d example.com \
     --reloadcmd "nginx -s reload"
 \end{verbatim}
 
-Neste último, o ficheiro de configuração do \textit{Nginx} tem de estar à espera que os ficheiros do certificado estejam em \path{/path/to/keyfile/in/nginx/key.pem} e em \path{/path/to/fullchain/nginx/fullchain.pem}.
+Neste último comando, o ficheiro de configuração do \textit{Nginx} tem de estar à espera que os ficheiros do certificado estejam em \path{/path/to/keyfile/in/nginx/key.pem} e em \path{/path/to/fullchain/nginx/fullchain.pem}.
 
 \section{\acrshort{api} Gateway}\label{sec:api_gateway}
 
@@ -1127,7 +1128,7 @@ Uma \textit{\acrshort{api} Gateway} inclui normalmente~\cite{apiGatInfo,apiGatIn
 \begin{itemize}
     \item Segurança (Autenticação e Autorização)
     \item Gestão de cotas e \textit{throttling}
-    \item Caching
+    \item \textit{Caching}
     \item Processamento e composição da \acrshort{api}
     \item Roteamento
     \item Monitorização da \acrshort{api}
@@ -1139,12 +1140,12 @@ Uma \textit{\acrshort{api} Gateway} inclui normalmente~\cite{apiGatInfo,apiGatIn
 Além disso, a \textit{\acrshort{api} Gateway} tem como vantagens:~\cite{apiGatInfo, apiGatInfo3}
 \begin{itemize}
     \item Simplifica o código da \acrshort{api}
-    \item Oferece um vista única e central da \acrshort{api} e, portanto, é mais provável que permita uma política consistente
-    \item Agregação e transformação de dados para simplificar a interação dos clientes com os microserviços distribuídos. A agregação de dados permite também reduzir o número de pedidos
-    \item Esconder a arquitetura interna e distribuir as aplicações baseadas em microserviços reduzindo, geralmente a sobrecarga de configuração 
-    \item Código do cliente mais simples e limpo: quando os serviços cliente e \textit{backend} são separados, o cliente não necessita de saber os vários serviços infividuais do \textit{backend} facilitando a manutenção do código bem como a refaturação dos serviços sem que estas tenham impacto entre cliente e \textit{backend}. Além disso, com uma \textit{\acrshort{api} Gateway} não é necessário construir lógica por forma a acompanhar os \textit{endpoints}.
+    \item Oferece uma vista única e central da \acrshort{api} e, portanto, é mais provável que permita uma política consistente
+    \item A agregação e transformação de dados simplifica a interação dos clientes com os microserviços distribuídos. A agregação de dados permite também reduzir o número de pedidos
+    \item Esconde a arquitetura interna e distribui as aplicações baseadas em microserviços reduzindo, geralmente a sobrecarga de configuração 
+    \item Código do cliente mais simples e limpo: quando os serviços cliente e \textit{backend} são separados, o cliente não necessita de saber os vários serviços individuais do \textit{backend} facilitando a manutenção do código bem como a refacturação dos serviços sem que estas tenham impacto na interação entre cliente e \textit{backend}. Além disso, com uma \textit{\acrshort{api} Gateway} não é necessário construir lógica no cliente por forma a acompanhar os \textit{endpoints}.
     \item Menos latência é igual a uma melhor experiência do utilizador: uma operação do lado do cliente pode necessitar de realizar vários pedidos aos serviços de \textit{backend}, aumentando a latência da operação. Com a presença de uma \textit{\acrshort{api} Gateway} pode ser efetuado um único pedido a esta que irá realizar os pedidos internos necessários, agregar os resultados e devolver a resposta ao cliente.
-    \item Autenticação e Encriptação simplificada: Sem o uso de uma \textit{\acrshort{api} Gateway} cada serviço de \textit{backend} necessita de tomar as suas decisões de segurança o que aumenta a complexidade do código a desenvolver para um microserviço. Com o aumento da complexidade do código aumenta a possibilidade de erros bem como o aumento da superfícide de ataque por utilizadores mal intencionados. Com o uso de uma \textit{\acrshort{api} Gateway} toda a segurança está centralizada num único serviço.
+    \item Autenticação e Encriptação simplificada: Sem o uso de uma \textit{\acrshort{api} Gateway} cada serviço de \textit{backend} necessita de tomar as suas decisões de segurança o que aumenta a complexidade do código a desenvolver para um microserviço. Com o aumento da complexidade do código aumenta a possibilidade de erros bem como o aumento da superfície de ataque por utilizadores mal intencionados. Com o uso de uma \textit{\acrshort{api} Gateway} toda a segurança está centralizada num único serviço.
 \end{itemize}
 
 Contudo, tem como desvantagens~\cite{apiGatInfo}:
@@ -1154,13 +1155,13 @@ Contudo, tem como desvantagens~\cite{apiGatInfo}:
     \item Risco de \textit{lock-in} e a migração pode não ser simples
 \end{itemize}
 
-Olhando um pouco mais da perspetiva da segurança o controlo de acesso é a principal vantagem de segurança de uma \textit{\acrshort{api} Gateway} permitindo a uma organização gerir quem pode aceder à \acrshort{api} e estabelecer regras de como os pedidos de dados são tratados. O acesso de controlo estende-se também a outras políticas como o \textit{rate limit} às rotas da \acrshort{api} ou até o pagamento para aceder a certos recursos da \acrshort{api}.
+Olhando um pouco mais da perspetiva da segurança, o controlo de acesso é a principal vantagem de segurança de uma \textit{\acrshort{api} Gateway} permitindo a uma organização gerir quem pode aceder à \acrshort{api} e estabelecer regras de como os pedidos de dados são tratados. O controlo de acesso estende-se também a outras políticas como o \textit{rate limit} às rotas da \acrshort{api} ou até o pagamento para aceder a certos recursos da \acrshort{api}.
 
-Como todo o tráfego das rotas da \acrshort{api} passa por um \textit{gateway}, os especialistas de segurança sentem-se mais confiantes de que têm no ``no pulso'' a \acrshort{api}.~\cite{apiGatInfo}
+Como todo o tráfego das rotas da \acrshort{api} passa por um \textit{gateway}, os especialistas de segurança sentem-se mais confiantes de que têm ``no pulso'' a \acrshort{api}.~\cite{apiGatInfo}
 
 A \textit{\acrshort{api} Gateway} pode introduzir segurança nas mensagens enviadas entre os serviços internos através de encriptação tornando os serviços internos mais seguros. Além disso, é necessário um correto mecanismo de autenticação em conjunto com o uso de \acrshort{tls} por forma a evitar o acesso a rotas de pessoas não autorizadas. O uso de um mau mecanismo de autenticação (p.e. ser apenas necessário fornecer o número de telemóvel) pode levar a que qualquer pessoa consiga obter os dados de outra por exemplo.
 
-Outro ponto a ter em conta em relação à proteção de uma \acrshort{api} é a proteção contra ameaças. Sem esta, a \textit{\acrshort{api} Gateway}, a(s) \acrshort{api}(e) e outros serviços estão inseguros. Ou seja, potenciais hackers ou malware podem facilmente tentar propagar ataques tais como \acrshort{ddos} ou injeções de \acrshort{sql}, \textit{RegEx}, \acrshort{xml} ou ainda no caso específico da \acrshort{clav} injeções de \acrshort{sparql}. É assim importante realizar validação de \textit{input} da \acrshort{api}. As validações de \textit{input} mais comuns são:
+Outro ponto a ter em conta em relação à proteção de uma \acrshort{api} é a proteção contra ameaças. Sem esta, a \textit{\acrshort{api} Gateway}, a(s) \acrshort{api}(s) e outros serviços estão inseguros. Ou seja, potenciais hackers ou \textit{malware} podem facilmente tentar propagar ataques tais como \acrshort{ddos} ou injeções de \acrshort{sql}, \textit{RegExp}, \acrshort{xml} ou ainda no caso específico da \acrshort{clav} injeções de \acrshort{sparql}. É assim importante realizar validação de \textit{input} da \acrshort{api}. As validações de \textit{input} mais comuns são:
 \begin{itemize}
     \item Tamanho da mensagem
     \item Proteção contra injeções \acrshort{sql}
@@ -1168,21 +1169,21 @@ Outro ponto a ter em conta em relação à proteção de uma \acrshort{api} é a
     \item Proteção contra ameaças em \acrshort{xml}. Estes ataques envolvem normalmente \textit{payloads} recursivos, injeções \acrshort{sql} ou \textit{XPath}/\acrshort{xslt} com o mesmo intuito de sobrecarregar o \acrshort{xml} \textit{parser} e este eventualmente \textit{crashar}.
 \end{itemize}
 
-Já no caso do tratamento de erros e do código de estado \acrshort{http} em resposta aos pedidos, é uma boa prática que sejam devolvidos os códigos de estado corretos e com mensagens de erro curtas (apenas o necessário) sem incluirem o \textit{stack trace} visto ser um ponto de insegurança ao permitir qualquer intruso saber por exemplo, as \textit{packages} e as \textit{frameworks} usadas. A \textit{\acrshort{api} Gateway} pode ser usada para uniformizar as mensagens de erro devolvidas, impedindo também a possível exposição do código do \textit{backend}.
+Já no caso do tratamento de erros e do código de estado \acrshort{http} em resposta aos pedidos, é uma boa prática que sejam devolvidos os códigos de estado corretos e com mensagens de erro curtas (apenas o necessário) sem incluírem o \textit{stack trace} visto ser um ponto de insegurança ao permitir qualquer intruso saber por exemplo, as \textit{packages} e as \textit{frameworks} usadas. A \textit{\acrshort{api} Gateway} pode ser usada para uniformizar as mensagens de erro devolvidas, impedindo também a possível exposição do código do \textit{backend}.
 
 Por último, ao obrigar a autenticação de todos os utilizadores da \acrshort{api} e ao manter \textit{logs} dos acessos à \acrshort{api} torna possível limitar a taxa de consumo da \acrshort{api} para os utilizadores desta. Muitas \textit{\acrshort{api} Gateway}s permitem limitar o número de acessos que podem ser feitos para cada recurso da \acrshort{api} por segundo, minuto, dia ou outra restrição relevante.
 
-Existem várias \textit{\acrshort{api} Gateway}s das quais se destacam Express Gateway, Kong, Moleculer \acrshort{api} Gateway, Tyk \acrshort{api} Gateway e Nginx Plus. Iremos explorar um pouco de cada. Existem outras como, por exemplo, \textit{Amazon's \acrshort{api} Gateway}, contudo é apenas utilizável se pretendermos usar \acrshort{aws} e as suas máquinas para o \textit{deployment}. Como não é o caso, não a iremos explorar nesta secção.
+Existem várias \textit{\acrshort{api} Gateway}s das quais se destacam \textit{Express Gateway}, \textit{Kong}, \textit{Moleculer \acrshort{api} Gateway}, \textit{Tyk \acrshort{api} Gateway} e \textit{Nginx Plus}. Iremos explorar um pouco de cada. Existem outras como, por exemplo, \textit{Amazon's \acrshort{api} Gateway}, contudo é apenas utilizável se pretendermos usar \acrshort{aws} e as suas máquinas para o \textit{deployment}. Como não é o caso, não a iremos explorar nesta secção.
 
 \subsection{Express Gateway}
 
-\textit{Express Gateway} é uma \textit{\acrshort{api} Gateway} que pode ser colocada em qualquer arquitetura de microserviços, independentemente da linguagem ou plataforma que se use. O \textit{Express Gateway} protege e expõe os microserviços através de \acrshort{api}s usando \textit{Node.js}, \textit{ExpressJS} e \textit{middleware} \textit{Express}. Além disso é \textit{open-source} e posssui as seguintes funcionalidades:~\cite{kong}
+\textit{Express Gateway} é uma \textit{\acrshort{api} Gateway} que pode ser colocada em qualquer arquitetura de microserviços, independentemente da linguagem ou plataforma que se use. O \textit{Express Gateway} protege e expõe os microserviços através de \acrshort{api}s usando \textit{Node.js}, \textit{ExpressJS} e \textit{middleware} \textit{Express}. Além disso é \textit{open-source} e possui as seguintes funcionalidades:~\cite{kong}
 \begin{itemize}
     \item Politicas empresariais que são normalmente pagas noutras \textit{\acrshort{api} Gateway}s são aqui gratuitas
     \item Configuração através de um ficheiro \acrshort{yaml}
     \item Arquitetura de \textit{plugins}
     \item Extensível com mais de 3000 módulos
-    \item Corre em qualquer lado (Docker, etc)
+    \item Corre em qualquer lado (\textit{Docker}, etc)
     \item Deteta automaticamente e recarrega quando há alterações na configuração
     \item Suporta qualquer linguagem e \textit{framework}
     \item Suporta todos os casos de uso de microserviços, padrões e arquiteturas
@@ -1196,7 +1197,7 @@ Existem várias \textit{\acrshort{api} Gateway}s das quais se destacam Express G
     \caption{Arquitetura do \textit{Express Gateway}.~\cite{kongArch}}
 \end{figure}
 
-Por definição, o \textit{Express Gateway} usa uma base de dados em memória para testes e para começar a experimentar. O \textit{Express Gateway} pode correr com ou sem \textit{backend} e se uma base de dados persistente for desejada é suportado o \textit{Redis}. A configuração do \textit{Express Gateway} é armazenada num ficheiro \acrshort{yaml} e como tal o \textit{Express Gateway} apenas guarda dados transacionais como informação de utilizadores e de \textit{tokens} de acesso na base de dados. Ou seja, nem sempre é necesssário o uso da base de dados, depende do caso de uso.
+Por definição, o \textit{Express Gateway} usa uma base de dados em memória para testes e para começar a experimentar. O \textit{Express Gateway} pode correr com ou sem \textit{backend} e se uma base de dados persistente for desejada é suportado o \textit{Redis}. A configuração do \textit{Express Gateway} é armazenada num ficheiro \acrshort{yaml} e como tal o \textit{Express Gateway} apenas guarda dados transacionais como informação de utilizadores e de \textit{tokens} de acesso na base de dados. Ou seja, nem sempre é necessário o uso da base de dados, depende do caso de uso.
 
 A configuração como já referido é definida num ficheiro \acrshort{yaml} sendo que existe uma \acrshort{api} e uma \acrshort{cli} para gerir utilizadores e credenciais. Oficialmente não existe uma \acrshort{gui} para a \acrshort{api}.
 
@@ -1210,7 +1211,7 @@ Algumas das funcionalidades presentes são:~\cite{kong}
 \begin{itemize}
     \item Tarefas de configuração e administração divididas entre \acrshort{rest} \acrshort{api} e \acrshort{cli}
     \item Extensível através de 36 \textit{plugins} disponíveis (6 deles são comerciais, o resto é \textit{open-source})
-    \item Corre em qualquer lado (Kubernetes, Docker, etc)
+    \item Corre em qualquer lado (\textit{Kubernetes}, \textit{Docker}, etc)
     \item Escala ao apenas adicionar mais máquinas
     \item Realiza balanceamento de carga dinamicamente através dos vários serviços de \textit{backend}
     \item Suporte para um conjunto de políticas para todos os \textit{endpoints} da \acrshort{api} que pode ser modificado com fluxo condicional
@@ -1228,7 +1229,7 @@ Algumas das funcionalidades presentes são:~\cite{kong}
 
 A forma mais fácil de instalar (\textit{deploy}) o \textit{Kong} é através do uso de \textit{Docker} ou de \textit{Kubernetes}.
 
-A configuração do \textit{Kong} é armazenada no \textit{PostgreSQL} ou no \textit{Cassandra}. Há, contudo, a hipótese de usar uma configuração declarativa que não necessita de uma base de dados para manter a configuração. Esta configuração declarativa é definida pelo utilizador num ficheiro \acrshort{yaml} ou \acrshort{json} e tem várias vantagens já que reduz a carga de trabalho da máquina de instalação, reduz o número de dependências, diminui a necessidade de manutenção e permite a automatização do processo de \textit{deploy}.~\cite{KongDBLess} A \acrshort{gui} oficial de administração do \textit{Kong} apenas está disponível na versao paga, contudo é possivel usar uma versão \textit{third-party} como por exemplo o \textit{Konga}.
+A configuração do \textit{Kong} é armazenada no \textit{PostgreSQL} ou no \textit{Cassandra}. Há, contudo, a hipótese de usar uma configuração declarativa que não necessita de uma base de dados para manter a configuração. Esta configuração declarativa é definida pelo utilizador num ficheiro \acrshort{yaml} ou \acrshort{json} e tem várias vantagens já que reduz a carga de trabalho da máquina de instalação, reduz o número de dependências, diminui a necessidade de manutenção e permite a automatização do processo de \textit{deploy}.~\cite{KongDBLess} A \acrshort{gui} oficial de administração do \textit{Kong} apenas está disponível na versão paga, contudo é possível usar uma versão \textit{third-party} como por exemplo o \textit{Konga}.
 
 Como o \textit{Kong} é construído sobre o \textit{Nginx} os vários \textit{plugins} necessitam de ser escritos em \textit{Lua}.
 
@@ -1236,7 +1237,7 @@ Uma das principais desvantagens do \textit{Kong} é que muitas das funcionalidad
 
 \subsection{Moleculer \acrshort{api} Gateway}
 
-\textit{Moleculer} é uma \textit{framework} \textit{open-source} que contém as funcionalidades mais importantes numa arquitetura baseada em microserviços. Ajuda a constuir serviços escaláveis, eficientes e fiáveis oferecendo também várias funcionalidades para construir e gerir os microserviços.
+\textit{Moleculer} é uma \textit{framework} \textit{open-source} que contém as funcionalidades mais importantes numa arquitetura baseada em microserviços. Ajuda a construir serviços escaláveis, eficientes e fiáveis oferecendo também várias funcionalidades para construir e gerir os microserviços.
 
 Das várias funcionalidades desta \textit{framework} está presente o módulo da \textit{\acrshort{api} Gateway}.
 
@@ -1246,7 +1247,7 @@ Esta \textit{\acrshort{api} Gateway} tem como funcionalidades:~\cite{moleculerAP
     \item Serve ficheiros estáticos
     \item Suporta \textit{middlewares}
     \item Suporta o \textit{upload} de ficheiros
-    \item Multiplos \textit{body parsers} (\acrshort{json}, \textit{urlencoded})
+    \item Múltiplos \textit{body parsers} (\acrshort{json}, \textit{urlencoded})
     \item Cabeçalhos \acrshort{cors}
     \item \acrshort{http}2
     \item \textit{Rate limiter}
@@ -1258,18 +1259,18 @@ Para além disso, esta \textit{\acrshort{api} Gateway} pode ser usada como \text
 
 \subsection{Tyk \acrshort{api} Gateway}
 
-O \textit{Tyk} é uma \textit{\acrshort{api} Gateway} \textit{open-source} com componentes gratuitos e outros pagos. Esta plataforma é escrita em \textit{Go} e consiste numa \textit{\acrshort{api} Gateway} e num \textit{Dashboard}. Enquanto que o \textit{core} da \textit{\acrshort{api} Gateway} é gratuita e \textit{open-source}, o \textit{dashboard} requere a compra de licensas. A versão gratuita permite o uso de uma instância \textit{\acrshort{api} Gateway}. Para duas ou mais instâncias é necessário pagar. O \textit{Tyk} também possui uma versão \textit{cloud} (\textit{Tyk Cloud}) em que a versão gratuita permite até 50000 pedidos à \acrshort{api} diariamente. Tudo acima disso é também necessário pagar.
+O \textit{Tyk} é uma \textit{\acrshort{api} Gateway} \textit{open-source} com componentes gratuitos e outros pagos. Esta plataforma é escrita em \textit{Go} e consiste numa \textit{\acrshort{api} Gateway} e num \textit{Dashboard}. Enquanto que o \textit{core} da \textit{\acrshort{api} Gateway} é gratuito e \textit{open-source}, o \textit{dashboard} requer a compra de licenças. A versão gratuita permite o uso de uma instância \textit{\acrshort{api} Gateway}. Para duas ou mais instâncias é necessário pagar. O \textit{Tyk} também possui uma versão \textit{cloud} (\textit{Tyk Cloud}) em que a versão gratuita permite até 50000 pedidos à \acrshort{api} diariamente. Tudo acima disso é também necessário pagar.
 
 Em termos de funcionalidades, o \textit{Tyk} possui:~\cite{tyk}
 \begin{itemize}
     \item \acrshort{api} \acrshort{rest}ful
-    \item Multiplos protocolos de acesso
+    \item Múltiplos protocolos de acesso
     \item \textit{Rate limiting} e cotas
     \item Controlo de acesso granular
     \item Expiração de chaves
     \item Versionamento da \acrshort{api}
-    \item Logs
-    \item Restarts sem tempo de inatividade
+    \item \textit{Logs}
+    \item \textit{Restarts} sem tempo de inatividade
     \item Suporte para \acrshort{https}, \acrshort{cors}, \acrshort{jwt} entre outros
 \end{itemize}
 
@@ -1280,13 +1281,13 @@ Em termos de funcionalidades, o \textit{Tyk} possui:~\cite{tyk}
     \caption{Arquitetura do \textit{Tyk}.~\cite{tyk}}
 \end{figure}
 
-O \textit{core} da \textit{\acrshort{api} Gateway} apenas necessita do \textit{Redis} contudo o produto todo (incluindo o \textit{dashboard}) necessita também como dependências \textit{MongoDB} e \textit{Tyk Pump}. Isto coloca uma maior carga na máquina do servidor que se pode evitar tornando também mais dificil de instalar e de gerir numa máquina local.
+O \textit{core} da \textit{\acrshort{api} Gateway} apenas necessita do \textit{Redis} contudo o produto todo (incluindo o \textit{dashboard}) necessita também como dependências \textit{MongoDB} e \textit{Tyk Pump}. Isto coloca uma maior carga na máquina do servidor que se pode evitar tornando também mais difícil de instalar e de gerir numa máquina local.
 
-Em termos de administração, o \textit{tyk} possui duas hipóteses, a gestão através da \textit{web} \acrshort{gui} ou através de \acrshort{rest} \acrshort{api}s. A configuração do \textit{Tyk} é armazenada no \textit{Redis}. O \textit{Tyk} é melhor que os seus concorrentes (\textit{Kong} e \textit{Nginx}) para projetos que pretendem ter a maioria das funcionalidades a funcionar desde o dia um (apenas na versão paga) visto não ser necessário explorar as várias opções disponíveis o que pode demorar algum tempo.~\cite{compAPIGat}
+Em termos de administração, o \textit{Tyk} possui duas hipóteses, a gestão através da \textit{web} \acrshort{gui} ou através de \acrshort{rest} \acrshort{api}s. A configuração do \textit{Tyk} é armazenada no \textit{Redis}. O \textit{Tyk} é melhor que os seus concorrentes (\textit{Kong} e \textit{Nginx}) para projetos que pretendem ter a maioria das funcionalidades a funcionar desde o dia um (apenas na versão paga) visto não ser necessário explorar as várias opções disponíveis o que pode demorar algum tempo.~\cite{compAPIGat}
 
 \subsection{Nginx Plus}
 
-O \textit{Nginx Controller} disponível permite gerir o \textit{Nginx Plus} por forma a servir de \textit{load balancer}, \textit{proxy} ou ainda de \textit{\acrshort{api} Gateway}. Com o módulo \textit{\acrshort{api} Management} do \textit{Nginx Controller} é possíel definir, publicar, proteger, monitorizar e analizar \acrshort{api}s. Para tal o \textit{Nginx Controller} gera configuração para o \textit{Nginx Plus}.
+O \textit{Nginx Controller} disponível permite gerir o \textit{Nginx Plus} por forma a servir de \textit{load balancer}, \textit{proxy} ou ainda de \textit{\acrshort{api} Gateway}. Com o módulo \textit{\acrshort{api} Management} do \textit{Nginx Controller} é possível definir, publicar, proteger, monitorizar e analisar \acrshort{api}s. Para tal o \textit{Nginx Controller} gera configuração para o \textit{Nginx Plus}.
 
 Numa comparação de performance com o Kong verifica-se que o \textit{Nginx Plus} escala melhor do que o \textit{Kong}.~\cite{nginxPvsKong} Nos testes realizados chegou-se à conclusão que o módulo \textit{\acrshort{api} Management} do \textit{Nginx Plus} adiciona 20\% a 30\% menos latência aos pedidos dos utilizadores se compararmos com o \textit{Kong}. Além disso, usa menos 40\% de \acrshort{cpu} se compararmos com o \textit{Kong} com a mesma carga de trabalho.
 
@@ -1304,5 +1305,10 @@ A principal dificuldade de usar o \textit{Nginx} é que a configuração pode se
 
 \section{Resumo}
 
-%TODO
-TODO
+Recapitulando, foram abordadas várias tecnologias tanto de proteção da \acrshort{api} de dados, como o \acrshort{jwt} e o Autenticação.gov, bem como a especificação \textit{OpenAPI} e o \textit{Swagger UI} que irão auxiliar na documentação da \acrshort{api} de dados.
+
+De seguida, foi investigado que \acrshort{npm} \textit{packages} podem ser usadas na conversão de \acrshort{json} para \acrshort{xml} e de \acrshort{json} para \acrshort{csv} bem como a exportação para \acrshort{rdf} a partir do \textit{GraphDB}.
+
+Abordou-se também o \textit{Let's Encrypt} que será usado para a ativação do \acrshort{https} na \acrshort{api} de dados e na interface da \acrshort{clav}.
+
+Finalmente, investigou-se as principais \textit{\acrshort{api} Gateways} disponíveis atualmente. No próximo capítulo, serão apresentadas as principais decisões e esquemas/modelos/metodologias usadas para alcançar os objetivos desta dissertação.
