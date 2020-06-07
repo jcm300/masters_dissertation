@@ -1,3 +1,8 @@
+Nesta secção irá ser abordado o estado da arte para a realização dos objetivos referidos na secção de introdução. O objetivo principal desta secção é descrever os conceitos e tecnologias usados, tais como o \acrshort{jwt}, o Autenticação.gov, \textit{Swagger}, entre outros.
+
+%TODO
+TODO: melhorar
+
 \section{\acrfull{jwt}}
 O \acrshort{jwt} é um \textit{open standard}\footnote{Mais informação em \url{https://tools.ietf.org/html/rfc7519}} que define uma forma compacta e independente de transmitir com segurança informação entre partes com um objeto \acrshort{json}.~\cite{jwtio} O \acrshort{jwt} pode ser assinado digitalmente (\acrshort{jws}), encriptado (\acrshort{jwe}), assinado e depois encriptado (\acrshort{jws} encriptado, ou seja, um \acrshort{jwe}, ordem recomendada\footnote{Mais informação em \url{https://tools.ietf.org/html/rfc7519\#section-11.2}}) ou encriptado e depois assinado (\acrshort{jwe} assinado, ou seja, um \acrshort{jws}).
 
@@ -13,7 +18,7 @@ Sendo assim em que casos é útil o uso de \acrshort{jwt}s? Dois dos casos são 
 
 \subsection{Estrutura do \acrshort{jwt}}
 
-Os \acrshort{jwt}s são construídos a partir de três elementos, o \textit{header} (objeto \acrshort{json} também conhecido por \acrshort{jose} \textit{header}), o \textit{payload} (objeto \acrshort{json}) e os dados de assinatura/encriptação (depende do algoritmo usado). Estes elementos são depois codificados em representações compactas (\texttt{Base64 URL-safe}\footnote{Variante da codificação \texttt{Base64} onde a codificação gerada é segura para ser usada em \textit{URL}s. Basicamente para a codificação \texttt{Base64} gerada substitui os caracteres '+' e '/' pelos caracteres '-' e '\_' respetivamente. Além disso, remove o caractere de \textit{padding} e proíbe separadores de linha}). As codificações \texttt{Base64 URL-safe} de cada elemento são depois concatenadas através de pontos dando origem a uma representação final compacta do \acrshort{jwt} (\textit{JWS/JWE Compact Serialization}). Na secção~\ref{sec:criacaojwt} está presente dois diagramas referentes à construção de dois \acrshort{jwt}s sendo um deles assinado.
+Os \acrshort{jwt}s são construídos a partir de três elementos, o \textit{header} (objeto \acrshort{json} também conhecido por \acrshort{jose} \textit{header}), o \textit{payload} (objeto \acrshort{json}) e os dados de assinatura/encriptação (depende do algoritmo usado). Estes elementos são depois codificados em representações compactas (\texttt{Base64 URL-safe}\footnote{Variante da codificação \texttt{Base64} onde a codificação gerada é segura para ser usada em \textit{URL}s. Basicamente para a codificação \texttt{Base64} gerada substitui os caracteres '+' e '/' pelos caracteres '-' e '\_' respetivamente. Além disso, remove o caractere de \textit{padding} e proíbe separadores de linha}). As codificações \texttt{Base64 URL-safe} de cada elemento são depois concatenadas numa \textit{string} onde é usado o caractere '.' para separar as partes, dando origem a uma representação final compacta do \acrshort{jwt} (\textit{JWS/JWE Compact Serialization}). Na secção~\ref{sec:criacaojwt} estão presentes dois diagramas referentes à construção de dois \acrshort{jwt}s sendo um deles assinado.
 
 \begin{figure}[H]
     \centering
@@ -1057,6 +1062,8 @@ A escolha do cliente \acrshort{acme} a usar irá depender se se tem acesso à \t
 
 Caso não se tenha acesso à \textit{shell} irá depender se o provedor de \textit{hosting} suporta o \textit{Let's Encrypt} ou não. Se suportar então é fácil obter o certificado através do provedor. Caso contrário, pode-se pedir ao provedor o suporte (que não resolve de imediato o problema nem é de resolução garantida) ou se o provedor permitir o \textit{uploud} de certificados é possível através do \textit{Certbot} gerar um certificado em modo manual mas que acarreta efetuar esta tarefa pelo menos de 3 em 3 meses para renovar o certificado pelo que não é recomendado.
 
+Uma pequena chamada de atenção, o \textit{Let's Encrypt} possui \textit{Rate Limits}~\cite{LErateLimits} pelo que num ambiente de testes deve ser usado o ambiente de testes do \textit{Let's Encrypt}\footnote{Ver \url{https://letsencrypt.org/docs/staging-environment/}} e não o de produção.
+
 \subsection{Validação do Domínio}
 
 Nesta secção será explicado como é realizada a validação do domínio para a geração/renovação/revogação dos certificados.
@@ -1069,7 +1076,7 @@ O \textit{Let's Encrypt} irá gerar um ou mais conjuntos de desafios após olhar
 Há duas formas (desafios) do cliente \acrshort{acme} provar que controla o domínio perante o \textit{Let's Encrypt}~\cite{domainValidation}:
 \begin{itemize}
     \item Providenciar um \acrshort{dns} \textit{record} sobre \texttt{example.com}
-    \item Providenciar um recurso \acrshort{http} num \acrshort{uri} conhecido em \texttt{http://example.com/}
+    \item Providenciar um recurso \acrshort{http} num \acrshort{uri} conhecido em \texttt{http://example.com/} (são colocados normalmente em \texttt{http://example.com/.well-known/acme-challenge})
 \end{itemize}
 
 Juntanente com os desafios, o \textit{Let's Encrypt} envia um \textit{nonce} (\textit{string} usada uma única vez) que o cliente deve assinar com a chave privada por forma a garantir que este controla o par de chaves evitando \textit{replay attacks}\footnote{Para mais informação ver \url{https://www.kaspersky.com/resource-center/definitions/replay-attack}}.
@@ -1085,9 +1092,32 @@ Veja-se agora um exemplo concreto em que o cliente \acrshort{acme} usa o segundo
 
 Como o desafio teve sucesso e o \textit{nonce} assinado pelo cliente \acrshort{acme} é válido então o cliente \acrshort{acme} identificado pela chave pública está autorizado a gerir os certificados para o domínio \texttt{example.com}. Assim, para gerar/renovar/revogar o certificado para o domínio basta enviar mensangens de gestão do certificado assinadas com o chave privada (a que assinou o \textit{nonce}) para o \textit{Let's Encrypt}.
 
-\subsection{Cliente acme.sh}
-%TODO
-TODO: o que é e alternativas
+\subsection{Cliente \textit{acme.sh}}
+Apesar do cliente recomendado pelo \textit{Let's Encrypt} ser o \textit{Certbot} este necessita de ter permissões \textit{root} bem como tem várias dependências para ser executado. Já o cliente \textit{acme.sh}\footnote{Ver \url{https://github.com/acmesh-official/acme.sh}} é uma script \textit{bash} que para a sua instalação basta efetuar \textit{download} da \textit{script} deste. Além disso, não necessita de quaisquer dependências nem de acesso \textit{root} (apenas necessita em casos especiais). A sua utilização, tal como o \textit{Certbot}, é feita através da execução de comandos \textit{bash}.
+
+Para instalar basta:
+\begin{verbatim}
+curl https://get.acme.sh | sh
+#ou
+wget -O -  https://get.acme.sh | sh
+\end{verbatim}
+
+Esta instalação irá ativar desde logo a auto renovação dos certificados através da criação de um \textit{cron job}\footnote{Mais informação em \url{https://www.ostechnix.com/a-beginners-guide-to-cron-jobs/}} pelo que o cliente \textit{acme.sh} irá correr periodicamente para verificar e renovar os certificados se necessário.
+
+Para obter um certificado executa-se:
+\begin{verbatim}
+acme.sh --issue -d <dominio> -w <pasta web root>
+\end{verbatim}
+
+Após obter o certificado, este pode ser instalado no \textit{Nginx} com:
+\begin{verbatim}
+acme.sh --install-cert -d example.com \
+    --key-file /path/to/keyfile/in/nginx/key.pem  \
+    --fullchain-file /path/to/fullchain/nginx/fullchain.pem \
+    --reloadcmd "nginx -s reload"
+\end{verbatim}
+
+Neste último, o ficheiro de configuração do \textit{Nginx} tem de estar à espera que os ficheiros do certificado estejam em \path{/path/to/keyfile/in/nginx/key.pem} e em \path{/path/to/fullchain/nginx/fullchain.pem}.
 
 \section{\acrshort{api} Gateway}\label{sec:api_gateway}
 
@@ -1271,3 +1301,8 @@ Em termos de funcionalidades o \textit{\acrshort{api} Management} do \textit{Ngi
 Além destas funcionalidades é possível também usar o \textit{Nginx Controller} para criar/gerir \textit{load balancers}. O \textit{Nginx Plus} é uma versão paga e a versão gratuita do \textit{Nginx} não possui o \textit{Nginx Controller} mas é possível usar a versão gratuita através do uso de \textit{plugins} por forma a produzir uma \textit{\acrshort{api} Gateway}~\cite{compAPIGat}. O uso da versão gratuita obriga claro a um maior trabalho e \textit{try and error} por forma a atingir o objetivo final.
 
 A principal dificuldade de usar o \textit{Nginx} é que a configuração pode ser um pouco complicada de usar e de perceber na sua totalidade possuindo uma acentuada curva de aprendizagem.
+
+\section{Resumo}
+
+%TODO
+TODO
