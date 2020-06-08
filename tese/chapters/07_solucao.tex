@@ -17,7 +17,11 @@ Na \textit{header} \textit{Authorization} irá ser usado o esquema de autentica�
 \end{itemize}
 ao invés do esquema de autenticação predefinido do \textit{Bearer}: \verb|Bearer <token/Chave API>|
 
+Caso não seja respeitado um destes formatos, o pedido será recusado visto que a \acrshort{api} de dados não consegue identificar o \textit{token}.
+
 Convém referir que a Chave \acrshort{api} é também um \textit{token}. A divisão entre utilizadores e chaves \acrshort{api} permite uma mais fácil gestão dos \textit{tokens} recebidos pela \acrshort{api} bem como usar duas formas diferentes de os gerar/verificar com o possível benefício de melhorar a segurança da \acrshort{api}.
+
+Após se identificar o \textit{token}, verifica-se o \textit{token}. Esta verificação varia de acordo se o \textit{token} é d  um  utilizador ou de uma Chave \acrshort{api}. Caso seja de uma chave \acrshort{api}, verifica-se se existe a entrada no \textit{MongoDB} e se a chave \acrshort{api} ainda se encontra ativa. Em caso afirmativo, procede-se para a verificação do \textit{token} (se ainda não expirou) com recurso ao segredo. No caso de um utilizador verifica-se se o \textit{token} ainda não expirou e se a operação tiver restrições quanto ao nível de utilizador que pode aceder, verifica-se também se o nível presente no \textit{token} permite realizar a operação.
 
 Os \textit{token}s gerados pela \acrshort{api} serão \acrshort{jwt}s. Contudo poderiam ser outro tipo de \textit{tokens} (por exemplo uma \textit{string} aleatória e única) que o processo de envio dos \textit{tokens} para a \acrshort{api} manter-se-ia igual.
 
@@ -68,6 +72,41 @@ O fluxo de autenticação e renovação de uma Chave \acrshort{api} na \acrshort
 TODO: completar
 
 \section{Autenticação através de \acrshort{cmd}}
+
+A autenticação com \acrshort{cmd} é bastante semelhante à autenticação com o \acrshort{cc}. O que muda é o modo de autenticação perante o Autenticação.gov que em vez de ser efetuado com \acrshort{cc} (\acrlong{cc}, Leitor de Cartões e \acrshort{pin} de autenticação do \acrshort{cc}) é realizado através de \acrshort{cmd} (Número de telemóvel, \acrshort{pin} definido durante a ativação da \acrshort{cmd} e \acrshort{pin} temporário enviado para o número de telemóvel).
+
+Os atributos pedidos ao Autenticação.gov são os mesmos que são pedidos com a autenticação com o \acrshort{cc} (\acrshort{nic} e Nome Completo) permitindo identificar unicamente o utilizador a partir do \acrshort{nic}. Para além disso, permite aproveitar todo o back-end e código já desenvolvido para a autenticação do utilizador perante a \acrshort{clav} através de \acrshort{cc} visto que os atributos usados são os mesmos. Além disso, permite uma melhor normalização da identificação dos utilizadores (não existindo assim vários ids para o mesmo utilizador) bem como evita ser necessário o utilizador partilhar atributos adicionais (como o número de telemóvel) com a \acrshort{clav} (o número de telemóvel é apenas partilhado com o Autenticação.gov sendo que a \acrshort{clav} não tem acesso a esta informação se apenas pediu para saber os atributos \acrshort{nic} e Nome Completo). Assim, a única implicação que pode ser gerada daqui é que o utilizador, quer queira usar a Autenticação por \acrshort{cc} quer queira usar por \acrshort{cmd}, necessita de ser registado na \acrshort{clav} com o \acrshort{cc}, mas como neste momento é obrigatório o registo dos utilizadores através de \acrshort{cc} facilita em vez de complicar o registo. Voltasse a frisar que o \acrshort{nic} é usado por forma a identificar o utilizador, pelo que serve de Id do utilizador tal como na autenticação com o \acrshort{cc}.
+
+Portanto, de igual forma como na autenticação com o \acrshort{cc}, quando é selecionado este método de autenticação, a \acrshort{clav} redireciona o utilizador para o Autenticação.gov que se encarrega de autenticar o utilizador com \acrshort{cmd}, comunicando, no fim, os atributos pedidos ao Autenticação.gov (\acrshort{nic} e Nome Completo). A \acrshort{clav} com o \acrshort{nic} verifica se o utilizador já se encontra registado, obtendo mais alguma informação adicional, como o nível de utilizador. Semelhantemente à autenticação local e à autenticação com o \acrshort{cc}, é agora gerado um \textit{token} (\acrshort{jwt}) que irá assinar a partir daqui todos os pedidos do utilizador. O \textit{token} tem a validade de 8 horas, ao fim das quais o utilizador necessita de realizar uma nova autenticação.
+
+Em termos técnicos, é apenas necessário aproveitar o pedido POST que já é enviado ao Autenticação.gov para a autenticação com \acrshort{cc} e adicionar mais extensões. As extensões a adicionar são o nível de confiança e a política de apresentação.
+
+O primeiro permite indicar o nível mínimo necessário que pretendemos que seja usado pelo Autenticação.gov. Como tal, dado um nível selecionado permite a autenticação através do método desse nível mas também permite os métodos de autenticação dos níveis superiores. Além disso, quanto menor o nível mais fraca é a autenticação, visto que quanto menor o nível mais fraca é a autenticidade das credenciais fornecidas pelo utilizador.
+
+Quando este nível de confiança não está presente (como no caso do pedido enviado para a autenticação com \acrshort{cc}) o nível de confiança mínimo assumido é o nível máximo (4). Assim para o caso da \acrshort{cmd} foi adicionada a seguinte extensão ao pedido em XML~\cite{agov2}:
+%Ref: Manual de Integração do Fornecedor de Autenticação v1.5.3 cap 7.2
+\begin{verbatim}
+    <fa:FAAALevel
+        xmlns:fa="http://autenticacao.cartaodecidadao.pt/atributos"
+    >3</fa:FAAALevel>
+\end{verbatim}
+Esta extensão indica então que o nível de confiança mínimo necessário é o nível 3, ou seja, permite a autenticação através de \acrshort{cmd} mas também através de \acrshort{cc}.
+
+Como tal, por forma a apenas aparecer no Autenticação.gov a hipótese de autenticação através de \acrshort{cmd} é necessário definir a Política de Apresentação do Autenticação.gov.
+
+Como foi definido o nível 3 de confiança no pedido, é necessário esconder a aba do \acrfull{cc} e se futuramente se pretender apresentar ambas as abas é também necessário tornar o mecanismo de \acrfull{cmd} a aba predefinida. Para tal, foi adicionada a seguinte extensão ao pedido em XML~\cite{agov2}:
+%Ref: Manual de Integração do Fornecedor de Autenticação v1.5.3 cap 8.2
+\begin{verbatim}
+    <fa:AuthTabPresentationPolicies
+        xmlns:fa="http://autenticacao.cartaodecidadao.pt/presentationpolicy"
+    >
+        <!--Torna a aba CMD como predefinida-->
+        <fa:defaultSelectedAuthTab TabId="CMD"/>
+        <!--Esconde a aba do CC-->
+        <fa:hideAuthTab TabId="CC"/> 
+    </fa:AuthTabPresentationPolicies>
+\end{verbatim}
+
 %TODO
 TODO
 

@@ -132,9 +132,9 @@ Por fim, uma outra alternativa bastante semelhante ao \acrshort{jwt} é \textit{
 \section{Autenticação.gov}
 O Autenticação.gov surgiu da necessidade de identificação unívoca de um utilizador perante sítios na Web.~\cite{agov} Será esta quem realiza o processo de autenticação do utilizador e que fornecerá os atributos do utilizador necessários para identificar o utilizador numa entidade (\textit{website}/portal).
 
-O \acrshort{cc} em conjunto com o Autenticação.gov permite obter os identificadores dos utilizadores junto das entidades participantes da iniciativa do \acrshort{cc} (funcionalidade de Federação de Identidades da Plataforma de Interoperabilidade da Administração Pública). Além disso, o Autenticação.gov gere os vários fornecedores de atributos disponíveis bem como possui uma estreita ligação com a infraestrutura de chave pública do Cartão de Cidadão (\acrfull{pki}), com o intuito de manter os elevados níveis de segurança e privacidade no processo de autenticação e identificação.~\cite{agov}
+O \acrshort{cc} em conjunto com o Autenticação.gov permite obter os identificadores dos utilizadores junto das entidades participantes da iniciativa do \acrshort{cc} (funcionalidade de Federação de Identidades da Plataforma de Interoperabilidade da Administração Pública). Além disso, o Autenticação.gov gere os vários fornecedores de atributos disponíveis bem como possui uma estreita ligação com a infraestrutura de chave pública do \acrlong{cc} (\acrfull{pki}), com o intuito de manter os elevados níveis de segurança e privacidade no processo de autenticação e identificação.~\cite{agov}
 
-O Autenticação.gov permite também a criação de credencias comuns a todos os sites da \acrshort{ap}, ou seja, o utilizador apenas necessita de se autenticar uma vez que poderá aceder aos vários portais (Portal do Cidadão, etc) com a mesma autenticação.
+O Autenticação.gov permite também a criação de credenciais comuns a todos os sites da \acrshort{ap}, ou seja, o utilizador apenas necessita de se autenticar uma vez que poderá aceder aos vários portais (Portal do Cidadão, etc) com a mesma autenticação (\acrshort{sso}).
 
 Para além disso o utilizador pode autenticar-se utilizando outros certificados digitais que não o \acrshort{cc} (por exemplo \acrfull{cmd}, \textit{user+password} ou redes sociais, estes dois últimos quando o \textit{website}/portal necessita apenas de conhecer do utilizador o \textit{email}).
 
@@ -160,33 +160,83 @@ De forma a completar a figura~\ref{fig:authgov} apresenta-se de seguida o fluxo 
         \item Valida as credenciais do utilizador com recurso à \acrshort{pki} do \acrshort{cc} via \acrshort{ocsp}
         \item Obtém atributos que sejam solicitados pelo portal da entidade (\acrshort{clav}) junto dos vários fornecedores de atributos qualificados. Esta operação é efetuada via Plataforma de Interoperabilidade. Este processo pode incluir a obtenção de dados da Federação de Identidades ou de outras Entidades.
     \end{enumerate}
-    \item A identificação e atributos do utilizador são autenticadas e assinados digitalmente pelo Autenticação.gov, após o que redireciona o utilizador de volta ao portal da entidade original (\acrshort{clav}). Cabe à entidade (\acrshort{clav}) a validação das credenciais do Autenticação.gov e utilização dos atributos do cidadão.
+    \item A identificação e atributos do utilizador são autenticadas e assinados digitalmente pelo Autenticação.gov, após o qual redireciona o utilizador de volta ao portal da entidade original (\acrshort{clav}). Cabe à entidade (\acrshort{clav}) a validação das credenciais do Autenticação.gov e utilização dos atributos do cidadão.
 \end{enumerate}
 
-A troca de pedidos entre a \acrshort{clav} e o Autenticação.gov é feita através de \acrshort{saml} 2.0 (com as extensões que a \acrshort{ama} considera obrigatórias). De seguida será feita uma pequena introdução ao \acrshort{saml} 2.0. 
+A troca de pedidos entre a \acrshort{clav} e o Autenticação.gov é feita através de \acrshort{saml} 2.0.
 
-\subsection{\acrshort{saml} 2.0}
-O \acrfull{saml} define uma \textit{framework} \textit{standard} em \acrshort{xml}.~\cite{sam2man} Foi aprovado pela \acrshort{oasis} e permite a troca segura de informação de autenticação e autorização entre diferentes entidades. Através do \acrshort{saml} é possível através de uma credencial (\textit{login} de um utilizador) aceder autenticado a um conjunto de \textit{websites}. Esta funcionalidade é conhecida por \acrfull{sso}.
+O \acrfull{saml} define uma \textit{framework} \textit{standard} em \acrshort{xml}.~\cite{sam2man} Foi aprovado pela \acrshort{oasis}, permite a troca segura de informação de autenticação e autorização entre diferentes entidades e é possível através de uma credencial (\textit{login} de um utilizador) aceder autenticado a um conjunto de \textit{websites} (\acrshort{sso}).
 
-Existem três tipos de papéis em \acrshort{saml}:~\cite{wisaml}
-\begin{itemize}[leftmargin=2cm]
-    \item Utilizador
-    \item \textit{Identity Provider}: Realiza a autenticação de que o utilizador é quem diz ser e envia essa informação ao \textit{Service Provider} junta com as permissões de acesso do utilizador para o serviço
-    \item \textit{Service Provider}: Precisa de autenticação do \textit{Identity Provider} para poder dar autorização ao utilizador
+Para utilizar o Autenticação.gov é necessário criar um pedido baseado em \acrshort{saml}, assinado digitalmente com um certificado X.509 (permite identificar a entidade responsável pelo pedido) e encriptado com o par de chaves \acrshort{rsa} da \acrshort{clav} (permite verificar a validade do pedido de autenticação), bem como a respetiva cadeia de autenticação.~\cite{otavioTese}
+
+Há dois tipos de \acrshort{saml} usados com o Autenticação.gov~\cite{otavioTese}:
+\begin{itemize}
+    \item \textbf{\acrshort{saml} Request (2 da figura~\ref{fig:fluxoauthgov}):} Pedido de autenticação, enviado ao Autenticação.gov, no qual é enviado a origem, assinaturas, atributos a obter do utilizador, etc.
+    \item \textbf{\acrshort{saml} Response (4 da figura~\ref{fig:fluxoauthgov}):} Resposta ao pedido de autenticação enviado para o \textit{issuer} do pedido de autenticação. Esta resposta contém o \textit{status} do pedido de autenticação (sucesso, insucesso ou cancelado) e no caso de uma autenticação com sucesso contém os atributos do utilizador requisitados
 \end{itemize}
 
-O documento \acrshort{xml} enviado pelo \textit{Identity Provider} para o \textit{Service Provider} é conhecida por \textit{\acrshort{saml} Assertion}. Existem três tipos de \textit{\acrshort{saml} Assertion}:~\cite{wisaml}
-\begin{itemize}[leftmargin=2cm]
-    \item \textit{Authentication Assertion}: Prova a identificação de um utilizador e fornece a hora em que o utilizador se autenticou e o método de autenticação usado
-    \item \textit{Attribution Assertion}: Envia \textit{\acrshort{saml} attributes} (formato de dados que contém informação acerca do utilizador) para o \textit{Service Provider}
-    \item \textit{Authorization Assertion}: Indica se o utilizador está autorizado a usar o serviço ou se o \textit{Identity Provider} recusou o pedido à inserção de uma password errada ou por falta de permissões para usar o serviço
+Tanto o pedido e a resposta tem o seu formato em \acrshort{xml} pelo simples facto de ser usado o \acrshort{saml} 2.0.
+
+No caso do \textit{\acrshort{saml} Request} o pedido possui o elemento \textit{root} \texttt{AuthnRequest} onde se destaca os seguintes atributos:
+\begin{itemize}
+    \item \textbf{Destination}: \acrshort{url} para o qual o pedido de autenticação é enviado. No caso da Autenticação.gov este apenas pode ser um dos seguintes \acrshort{url}'s:
+    \begin{itemize}
+        \item \url{https://preprod.autenticacao.gov.pt/fa/Default.aspx} para o ambiente de teste
+        \item \url{https://autenticacao.gov.pt/fa/Default.aspx} para o ambiente de produção (obrigatório o uso de \acrshort{https} para a comunicação)
+    \end{itemize}
+    \item \textbf{AssertionConsumerServiceURL}: \acrshort{url} destino da resposta do pedido de autenticação (\textit{\acrshort{saml} Response}). Em produção, é obrigatório que o \acrshort{url} seja em \acrshort{https}.
+    \item \textbf{ProviderName}: Nome da plataforma/aplicação que está a requerer a autenticação através do Autenticação.gov. Este nome tem de ser previamente acordado com a \acrshort{ama} durante a emissão da cadeia de autenticação e certificados X.509~\cite{otavioTese}.
 \end{itemize}
 
-No projeto \acrshort{clav} o utilizador final é o utilizador da \acrshort{clav}, o \textit{Identity Provider} é representado pelo Autenticação.gov e o \textit{Service Provider} é representado pela \acrshort{clav}.
+Além destes atributos, o \textit{\acrshort{saml} Request} possui 3 elementos aninhados:
+\begin{itemize}
+    \item \textbf{Issuer}: Informação sobre quem efetua o pedido de autenticação, ou seja a \acrshort{clav}. Basta apenas enviar o \acrshort{url} de onde é originário o pedido.
+    \item \textbf{Signature}: Assinatura digital do pedido. Aqui é adicionado o certificado X.509 com a cadeia de autenticação fornecida pela \acrshort{ama}.
+    \item \textbf{Extensions}: Contém os atributos a requisitar ao Autenticação.gov do utilizador a autenticar-se na \acrshort{clav}. Aqui são também adicionados o nível de confiança e a política de apresentação do Autenticação.gov.
+    \begin{itemize}
+        \item \textbf{Nível de confiança} \\
+        Permite indicar o nível mínimo necessário para realizar a autenticação. Os níveis passíveis de usar são~\cite{agov2}:
+        \begin{itemize}
+            \item 4:
+            \begin{itemize}
+                \item Autenticação com recurso a uma ou mais operações criptográficas efetuadas no \acrlong{cc} em autenticação que resulta num conjunto de informação fornecida ao Autenticação.gov que permite com o maior grau de certeza de que, no momento da autenticação, se utilizou um \acrlong{cc} real com conhecimento do \acrshort{pin} de autenticação
+                \item Autenticação com renegociação \acrshort{ssl} com certificado cliente da Ordem dos Notários, da Ordem dos Advogados ou da Câmara dos Solicitadores
+            \end{itemize}
+            \item 3: Autenticação com \acrlong{cmd}
+            \item 2: Autenticação com \acrlong{cmd} através de Email ou \textit{Twitter}
+            \item 1: Autenticação com Utilizador/Palavra-passe (também designado por Autenticação Simples) e Redes Sociais
+        \end{itemize}
+        \item \textbf{Política de apresentação} \\
+        No Autenticação.gov quando o nível de confiança é inferior a 4 são apresentadas múltiplas abas com os Mecanismos de Autenticação disponíveis. A política de apresentação permite definir o que deve ou não ser apresentado (que abas devem estar disponíveis tendo em conta o nível de confiança definido) e/ou que método de autenticação (aba) deve ser o predefinido. Em caso de conflitos entre o nível de confiança e a política de apresentação ou conflitos na própria política de apresentação, esta é ignorada e é utilizada a política de apresentação que privilegia o \acrshort{cc} (mecanismo de autenticação mais seguro). Os Mecanismos de Autenticação disponíveis são~\cite{agov2}:
+            \begin{itemize}
+                \item \acrlong{cc}
+                \item \acrlong{cmd}
+                \item Utilizador/Palavra-passe também designado por Autenticação Simples
+                \item Redes Sociais
+            \end{itemize}
+            E o mapeamento das abas aos mecanismos de autenticação é~\cite{agov2}:
+            \begin{itemize}
+                \item 'CC': Aba relativa à autenticação através de \acrlong{cc}
+                \item 'CMD': Aba relativa à autenticação através de \acrlong{cmd}
+                \item 'UPP': Aba relativa à autenticação através de Utilizador/Palavra-passe
+                \item 'RSS': Aba relativa à autenticação através das Redes Sociais
+            \end{itemize}
+            Esta identificação é usada para identificar as abas na extensão em XML.
+    \end{itemize}
+\end{itemize}
 
-\subsection{Especificação}
-%TODO
-TODO: Explicar de forma geral como é efetuado o pedido ao autenticação.gov; Explicar as extensões usadas para a CMD
+Após a receção do \textit{\acrshort{saml} Request}, o Autenticação.gov processa a autenticação do utilizador e retorna o \textit{\acrshort{saml} Response} como resposta.
+
+O \textit{\acrshort{saml} Response} tem como elemento \textit{root} \textit{Response}.
+Este elemento possui 5 elementos aninhados dos quais se destaca:
+\begin{itemize}
+    \item \textbf{Status}: Contém a informação relativa ao sucesso ou insucesso do pedido de autenticação
+    \item \textbf{Assertion}: Asserção \acrshort{saml} que contém os atributos requisitados sobre o utilizador no caso do pedido de autenticação ter sucesso
+\end{itemize}
+
+Para finalizar é importante referir que o Autenticação.gov é como se fosse uma caixa negra à qual é enviado um pedido pela entidade que necessita a autenticação do utilizador (neste caso a \acrshort{clav}) com algumas configurações a usar pelo Autenticação.gov e, esta caixa negra, devolve a informação do utilizador autenticado (os atributos do utilizador requisitados no pedido efetuado ao Autenticação.gov). Os atributos são apenas devolvidos à entidade caso o utilizador autorize o Autenticação.gov a dar à entidade essa informação. A caixa negra trata de autenticar o utilizador através das credenciais fornecidas por este.
+
+Para um maior aprofundamento sobre o Autenticação.gov recomenda-se a leitura da secção 2.2 da dissertação~\cite{otavioTese} (``CLAV: Autenticação e integração na plataforma iAP'' de Octávio Maia).
 
 \section{Swagger}
 O \textit{Swagger} é um ecossistema de ferramentas para desenvolver \acrshort{api}s com a \acrfull{oas}.
