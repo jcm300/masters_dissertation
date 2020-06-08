@@ -167,7 +167,7 @@ A troca de pedidos entre a \acrshort{clav} e o Autenticação.gov é feita atrav
 
 O \acrfull{saml} define uma \textit{framework} \textit{standard} em \acrshort{xml}.~\cite{sam2man} Foi aprovado pela \acrshort{oasis}, permite a troca segura de informação de autenticação e autorização entre diferentes entidades e é possível através de uma credencial (\textit{login} de um utilizador) aceder autenticado a um conjunto de \textit{websites} (\acrshort{sso}).
 
-Para utilizar o Autenticação.gov é necessário criar um pedido baseado em \acrshort{saml}, assinado digitalmente com um certificado X.509 (permite identificar a entidade responsável pelo pedido) e encriptado com o par de chaves \acrshort{rsa} da \acrshort{clav} (permite verificar a validade do pedido de autenticação), bem como a respetiva cadeia de autenticação.~\cite{otavioTese}
+Para utilizar o Autenticação.gov é necessário criar um pedido baseado em \acrshort{saml}, assinado digitalmente com um certificado X.509 (permite ao Autenticação.gov identificar a entidade responsável pelo pedido) e encriptado com a chave privada de um par de chaves \acrshort{rsa} (permite ao Autenticação.gov verificar a validade do pedido de autenticação), bem como a respetiva cadeia de autenticação.~\cite{otavioTese} A chave pública do par de chaves \acrshort{rsa} faz parte do certificado X.509 que é enviado ao Autenticação.gov.
 
 Há dois tipos de \acrshort{saml} usados com o Autenticação.gov~\cite{otavioTese}:
 \begin{itemize}
