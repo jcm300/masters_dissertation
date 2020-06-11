@@ -1,6 +1,24 @@
+%TODO
+TODO
+
 \section{Proteção da \acrshort{api} de dados}
 
-Quanto à forma como os pedidos serão feitos à \acrshort{api} poderão ser feitos de duas formas, através da \textit{header} \acrshort{http} \textit{Authorization} ou através da \textit{query string} do pedido em um dos seguintes campos:
+A proteção da \acrshort{api} de dados é bastante importante visto que impede o uso indevido de pessoal não autorizado, isto é não registado. Para que um utilizador possa aceder à \acrshort{api} de dados necessita de criar uma Chave \acrshort{api} ou de pedir o registo de uma conta. A proteção da \acrshort{api} de dados da \acrshort{clav} possui os seguintes requisitos:
+\begin{itemize}
+    \item Todos os utilizadores devem conseguir aceder às rotas que as Chaves \acrshort{api} tem permissão de acesso
+    \item Deve ser possível definir para cada rota quem pode aceder, Chaves \acrshort{api} e/ou utilizadores
+    \item Se numa rota apenas podem aceder utilizadores deve ser possível definir que niveis de utilizadores podem aceder essa rota
+    \item A verificação da autorização e autenticação de um pedido a uma rota é realizada a partir de um token (\acrshort{jwt})
+    \item Tanto uma Chave \acrshort{api} como um \textit{token} de utilizador são um \acrshort{jwt}
+    \item Uma Chave \acrshort{api} para além de ainda ser válida (não ter expirado) deve estar ainda ativa
+    \item Um utilizador desativado não pode gerar um \textit{token} de utilizador (não pode realizar \textit{login})
+    \item Uma Chave \acrshort{api} deve ter a validade de 30 dias
+    \item Um \textit{token} de um utilizador deve ter a validade de 8 horas
+    \item A \acrshort{api} deve conseguir distinguir uma Chave \acrshort{api} de um \textit{token} de utilizador
+    \item Não deve ser possível um utilizador fazer-se passar por uma Chave \acrshort{api} e vice-versa
+\end{itemize}
+
+Os pedidos a efetuar à \acrshort{api} devem possuir o \acrshort{jwt} na \textit{header} \acrshort{http} \textit{Authorization} ou na \textit{query string} do pedido em um dos seguintes campos:
 \begin{itemize}[leftmargin=3cm]
     \item[\textbf{\texttt{token}}] caso seja o \texttt{token} de um utilizador:\newline
         \verb|http://example.com/path/page?token=<token>|
@@ -8,7 +26,7 @@ Quanto à forma como os pedidos serão feitos à \acrshort{api} poderão ser fei
         \verb|http://example.com/path/page?apikey=<Chave API>|
 \end{itemize}
 
-Na \textit{header} \textit{Authorization} irá ser usado o esquema de autenticação \textit{Bearer}\footnote{Mais informação em \url{https://tools.ietf.org/html/rfc6750}} com umas pequenas alterações. Portanto o conteúdo da \textit{header} \textit{Authorization}:
+Na \textit{header} \textit{Authorization} é usado o esquema de autenticação \textit{Bearer}\footnote{Mais informação em \url{https://tools.ietf.org/html/rfc6750}} com umas pequenas alterações. Portanto o conteúdo da \textit{header} \textit{Authorization}:
 \begin{itemize}[leftmargin=2cm]
     \item Caso seja o \texttt{token} de um utilizador é:\newline
         \verb|token <token>|
@@ -18,16 +36,26 @@ Na \textit{header} \textit{Authorization} irá ser usado o esquema de autentica�
 ao invés do esquema de autenticação predefinido do \textit{Bearer}: \verb|Bearer <token/Chave API>|
 
 Caso não seja respeitado um destes formatos, o pedido será recusado visto que a \acrshort{api} de dados não consegue identificar o \textit{token}.
+Com estas duas formas de enviar o \acrshort{jwt} é possível distinguir os utilizadores das Chaves \acrshort{api} e cumprir assim um dos requisitos. Além disso, esta divisão entre utilizadores e chaves \acrshort{api} permite uma mais fácil gestão dos \textit{tokens} recebidos pela \acrshort{api} bem como permite usar duas formas diferentes de os gerar/verificar com o possível benefício de melhorar a segurança da \acrshort{api} já que também permite usar dois pares de chaves pública/privada, uma para as Chaves \acrshort{api}'s e outra para os \textit{token}'s de utilizadores impedindo assim que um utilizador se faça passar por uma chave \acrshort{api} e vice-versa. Cada par de chaves permite gerar \textit{token}'s (chave privada) e validá-los (chave pública).
 
-Convém referir que a Chave \acrshort{api} é também um \textit{token}. A divisão entre utilizadores e chaves \acrshort{api} permite uma mais fácil gestão dos \textit{tokens} recebidos pela \acrshort{api} bem como usar duas formas diferentes de os gerar/verificar com o possível benefício de melhorar a segurança da \acrshort{api}.
+Um dos requisitos é que os \textit{token}s gerados pela \acrshort{api} sejam \acrshort{jwt}s. Contudo poderiam ser outro tipo de \textit{tokens} (por exemplo uma \textit{string} aleatória e única) que o processo de envio dos \textit{tokens} para a \acrshort{api} manter-se-ia igual. Apenas é alterada a forma de geração e verificação do \textit{token}, ou seja, uma alteração interna invisível para o utilizador.
 
-Após se identificar o \textit{token}, verifica-se o \textit{token}. Esta verificação varia de acordo se o \textit{token} é d  um  utilizador ou de uma Chave \acrshort{api}. Caso seja de uma chave \acrshort{api}, verifica-se se existe a entrada no \textit{MongoDB} e se a chave \acrshort{api} ainda se encontra ativa. Em caso afirmativo, procede-se para a verificação do \textit{token} (se ainda não expirou) com recurso ao segredo. No caso de um utilizador verifica-se se o \textit{token} ainda não expirou e se a operação tiver restrições quanto ao nível de utilizador que pode aceder, verifica-se também se o nível presente no \textit{token} permite realizar a operação.
+De seguida é apresentado um diagrama com a estratégia de proteção que será implementada para cumprir os requisitos anteriormente anunciados:
+%imagem
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.7\textwidth]{img/protecaoStrag.png}
+    \end{center}
+    \caption{Estratégia de proteção da \acrshort{api} de dados}\label{fig:protStrag}
+\end{figure}
 
-Os \textit{token}s gerados pela \acrshort{api} serão \acrshort{jwt}s. Contudo poderiam ser outro tipo de \textit{tokens} (por exemplo uma \textit{string} aleatória e única) que o processo de envio dos \textit{tokens} para a \acrshort{api} manter-se-ia igual.
+O \texttt{isLoggedInKey}, o \texttt{isLoggedInUser} e o \texttt{checkLevel} serão \textit{middlewares} que caso sejam usados definem desde logo quem pode aceder. Ou seja, se fou usado o \texttt{isLoggedInUser} sabe-se desde logo que apenas os utilizadores podem aceder. Por outro lado, se for usado o \texttt{isLoggedInKey} significa que podem aceder a rota as Chaves \acrshort{api} e os utilizadores. Para além disso, quando o \texttt{checkLevel} é usado após o \texttt{isLoggedInUser}, sabe-se que apenas parte dos utilizadores pode aceder, sendo que este middleware recebe como argumento os níveis de utilizadores que podem aceder a rota. A informação do nível do utilizador está presente no \acrshort{jwt} (\textit{token}) enviado.
 
-Após descrito como poderão ser feitos os pedidos à \acrshort{api}, irá ser apresentado possíveis fluxos de interação entre utilizadores (\textit{browser}, \textit{app}, etc) e o servidor da \acrshort{api}.
+Cumpre-se assim, quase todos os requisitos anunciados com a exceção dos da validade dos \textit{token}'s. Estes são atingidos na geração dos \acrshort{jwt}'s no qual o \textit{token} de um utilizador é gerado para ter apenas a validade de 8 horas e uma Chave \acrshort{api} é gerada para ter a validade de 30 dias.
 
-O fluxo de autenticação de um utilizador na \acrshort{api} a ser implementado será o seguinte:
+Após descrito como devem ser feitos os pedidos à \acrshort{api} e a estratégia de proteção a desenvolver, irá ser apresentado possíveis fluxos de interação entre utilizadores (\textit{browser}, \textit{app}, etc) e o servidor da \acrshort{api}.
+
+O fluxo de autenticação de um utilizador na \acrshort{api} a ser implementado permite o seguinte:
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.5\textwidth]{img/userAuth.png}
@@ -47,7 +75,7 @@ O fluxo de autenticação de um utilizador na \acrshort{api} a ser implementado 
     \item Caso o \textit{token} enviado seja válido e não tenha expirado são devolvidas as entidades
 \end{enumerate}
 
-O fluxo de autenticação e renovação de uma Chave \acrshort{api} na \acrshort{api} a ser implementado será o seguinte:
+O fluxo de autenticação e renovação de uma Chave \acrshort{api} na \acrshort{api} a ser implementado permite o seguinte:
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=0.5\textwidth]{img/chaveAuth.png}
@@ -68,49 +96,44 @@ O fluxo de autenticação e renovação de uma Chave \acrshort{api} na \acrshort
     \item Caso a Chave \acrshort{api} enviada seja válida e não tenha expirado são devolvidas as entidades
 \end{enumerate}
 
-%TODO
-TODO: completar
-
 \section{Autenticação através de \acrshort{cmd}}
 
-A autenticação com \acrshort{cmd} é bastante semelhante à autenticação com o \acrshort{cc}. O que muda é o modo de autenticação perante o Autenticação.gov que em vez de ser efetuado com \acrshort{cc} (\acrlong{cc}, Leitor de Cartões e \acrshort{pin} de autenticação do \acrshort{cc}) é realizado através de \acrshort{cmd} (Número de telemóvel, \acrshort{pin} definido durante a ativação da \acrshort{cmd} e \acrshort{pin} temporário enviado para o número de telemóvel).
+A autenticação com \acrshort{cmd} é bastante semelhante à autenticação com o \acrshort{cc}. O que muda é o modo de autenticação perante o Autenticação.gov que em vez de ser efetuado com \acrshort{cc} (\acrlong{cc}, Leitor de Cartões e \acrshort{pin} de autenticação do \acrshort{cc}) será realizado através de \acrshort{cmd} (Número de telemóvel, \acrshort{pin} definido durante a ativação da \acrshort{cmd} e \acrshort{pin} temporário enviado para o número de telemóvel).
 
-Os atributos pedidos ao Autenticação.gov são os mesmos que são pedidos com a autenticação com o \acrshort{cc} (\acrshort{nic} e Nome Completo) permitindo identificar unicamente o utilizador a partir do \acrshort{nic}. Para além disso, permite aproveitar todo o back-end e código já desenvolvido para a autenticação do utilizador perante a \acrshort{clav} através de \acrshort{cc} visto que os atributos usados são os mesmos. Além disso, permite uma melhor normalização da identificação dos utilizadores (não existindo assim vários ids para o mesmo utilizador) bem como evita ser necessário o utilizador partilhar atributos adicionais (como o número de telemóvel) com a \acrshort{clav} (o número de telemóvel é apenas partilhado com o Autenticação.gov sendo que a \acrshort{clav} não tem acesso a esta informação se apenas pediu para saber os atributos \acrshort{nic} e Nome Completo). Assim, a única implicação que pode ser gerada daqui é que o utilizador, quer queira usar a Autenticação por \acrshort{cc} quer queira usar por \acrshort{cmd}, necessita de ser registado na \acrshort{clav} com o \acrshort{cc}, mas como neste momento é obrigatório o registo dos utilizadores através de \acrshort{cc} facilita em vez de complicar o registo. Voltasse a frisar que o \acrshort{nic} é usado por forma a identificar o utilizador, pelo que serve de Id do utilizador tal como na autenticação com o \acrshort{cc}.
+Os atributos pedidos ao Autenticação.gov são os mesmos que são pedidos com a autenticação com o \acrshort{cc} (\acrshort{nic} e Nome Completo) permitindo identificar unicamente o utilizador a partir do \acrshort{nic}. Para além disso, permite aproveitar todo o back-end e código já desenvolvido para a autenticação do utilizador perante a \acrshort{clav} através de \acrshort{cc} visto que os atributos usados são os mesmos. Além disso, permite uma melhor normalização da identificação dos utilizadores (não existindo assim vários ids para o mesmo utilizador) bem como evita ser necessário o utilizador partilhar atributos adicionais (como o número de telemóvel) com a \acrshort{clav} (o número de telemóvel é apenas partilhado com o Autenticação.gov sendo que a \acrshort{clav} não tem acesso a esta informação se apenas pediu para saber os atributos \acrshort{nic} e Nome Completo). Assim, a única implicação que pode ser gerada daqui é que o utilizador, quer queira usar a autenticação por \acrshort{cc} quer queira usar por \acrshort{cmd}, necessita de estar registado na \acrshort{clav} com o \acrshort{cc} sendo que, neste momento é obrigatório o registo dos utilizadores através de \acrshort{cc}. Voltasse a frisar que o \acrshort{nic} será usado por forma a identificar o utilizador, pelo que serve de id do utilizador tal como na autenticação com o \acrshort{cc}.
 
 Portanto, de igual forma como na autenticação com o \acrshort{cc}, quando é selecionado este método de autenticação, a \acrshort{clav} redireciona o utilizador para o Autenticação.gov que se encarrega de autenticar o utilizador com \acrshort{cmd}, comunicando, no fim, os atributos pedidos ao Autenticação.gov (\acrshort{nic} e Nome Completo). A \acrshort{clav} com o \acrshort{nic} verifica se o utilizador já se encontra registado, obtendo mais alguma informação adicional, como o nível de utilizador. Semelhantemente à autenticação local e à autenticação com o \acrshort{cc}, é agora gerado um \textit{token} (\acrshort{jwt}) que irá assinar a partir daqui todos os pedidos do utilizador. O \textit{token} tem a validade de 8 horas, ao fim das quais o utilizador necessita de realizar uma nova autenticação.
 
-Em termos técnicos, é apenas necessário aproveitar o pedido POST que já é enviado ao Autenticação.gov para a autenticação com \acrshort{cc} e adicionar mais extensões. As extensões a adicionar são o nível de confiança e a política de apresentação.
+Em termos técnicos, é apenas necessário aproveitar o pedido POST que já é enviado ao Autenticação.gov para a autenticação com \acrshort{cc} e adicionar as extensões nível de confiança e a política de apresentação como é possível constatar em~\ref{sec:soaAuthCMDReq}.
 
-O primeiro permite indicar o nível mínimo necessário que pretendemos que seja usado pelo Autenticação.gov. Como tal, dado um nível selecionado permite a autenticação através do método desse nível mas também permite os métodos de autenticação dos níveis superiores. Além disso, quanto menor o nível mais fraca é a autenticação, visto que quanto menor o nível mais fraca é a autenticidade das credenciais fornecidas pelo utilizador.
+A primeira extensão permite indicar o nível mínimo necessário que pretendemos que seja usado pelo Autenticação.gov. Como tal, dado um nível selecionado permite a autenticação através do método desse nível mas também permite os métodos de autenticação dos níveis superiores. Além disso, quanto menor o nível mais fraca é a autenticação, visto que quanto menor o nível mais fraca é a autenticidade das credenciais fornecidas pelo utilizador.
 
-Quando este nível de confiança não está presente (como no caso do pedido enviado para a autenticação com \acrshort{cc}) o nível de confiança mínimo assumido é o nível máximo (4). Assim para o caso da \acrshort{cmd} foi adicionada a seguinte extensão ao pedido em XML~\cite{agov2}:
+Quando este nível de confiança não está presente (como no caso do pedido enviado para a autenticação com \acrshort{cc}) o nível de confiança mínimo assumido é o nível máximo (4). Assim para o caso da \acrshort{cmd} será adicionada a seguinte extensão ao pedido em XML~\cite{agov2}:
 %Ref: Manual de Integração do Fornecedor de Autenticação v1.5.3 cap 7.2
-\begin{verbatim}
-    <fa:FAAALevel
-        xmlns:fa="http://autenticacao.cartaodecidadao.pt/atributos"
-    >3</fa:FAAALevel>
-\end{verbatim}
+\begin{lstlisting}[language=xml, caption=Extensão Nível de Confiança no pedido enviado ao Autenticação.gov]
+<fa:FAAALevel xmlns:fa="http://autenticacao.cartaodecidadao.pt/atributos">
+    3
+</fa:FAAALevel>
+\end{lstlisting}
 Esta extensão indica então que o nível de confiança mínimo necessário é o nível 3, ou seja, permite a autenticação através de \acrshort{cmd} mas também através de \acrshort{cc}.
 
 Como tal, por forma a apenas aparecer no Autenticação.gov a hipótese de autenticação através de \acrshort{cmd} é necessário definir a Política de Apresentação do Autenticação.gov.
 
-Como foi definido o nível 3 de confiança no pedido, é necessário esconder a aba do \acrfull{cc} e se futuramente se pretender apresentar ambas as abas é também necessário tornar o mecanismo de \acrfull{cmd} a aba predefinida. Para tal, foi adicionada a seguinte extensão ao pedido em XML~\cite{agov2}:
+Ou seja, é necessário esconder a aba do \acrfull{cc} e se futuramente se pretender apresentar ambas as abas é também necessário tornar o mecanismo de \acrfull{cmd} a aba predefinida. Para tal, foi adicionada a seguinte extensão ao pedido em XML~\cite{agov2}:
 %Ref: Manual de Integração do Fornecedor de Autenticação v1.5.3 cap 8.2
-\begin{verbatim}
-    <fa:AuthTabPresentationPolicies
-        xmlns:fa="http://autenticacao.cartaodecidadao.pt/presentationpolicy"
-    >
-        <!--Torna a aba CMD como predefinida-->
-        <fa:defaultSelectedAuthTab TabId="CMD"/>
-        <!--Esconde a aba do CC-->
-        <fa:hideAuthTab TabId="CC"/> 
-    </fa:AuthTabPresentationPolicies>
-\end{verbatim}
+\begin{lstlisting}[language=xml, caption=Extensão Política de Apresentação no pedido enviado ao Autenticação.gov]
+<fa:AuthTabPresentationPolicies xmlns:fa="http://autenticacao.cartaodecidadao.pt/presentationpolicy">
+    <!--Torna a aba CMD como predefinida-->
+    <fa:defaultSelectedAuthTab TabId="CMD"/>
+    <!--Esconde a aba do CC-->
+    <fa:hideAuthTab TabId="CC"/> 
+</fa:AuthTabPresentationPolicies>
+\end{lstlisting}
+em que torna a aba do mecanismo de \acrshort{cmd} o predefinido e esconde a aba do mecanismo de \acrshort{cc}.
 
-%TODO
-TODO
+Portanto, se for enviado um pedido ao Autenticação.gov igual ao da autenticação com \acrshort{cc} mas com estas extensões, o Autenticação.gov pedirá ao utilizador para se autenticar com \acrshort{cmd}.
 
-\section{Documentação}
+\section{Documentação da \acrshort{api} da \acrshort{clav}}
 
 No estado da arte foram abordadas várias alternativas ao \textit{Swagger UI}. A partir da tabela~\ref{table:swaggerUI} e tendo em conta que:
 \begin{itemize}
@@ -123,8 +146,43 @@ No estado da arte foram abordadas várias alternativas ao \textit{Swagger UI}. A
 
 as várias alternativas ficam reduzidas ao \textit{Swagger \acrshort{ui}} e ao \textit{ReDoc}. Optou-se por escolher o \textit{Swagger \acrshort{ui}} visto ser a ferramenta mais amplamente usada para além de que é possível obter também uma fácil integração no \textit{Swagger \acrshort{ui}} com recurso à package \texttt{swagger-ui-express} já aprofundada no estado da arte. Além disso, escolheu-se a \textit{package} \texttt{yaml-include} por forma a auxiliar a produção da documentação na criação do ficheiro com a especificação \textit{OpenAPI}, permitindo que esta documentação seja modular.
 
-%TODO
-TODO
+A documentação modular será estruturada da seguinte forma:
+
+\begin{lstlisting}[caption=Excerto da estrutura modular da documentação]
+* /index.yaml
+* /paths/
+    * /classes/
+        * /get.yaml
+        * /post.yaml
+        * /~id/
+            * /get.yaml
+            ...
+        ...
+    ...
+* /examples/
+    * /classes/
+        * /ClasseCompletaJSON.yaml
+        * /ClasseCompletaXML.yaml
+        * /ClasseSimplesJSON.yaml
+        ...
+    ...
+* /schemas/
+    * /classes/
+        * /ClasseCompleta.yaml
+        ...
+    * /definicoes/
+        * Codigo.yaml
+        ...
+    ...
+\end{lstlisting}
+
+Portanto nesta estrutura na pasta \texttt{paths} é seguida a estrutura do \texttt{yaml-include} já descrita no estado da arte em~\ref{exem:faf} em que as pastas indicam o caminho e o nome dos ficheiros o verbo \acrshort{http} da rota. Em cada um destes ficheiros é colocada a descrição, os parâmetros, etc, da rota. Nestes ficheiros serão feitas referências aos \texttt{schemas} e \texttt{examples} necessários, estando estes nas pastas \texttt{schemas} e \texttt{examples} respetivamente. Isto permite que os modelos e os exemplos sejam reutilizados para além de que permite tornar os ficheiros onde são referenciados mais fáceis de perceber, principalmente em casos em que os modelos e os exemplos são extensos.
+
+Em termos de organização das pastas \texttt{schemas} e \texttt{examples}, estas no primeiro ``nível'' possuem pastas de cada grupo de rotas (classes, entidades, users, chaves, etc) e em cada uma destas pastas estão os modelos/exemplos correspondentes a esse grupo de rotas. Na pasta \texttt{schemas} existe contudo uma pasta especial chamada \texttt{definicoes} que possui os vários tipos de dados, como por exemplo o código de uma classe, o id de uma entidade, etc. Assim, estes modelos são usados nos outros modelos e nas rotas permitindo uniformizar estes dados. Ou seja, caso haja por exemplo alguma alteração no formato do código, será apenas necessário alterar no modelo presente na pasta \texttt{definicoes} que a alteração será ``propagada'' já que todos que precisam deste modelo fazem-lhe referência. Portanto, sempre que é criado um novo modelo ou uma nova rota, convém verificar nesta pasta \texttt{definicoes} se já existe o tipo de dados necessário a usar bastando assim fazer-lhe referência.
+
+Por fim, no ficheiro \texttt{index.yaml} é definido os grupos de rotas (\textit{tags}) bem como várias informações gerais sobre a \acrshort{api} de dados, como descrição, métodos de autenticação, etc. Além disso, é aqui também definido, apenas no caso da pasta \texttt{examples}, que ficheiros deve o \texttt{yaml-include} ignorar ao incluir a pasta \texttt{examples} sobre a \textit{tag} \texttt{examples} dos \texttt{components}. Isto é efetuado por forma a evitar erros de sintaxe da especificação \textit{OpenAPI}. Estes erros acontecem porque há vários ficheiros de exemplos a serem incluidos nos ficheiros das rotas diretamente pelo \texttt{yaml-include} em vez de se usar o \verb|$ref| da especificação \textit{OpenAPI} em casos que o \verb|$ref| não permite efetuar o pretendido. Assim, estes ficheiros têm de ser ignorados.
+
+Com o \texttt{yaml-include}, sempre que a \acrshort{api} de dados inicia é criado o ficheiro de especificação \textit{OpenAPI} final que incluirá os dados destes ficheiros nos seus locais apropriados. Este ficheiro final ficará disponível na pasta pública do servidor com o nome \texttt{clav.yaml} ou seja acessível a partir de \url{http://clav-api.dglab.gov.pt/clav.yaml}. É este o ficheiro que alimenta o \textit{SwaggerUI} construído com o \textit{swagger-ui-express} e disponível em \url{http://clav-api.dglab.gov.pt/v2/docs}.
 
 \section{Exportação de dados}
 
@@ -233,6 +291,11 @@ O documento \acrshort{csv} exportado deve respeitar a seguinte especificação:
         \end{itemize}
         \item Num objeto Tipologia:
         \begin{itemize}
+            \item Propriedade `entidades':
+            \begin{itemize}
+                \item Título: Entidades da tipologia \\
+                      Valor: Concatenação por \verb|#\n| da propriedade `sigla' de cada elemento da lista
+            \end{itemize}
             \item Propriedade `dono':
             \begin{itemize}
                 \item Título: Dono no processo \\
@@ -290,8 +353,6 @@ O documento \acrshort{csv} exportado deve respeitar a seguinte especificação:
             \item Propriedade `descricao': Descrição
             \item Propriedade `tipoProc': Tipo de processo
             \item Propriedade `procTrans': Processo transversal (S/N)
-            \item Propriedade `dono': Dono
-            \item Propriedade `participante': Participante
         \end{itemize}
         \item Num objeto Entidade:
         \begin{itemize}
@@ -343,7 +404,7 @@ Esta rota da \acrshort{api} possui vários formatos de exportação pelo que se 
 
 Portanto, dos vários formatos de serialização \acrshort{rdf} serão apenas suportados (acessíveis) na \acrshort{clav}, o \acrshort{turtle} (\texttt{text/turtle}), o \acrshort{json-ld} (\texttt{application/ld+json}) e o \acrshort{rdf}/\acrshort{xml} (\texttt{application/rdf+xml}).
 
-Apesar da facilidade de exportação da ontologia estes pedidos de exportação originam um grande consumo de recursos de \textit{hardware} por parte do \textit{GraphDB} visto que cada pedido devolve todos os triplos de uma \acrshort{bd} (a atual \acrshort{bd} da \acrshort{clav} possui já cerca de 150 000 triplos explícitos e cerca de 85 000 triplos implícitos) para além da conversão necessária desses triplos para o formato de serialização \acrshort{rdf} de saída. Deve-se então limitar o número de pedidos de exportação realizados ao \textit{GraphDB}. Para tal irá ser usado o seguinte mecanismo de controlo/\textit{cache}:
+Apesar da facilidade de exportação da ontologia estes pedidos de exportação originam um grande consumo de recursos de \textit{hardware} por parte do \textit{GraphDB} visto que cada pedido devolve todos os triplos de uma \acrshort{bd} (a atual \acrshort{bd} da \acrshort{clav} possui já cerca de 150 000 triplos explícitos e cerca de 85 000 triplos implícitos) para além da conversão necessária desses triplos para o formato de serialização \acrshort{rdf} de saída. Deve-se então limitar o número de pedidos de exportação realizados ao \textit{GraphDB}. Para tal irá ser usado o seguinte mecanismo de controlo/\textit{cache}:\label{sec:expOntCache}
 
 \begin{itemize}
     \item Os ficheiros exportados são mantidos pela \acrshort{api} da \acrshort{clav}
@@ -396,7 +457,11 @@ De seguida são apresentadas as rotas onde é possível realizar exportação, o
 
 Portanto, por exemplo para obter as Classes em \acrshort{csv} basta realizar o seguinte pedido à \acrshort{api}: \verb|GET /versãoAPI/classes?fs=application/json|
 
-Já em termos de fluxo dos dados durante esta exportação, para as 8 primeiras rotas da tabela~\ref{table:rotasExp} inicialmente os dados são obtidos da \acrshort{bd}, caso o formato de saída seja o \acrshort{json} é devolvido a quem pediu sem qualquer conversão. Caso contrário os dados são convertidos através de um dos conversores já descritos para o formato de saída apropriado. Na última rota, a da exportação da ontologia, a informação é devolvida no formato apropriado pela própria \acrshort{bd} (\textit{GraphDB}) de acordo com o pedido.
+Já em termos de fluxo dos dados durante esta exportação, para as 8 primeiras rotas da tabela~\ref{table:rotasExp} inicialmente os dados são obtidos da \acrshort{bd} ou da \textit{cache} da \acrshort{api}. Caso o formato de saída seja \acrshort{json} é devolvido ao utilizador sem qualquer conversão. Caso contrário os dados são convertidos através de um dos conversores já descritos para o formato de saída apropriado. Na última rota, a da exportação da ontologia, a informação é devolvida no formato apropriado pela própria \acrshort{bd} (\textit{GraphDB}) ou da \textit{cache} referida em~\ref{sec:expOntCache} de acordo com o pedido.
+
+\section{Migração de \acrshort{http} para \acrshort{https}}
+%TODO
+TODO: explicar a escolha do acme.sh; especificação (recomendações de segurança); solução
 
 \section{\acrshort{api} Gateway}
 
@@ -470,10 +535,11 @@ Todos os pedidos realizados pelos clientes e pela interface da \acrshort{clav} t
 
 Caso a resposta do Serviço de Auth seja positiva então o \textit{Kong} procederá à realização do pedido à \acrshort{api} de dados. Caso contrário, o pedido à \acrshort{api} de dados não é efetuado e é devolvido ao utilizador a resposta de erro correspondente (erro de autenticação ou de autorização).
 
-\section{Migração de HTTP para HTTPS}
-%TODO
-TODO: explicar a escolha do acme.sh; especificação (recomendações de segurança); solução
-
 \section{Instalação/Migração/Integração}
 %TODO
 TODO: Arquitetura
+
+\section{Resumo}
+
+%TODO
+TODO

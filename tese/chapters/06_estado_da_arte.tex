@@ -188,7 +188,7 @@ No caso do \textit{\acrshort{saml} Request} o pedido possui o elemento \textit{r
     \item \textbf{ProviderName}: Nome da plataforma/aplicação que está a requerer a autenticação através do Autenticação.gov. Este nome tem de ser previamente acordado com a \acrshort{ama} durante a emissão da cadeia de autenticação e certificados X.509~\cite{otavioTese}.
 \end{itemize}
 
-Além destes atributos, o \textit{\acrshort{saml} Request} possui 3 elementos aninhados:
+Além destes atributos, o \textit{\acrshort{saml} Request} possui 3 elementos aninhados:\label{sec:soaAuthCMDReq}
 \begin{itemize}
     \item \textbf{Issuer}: Informação sobre quem efetua o pedido de autenticação, ou seja a \acrshort{clav}. Basta apenas enviar o \acrshort{url} de onde é originário o pedido.
     \item \textbf{Signature}: Assinatura digital do pedido. Aqui é adicionado o certificado X.509 com a cadeia de autenticação fornecida pela \acrshort{ama}.
