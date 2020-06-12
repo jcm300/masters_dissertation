@@ -1,5 +1,4 @@
-%TODO
-TODO
+Neste capítulo são descritos os vários requisitos que são necessários cumprir para cada um dos objetivos bem como um objetivo adicional, a migração de \acrshort{http} para \acrshort{https}. Além disso, apresenta-se desde logo a arquitetura/modelo base da solução a desenvolver.
 
 \section{Proteção da \acrshort{api} de dados}
 
@@ -7,8 +6,8 @@ A proteção da \acrshort{api} de dados é bastante importante visto que impede 
 \begin{itemize}
     \item Todos os utilizadores devem conseguir aceder às rotas que as Chaves \acrshort{api} tem permissão de acesso
     \item Deve ser possível definir para cada rota quem pode aceder, Chaves \acrshort{api} e/ou utilizadores
-    \item Se numa rota apenas podem aceder utilizadores deve ser possível definir que niveis de utilizadores podem aceder essa rota
-    \item A verificação da autorização e autenticação de um pedido a uma rota é realizada a partir de um token (\acrshort{jwt})
+    \item Se numa rota apenas podem aceder utilizadores deve ser possível definir que níveis de utilizadores podem aceder essa rota
+    \item A verificação da autorização e autenticação de um pedido a uma rota é realizada a partir de um \textit{token} (\acrshort{jwt})
     \item Tanto uma Chave \acrshort{api} como um \textit{token} de utilizador são um \acrshort{jwt}
     \item Uma Chave \acrshort{api} para além de ainda ser válida (não ter expirado) deve estar ainda ativa
     \item Um utilizador desativado não pode gerar um \textit{token} de utilizador (não pode realizar \textit{login})
@@ -49,7 +48,7 @@ De seguida é apresentado um diagrama com a estratégia de proteção que será 
     \caption{Estratégia de proteção da \acrshort{api} de dados}\label{fig:protStrag}
 \end{figure}
 
-O \texttt{isLoggedInKey}, o \texttt{isLoggedInUser} e o \texttt{checkLevel} serão \textit{middlewares} que caso sejam usados definem desde logo quem pode aceder. Ou seja, se fou usado o \texttt{isLoggedInUser} sabe-se desde logo que apenas os utilizadores podem aceder. Por outro lado, se for usado o \texttt{isLoggedInKey} significa que podem aceder a rota as Chaves \acrshort{api} e os utilizadores. Para além disso, quando o \texttt{checkLevel} é usado após o \texttt{isLoggedInUser}, sabe-se que apenas parte dos utilizadores pode aceder, sendo que este middleware recebe como argumento os níveis de utilizadores que podem aceder a rota. A informação do nível do utilizador está presente no \acrshort{jwt} (\textit{token}) enviado.
+O \texttt{isLoggedInKey}, o \texttt{isLoggedInUser} e o \texttt{checkLevel} serão \textit{middlewares} que caso sejam usados definem desde logo quem pode aceder. Ou seja, se fou usado o \texttt{isLoggedInUser} sabe-se desde logo que apenas os utilizadores podem aceder. Por outro lado, se for usado o \texttt{isLoggedInKey} significa que podem aceder a rota as Chaves \acrshort{api} e os utilizadores. Para além disso, quando o \texttt{checkLevel} é usado após o \texttt{isLoggedInUser}, sabe-se que apenas parte dos utilizadores pode aceder, sendo que este \textit{middleware} recebe como argumento os níveis de utilizadores que podem aceder a rota. A informação do nível do utilizador está presente no \acrshort{jwt} (\textit{token}) enviado.
 
 Cumpre-se assim, quase todos os requisitos anunciados com a exceção dos da validade dos \textit{token}'s. Estes são atingidos na geração dos \acrshort{jwt}'s no qual o \textit{token} de um utilizador é gerado para ter apenas a validade de 8 horas e uma Chave \acrshort{api} é gerada para ter a validade de 30 dias.
 
@@ -66,12 +65,12 @@ O fluxo de autenticação de um utilizador na \acrshort{api} a ser implementado 
 \begin{enumerate}
     \item Utilizador autentica-se ao providenciar o seu \textit{email} e a sua \textit{password}
     \item Caso o utilizador se autentique com sucesso é devolvido um \textit{token} que deve ser usado nos restantes pedidos até expirar
-    \item Utilizador realiza um pedido para obter as classes, colocando o token na \textit{header} \textit{Authorization}
+    \item Utilizador realiza um pedido para obter as classes, colocando o \textit{token} na \textit{header} \textit{Authorization}
     \item Caso o \textit{token} enviado seja válido e não tenha expirado são devolvidas as classes
     \item \textit{Token} expirou após o tempo definido
     \item Utilizador realiza uma nova autenticação por forma a obter um novo \textit{token}
     \item Caso o utilizador se autentique com sucesso é devolvido um \textit{token} que deve ser usado nos restantes pedidos até expirar
-    \item Utilizador realiza um pedido para obter as entidades, colocando o token na \textit{header} \textit{Authorization}
+    \item Utilizador realiza um pedido para obter as entidades, colocando o \textit{token} na \textit{header} \textit{Authorization}
     \item Caso o \textit{token} enviado seja válido e não tenha expirado são devolvidas as entidades
 \end{enumerate}
 
@@ -144,7 +143,7 @@ No estado da arte foram abordadas várias alternativas ao \textit{Swagger UI}. A
     \item Será usada a especificação \textit{OpenAPI}
 \end{itemize}
 
-as várias alternativas ficam reduzidas ao \textit{Swagger \acrshort{ui}} e ao \textit{ReDoc}. Optou-se por escolher o \textit{Swagger \acrshort{ui}} visto ser a ferramenta mais amplamente usada para além de que é possível obter também uma fácil integração no \textit{Swagger \acrshort{ui}} com recurso à package \texttt{swagger-ui-express} já aprofundada no estado da arte. Além disso, escolheu-se a \textit{package} \texttt{yaml-include} por forma a auxiliar a produção da documentação na criação do ficheiro com a especificação \textit{OpenAPI}, permitindo que esta documentação seja modular.
+as várias alternativas ficam reduzidas ao \textit{Swagger \acrshort{ui}} e ao \textit{ReDoc}. Optou-se por escolher o \textit{Swagger \acrshort{ui}} visto ser a ferramenta mais amplamente usada para além de que é possível obter também uma fácil integração no \textit{Swagger \acrshort{ui}} com recurso à \textit{package} \texttt{swagger-ui-express} já aprofundada no estado da arte. Além disso, escolheu-se a \textit{package} \texttt{yaml-include} por forma a auxiliar a produção da documentação na criação do ficheiro com a especificação \textit{OpenAPI}, permitindo que esta documentação seja modular.
 
 A documentação modular será estruturada da seguinte forma:
 
@@ -178,9 +177,9 @@ A documentação modular será estruturada da seguinte forma:
 
 Portanto nesta estrutura na pasta \texttt{paths} é seguida a estrutura do \texttt{yaml-include} já descrita no estado da arte em~\ref{exem:faf} em que as pastas indicam o caminho e o nome dos ficheiros o verbo \acrshort{http} da rota. Em cada um destes ficheiros é colocada a descrição, os parâmetros, etc, da rota. Nestes ficheiros serão feitas referências aos \texttt{schemas} e \texttt{examples} necessários, estando estes nas pastas \texttt{schemas} e \texttt{examples} respetivamente. Isto permite que os modelos e os exemplos sejam reutilizados para além de que permite tornar os ficheiros onde são referenciados mais fáceis de perceber, principalmente em casos em que os modelos e os exemplos são extensos.
 
-Em termos de organização das pastas \texttt{schemas} e \texttt{examples}, estas no primeiro ``nível'' possuem pastas de cada grupo de rotas (classes, entidades, users, chaves, etc) e em cada uma destas pastas estão os modelos/exemplos correspondentes a esse grupo de rotas. Na pasta \texttt{schemas} existe contudo uma pasta especial chamada \texttt{definicoes} que possui os vários tipos de dados, como por exemplo o código de uma classe, o id de uma entidade, etc. Assim, estes modelos são usados nos outros modelos e nas rotas permitindo uniformizar estes dados. Ou seja, caso haja por exemplo alguma alteração no formato do código, será apenas necessário alterar no modelo presente na pasta \texttt{definicoes} que a alteração será ``propagada'' já que todos que precisam deste modelo fazem-lhe referência. Portanto, sempre que é criado um novo modelo ou uma nova rota, convém verificar nesta pasta \texttt{definicoes} se já existe o tipo de dados necessário a usar bastando assim fazer-lhe referência.
+Em termos de organização das pastas \texttt{schemas} e \texttt{examples}, estas no primeiro ``nível'' possuem pastas de cada grupo de rotas (classes, entidades, \textit{users}, chaves, etc) e em cada uma destas pastas estão os modelos/exemplos correspondentes a esse grupo de rotas. Na pasta \texttt{schemas} existe contudo uma pasta especial chamada \texttt{definicoes} que possui os vários tipos de dados, como por exemplo o código de uma classe, o id de uma entidade, etc. Assim, estes modelos são usados nos outros modelos e nas rotas permitindo uniformizar estes dados. Ou seja, caso haja por exemplo alguma alteração no formato do código, será apenas necessário alterar no modelo presente na pasta \texttt{definicoes} que a alteração será ``propagada'' já que todos que precisam deste modelo fazem-lhe referência. Portanto, sempre que é criado um novo modelo ou uma nova rota, convém verificar nesta pasta \texttt{definicoes} se já existe o tipo de dados necessário a usar bastando assim fazer-lhe referência.
 
-Por fim, no ficheiro \texttt{index.yaml} é definido os grupos de rotas (\textit{tags}) bem como várias informações gerais sobre a \acrshort{api} de dados, como descrição, métodos de autenticação, etc. Além disso, é aqui também definido, apenas no caso da pasta \texttt{examples}, que ficheiros deve o \texttt{yaml-include} ignorar ao incluir a pasta \texttt{examples} sobre a \textit{tag} \texttt{examples} dos \texttt{components}. Isto é efetuado por forma a evitar erros de sintaxe da especificação \textit{OpenAPI}. Estes erros acontecem porque há vários ficheiros de exemplos a serem incluidos nos ficheiros das rotas diretamente pelo \texttt{yaml-include} em vez de se usar o \verb|$ref| da especificação \textit{OpenAPI} em casos que o \verb|$ref| não permite efetuar o pretendido. Assim, estes ficheiros têm de ser ignorados.
+Por fim, no ficheiro \texttt{index.yaml} é definido os grupos de rotas (\textit{tags}) bem como várias informações gerais sobre a \acrshort{api} de dados, como descrição, métodos de autenticação, etc. Além disso, é aqui também definido, apenas no caso da pasta \texttt{examples}, que ficheiros deve o \texttt{yaml-include} ignorar ao incluir a pasta \texttt{examples} sobre a \textit{tag} \texttt{examples} dos \texttt{components}. Isto é efetuado por forma a evitar erros de sintaxe da especificação \textit{OpenAPI}. Estes erros acontecem porque há vários ficheiros de exemplos a serem incluídos nos ficheiros das rotas diretamente pelo \texttt{yaml-include} em vez de se usar o \verb|$ref| da especificação \textit{OpenAPI} em casos que o \verb|$ref| não permite efetuar o pretendido. Assim, estes ficheiros têm de ser ignorados.
 
 Com o \texttt{yaml-include}, sempre que a \acrshort{api} de dados inicia é criado o ficheiro de especificação \textit{OpenAPI} final que incluirá os dados destes ficheiros nos seus locais apropriados. Este ficheiro final ficará disponível na pasta pública do servidor com o nome \texttt{clav.yaml} ou seja acessível a partir de \url{http://clav-api.dglab.gov.pt/clav.yaml}. É este o ficheiro que alimenta o \textit{SwaggerUI} construído com o \textit{swagger-ui-express} e disponível em \url{http://clav-api.dglab.gov.pt/v2/docs}.
 
@@ -212,7 +211,7 @@ O documento \acrshort{csv} exportado deve respeitar a seguinte especificação:
 \begin{itemize}
     \item O conjunto de objetos permitidos é lista de classes, de entidades, de tipologias e de legislações e objeto de classe, de entidade, de tipologia e de legislação.
     \item A conversão das listas de classes, de entidades, de tipologias e de legislações deve ter a presença dos títulos na primeira linha e depois um elemento por linha.
-    \item Todos os valores das propriedades tem de ser encapsolados com aspas (\verb|"|)
+    \item Todos os valores das propriedades tem de ser encapsulados com aspas (\verb|"|)
     \item Os valores de uma linha devem ser concatenados com ponto e vírgula (\verb|;|)
     \item As linhas devem ser concatenadas com nova linha (\verb|\n|)
     \item Caso o valor de uma propriedade a converter seja uma lista, a conversão a realizar irá depender da propriedade e do objeto que está a ser convertido: 
@@ -329,7 +328,7 @@ O documento \acrshort{csv} exportado deve respeitar a seguinte especificação:
                 \item Título: Critério PCA \\
                       Valor: Concatenação por \verb|#\n| da propriedade `tipoId' de cada elemento da lista
                 \item Título: ProcRefs/LegRefs PCA \\
-                      Valor: Cada elemento da lista é mapeado para a concatenação por \verb|#\n| da lista presente na propriedade `processos' ou na propriedade `legs' sendo a concatenação encapsolada por parênteses curvos; Concatenação por \verb|#\n| do mapeamento de cada elemento da lista               
+                      Valor: Cada elemento da lista é mapeado para a concatenação por \verb|#\n| da lista presente na propriedade `processos' ou na propriedade `legs' sendo a concatenação encapsulada por parênteses curvos; Concatenação por \verb|#\n| do mapeamento de cada elemento da lista               
             \end{itemize}
         \end{itemize}
         \item Na propriedade `df' de um objeto Classe:
@@ -339,12 +338,12 @@ O documento \acrshort{csv} exportado deve respeitar a seguinte especificação:
                 \item Título: Critério DF \\
                       Valor: Concatenação por \verb|#\n| da propriedade `tipoId' de cada elemento da lista
                 \item Título: ProcRefs/LegRefs DF \\
-                      Valor: Cada elemento da lista é mapeado para a concatenação por \verb|#\n| da lista presente na propriedade `processos' ou na propriedade `legs' sendo a concatenação encapsolada por parênteses curvos; Concatenação por \verb|#\n| do mapeamento de cada elemento da lista               
+                      Valor: Cada elemento da lista é mapeado para a concatenação por \verb|#\n| da lista presente na propriedade `processos' ou na propriedade `legs' sendo a concatenação encapsulada por parênteses curvos; Concatenação por \verb|#\n| do mapeamento de cada elemento da lista               
             \end{itemize}
         \end{itemize}
     \end{itemize}
     \item Caso o valor de uma propriedade seja um objeto, as propriedades do objeto aninhado devem ser processadas como se tratassem de propriedades do objeto possuidor da propriedade com o objeto aninhado
-    \item Nos casos em que o valor não é uma lista nem um objeto deve ser mantido o valor (apenas encapsolado por \verb|"|) e associado o seguinte título:
+    \item Nos casos em que o valor não é uma lista nem um objeto deve ser mantido o valor (apenas encapsulado por \verb|"|) e associado o seguinte título:
     \begin{itemize}
         \item Num objeto Classe:
         \begin{itemize}
@@ -460,8 +459,56 @@ Portanto, por exemplo para obter as Classes em \acrshort{csv} basta realizar o s
 Já em termos de fluxo dos dados durante esta exportação, para as 8 primeiras rotas da tabela~\ref{table:rotasExp} inicialmente os dados são obtidos da \acrshort{bd} ou da \textit{cache} da \acrshort{api}. Caso o formato de saída seja \acrshort{json} é devolvido ao utilizador sem qualquer conversão. Caso contrário os dados são convertidos através de um dos conversores já descritos para o formato de saída apropriado. Na última rota, a da exportação da ontologia, a informação é devolvida no formato apropriado pela própria \acrshort{bd} (\textit{GraphDB}) ou da \textit{cache} referida em~\ref{sec:expOntCache} de acordo com o pedido.
 
 \section{Migração de \acrshort{http} para \acrshort{https}}
-%TODO
-TODO: explicar a escolha do acme.sh; especificação (recomendações de segurança); solução
+
+O \acrfull{http} possui várias vulnerabilidades de segurança entre as quais \textit{man-in-the-middle attack}\footnote{Ver \url{https://owasp.org/www-community/attacks/Man-in-the-middle_attack}} bem como a possibilidade de \textit{eavesdropping}\footnote{Ato de ouvir de forma secreta ou furtiva conversas ou comunicações particulares de outras pessoas sem o consentimento destas} e \textit{tampering}\footnote{Alteração deliberada ou adulteração dos dados enviados entre cliente e servidor} da comunicação entre cliente e servidor.
+
+Com o intuito principal de superar estas vulnerabilidades foi criada a extensão ao \acrshort{http} o \acrfull{https}. Este protocolo de comunicação é encriptado através do uso de \acrfull{tls} ou através do uso do já \textit{deprecated}, por razões de segurança, \acrfull{ssl}. O \acrshort{https} oferece autenticação dos \textit{websites} acedidos bem como privacidade e integridade dos dados trocados.
+
+É assim de extrema importância a migração do atual \acrshort{http} para \acrshort{https} tanto na \acrshort{api} da \acrshort{clav} bem como na interface da \acrshort{clav}.
+
+Por forma a realizar esta migração há um conjunto de requisitos a cumprir:
+\begin{itemize}
+    \item Usar um \acrshort{ca} gratuito
+    \item Os certificados devem ser renovados automaticamente
+    \item Permitir criar uma \textit{script} de automatização para o \textit{deployment}
+    \item Possuir as seguintes recomendações de segurança:
+    \begin{itemize}
+        \item Redirecionar os pedidos \acrshort{http} para \acrshort{https} por forma a impedir que os utilizadores usem uma conexão insegura bem como evitar que alguém se faça passar pela \acrshort{clav} em \acrshort{http}
+        \item Adicionar o cabeçalho \acrshort{hsts} recomendado~\cite{hsts,hsts2}
+        \item Adicionar vários cabeçalhos e configurar o \textit{reverse proxy} por forma a tornar o \acrshort{https} mais forte e a \acrshort{api}/interface mais segura. Ver~\cite{helmet,letEnA+,dhparams,secExpress,strongSSL}
+        \item Adicionar o cabeçalho \acrfull{csp}~\cite{helmetCSP,csp}
+    \end{itemize}
+\end{itemize}
+
+
+Para realizar esta migração a primeira decisão a tomar é o \acrfull{ca} de onde iremos comprar/obter os certificados. Existem vários \acrshort{ca}s mas visto termos a restrição de que este deve ser gratuito apenas nos sobra uma alternativa bastante popular, o \textit{Let's Encrypt}. O único revês de usar o \textit{Let's Encrypt} é o facto de que os certificados tem uma validade de apenas 90 dias.
+
+Após se decidir que será usado o \acrshort{ca} \textit{Let's Encrypt} é necessário decidir que cliente \textit{Let's Encrypt} usar. Este cliente permite a obtenção e renovação de certificados. Existem vários clientes\footnote{Ver \url{https://letsencrypt.org/docs/client-options/}} dos quais o \textit{Let's Encrypt} recomenda o \textit{Certbot}\footnote{Ver \url{https://certbot.eff.org/}}. Contudo para usar \textit{Certbot} é necessário ter permissões \texttt{root} (\texttt{sudo}) no servidor bem como é necessário instalar algumas dependências. Por tais razões foi usado o \texttt{acme.sh} (Ver~\ref{sec:soaACMEsh}). O \texttt{acme.sh} é quem irá tratar de toda a gestão dos certificados, renovando-os quando necessário (a renovação é feita a cada 60 dias).
+
+Tendo em conta os requisitos a solução passa por colocar um \textit{reverse proxy} em \textit{Nginx} à frente da \acrshort{api} de dados, algo que já não é necessário na interface visto este (\textit{Nginx}) já estar presente. Após isso, a solução passará por configurar o \textit{Nginx}, tanto na \acrshort{api} de dados como na interface, com as várias recomendações de segurança. Passa também por automatizar o \textit{deployment} através de \textit{Docker} e \textit{Docker-Compose} bem como a criação de algumas pequenas \textit{scripts} para:
+\begin{itemize}
+    \item gerar certificados locais com o único objetivo de permitir o primeiro inicio do \textit{Nginx} (ainda não foram gerados os certificados dos domínios) para ser possível o \texttt{Let's Encrypt} validar o controlo sobre o domínio (ver~\ref{sec:valDom}) permitindo a geração dos certificados necessários
+    \item automatizar a instalação do cliente \acrshort{acme} \texttt{acme.sh} (\textit{download} e instalação)
+    \item gerar o primeiro certificado para os domínio(s) pretendido(s) com o \texttt{acme.sh}
+    \item instalar o primeiro certificado no caminho apropriado com o \texttt{acme.sh} de onde o \textit{reverse proxy} o irá obter
+    \item gerar \textit{\acrshort{dh} parameters} mais fortes para a troca de chaves com recurso ao \textit{OpenSSL}
+    \item instalar dependências no \textit{container} onde se encontra o \textit{Nginx}:
+    \begin{itemize}
+        \item \texttt{openssl} para a geração de um certificado local e dos \acrshort{dh} \textit{paremeters}
+        \item \texttt{cron} para o \texttt{acme.sh} criar um \textit{cron job} diário para a verificação/renovação do certificado
+        \item \texttt{curl} para fazer \textit{download} do \texttt{acme.sh}
+    \end{itemize}
+\end{itemize}
+
+A arquitetura a desenvolver será a seguinte:
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=1\textwidth]{img/apiHttpsArch.png}
+    \end{center}
+    \caption{Arquitetura a desenvolver com \acrshort{https}}
+\end{figure}
+
+A ligação a tracejado entre os dois \textit{Nginx}'s pode ou não existir, irá depender se se pretende ou não que o servidor da interface reencaminhe pedidos para o servidor da \acrshort{api} de dados.
 
 \section{\acrshort{api} Gateway}
 
@@ -473,7 +520,7 @@ Apresenta-se de seguida os requisitos que a \textit{\acrshort{api} Gateway} deve
     \item Suportar \acrshort{https}, \acrshort{cors} e \acrshort{jwt}
     \item Suportar Autenticação e Autorização personalizada (Criação de \textit{plugin}/middleware)
     \item Possível automatização ao definir apenas ficheiros de configuração sem qualquer uso de \acrshort{cli}s, \acrshort{gui}s ou \acrshort{api}s
-    \item Suportar deployment em \textit{Docker}
+    \item Suportar \textit{deployment} em \textit{Docker}
     \item Suportar \textit{rate limit} e \textit{cache}
     \item Suportar versionamento da \acrshort{api}
     \item Balanceamento de carga e servir de \textit{reverse proxy}
@@ -509,11 +556,11 @@ Infelizmente nenhuma das tecnologias suporta todos os requisitos. Assim a partir
 
 Das quatro tecnologias presentes na tabela, podemos desde já descartar o \textit{Tyk} visto não permitir automatizar o \textit{deployment}. Sobram, assim, o \textit{Nginx}, o \textit{Kong} e o \textit{Express Gateway}. Destas três, verifica-se que a última possui menos funcionalidades e portanto não será a tecnologia escolhida.
 
-Entre o \textit{Nginx} e o \textit{Kong} a escolha irá prender-se com a facilidade e poder de configuração visto que os requisitos presentes em cada tecnologia são muito semelhantes. O \textit{Kong} é construido a partir do \textit{Nginx} (daí as suas parecenças em termos de requisitos presentes) e é possível configurar o \textit{Nginx} a partir do \textit{Kong}. Para além disso, o \textit{Kong} possui vários \textit{plugins} por forma a permitir certas funcionalidades que no \textit{Nginx} seria necessário configurar manualmente para atingir essas funcionalidades. Portanto a escolha tecnológica para a \textit{\acrshort{api} Gateway} recai sobre o \textit{Kong}.
+Entre o \textit{Nginx} e o \textit{Kong} a escolha irá prender-se com a facilidade e poder de configuração visto que os requisitos presentes em cada tecnologia são muito semelhantes. O \textit{Kong} é construído a partir do \textit{Nginx} (daí as suas parecenças em termos de requisitos presentes) e é possível configurar o \textit{Nginx} a partir do \textit{Kong}. Para além disso, o \textit{Kong} possui vários \textit{plugins} por forma a permitir certas funcionalidades que no \textit{Nginx} seria necessário configurar manualmente para atingir essas funcionalidades. Portanto a escolha tecnológica para a \textit{\acrshort{api} Gateway} recai sobre o \textit{Kong}.
 
 \subsection{Arquitetura}
 
-Após a escolha da \textit{\acrshort{api} Gateway} a usar (\textit{Kong}) é necessário proceder ao esboço de uma arquitetura base a desenvolver. Esta arquitetura apresenta-se de seguida:
+Após a escolha da \textit{\acrshort{api} Gateway} a usar (\textit{Kong}) é necessário proceder ao esboço de uma arquitetura base a desenvolver. Esta arquitetura apresenta-se de seguida, onde apenas se inclui a \acrshort{api} visto a interface não sofrer qualquer alteração:
 \begin{figure}[H]
     \begin{center}
         \includegraphics[width=1\textwidth]{img/apiGatewayArch.png}
@@ -521,11 +568,11 @@ Após a escolha da \textit{\acrshort{api} Gateway} a usar (\textit{Kong}) é nec
     \caption{Arquitetura a desenvolver com \textit{\acrshort{api} Gateway}}\label{fig:apiGatewayArch}
 \end{figure}
 
-Apesar das várias vantagens do \textit{Kong} não é possível, através dos plugins fornecidos por este, realizar uma proteção das rotas semelhante à presente na \acrshort{api} de dados da \acrshort{clav}. Portanto, com o intuito de simplificar a \acrshort{api} de dados, a ideia passa por retirar da \acrshort{api} de dados da \acrshort{clav} tudo que envolva proteção desta, tais como a verificação de tokens (autenticação), a geração de tokens bem como a verificação da autorização de um utilizador (verificar se o nível do utilizador é suficiente para aceder determinada rota), e colocar estas funcionalidades noutro servidor independente da \acrshort{api} de dados. Este servidor está representado na arquitetura como Serviço de Auth que procederá então à autenticação e autorização dos pedidos realizados pelos clientes.
+Apesar das várias vantagens do \textit{Kong} não é possível, através dos \textit{plugins} fornecidos por este, realizar uma proteção das rotas semelhante à presente na \acrshort{api} de dados da \acrshort{clav}. Portanto, com o intuito de simplificar a \acrshort{api} de dados, a ideia passa por retirar da \acrshort{api} de dados da \acrshort{clav} tudo que envolva proteção desta, tais como a verificação de \textit{tokens} (autenticação), a geração de \textit{tokens} bem como a verificação da autorização de um utilizador (verificar se o nível do utilizador é suficiente para aceder determinada rota), e colocar estas funcionalidades noutro servidor independente da \acrshort{api} de dados. Este servidor está representado na arquitetura como Serviço de \textit{Auth} que procederá então à autenticação e autorização dos pedidos realizados pelos clientes.
 
-Com esta separação a \acrshort{api} de dados precisará de realizar pedidos ao Serviço de Auth para a verificação e geração de tokens em casos particulares como o \textit{login} de um utilizador ou a \textit{criação} de uma Chave \acrshort{api}.
+Com esta separação a \acrshort{api} de dados precisará de realizar pedidos ao Serviço de \textit{Auth} para a verificação e geração de \textit{tokens} em casos particulares como o \textit{login} de um utilizador ou a \textit{criação} de uma Chave \acrshort{api}.
 
-Todos os pedidos realizados pelos clientes e pela interface da \acrshort{clav} tem como ponto de entrada o \textit{Kong}. Este, através de um plugin, para cada pedido que recebido irá realizar um pedido ao Serviço de Auth onde:
+Todos os pedidos realizados pelos clientes e pela interface da \acrshort{clav} tem como ponto de entrada o \textit{Kong}. Este, através de um \textit{plugin}, para cada pedido que recebido irá realizar um pedido ao Serviço de \textit{Auth} onde:
 
 \begin{enumerate}
     \item Verifica-se quem pode aceder (que tipo de clientes) à rota do pedido
@@ -533,13 +580,8 @@ Todos os pedidos realizados pelos clientes e pela interface da \acrshort{clav} t
     \item Procede-se à autorização do pedido (se necessário)
 \end{enumerate}
 
-Caso a resposta do Serviço de Auth seja positiva então o \textit{Kong} procederá à realização do pedido à \acrshort{api} de dados. Caso contrário, o pedido à \acrshort{api} de dados não é efetuado e é devolvido ao utilizador a resposta de erro correspondente (erro de autenticação ou de autorização).
-
-\section{Instalação/Migração/Integração}
-%TODO
-TODO: Arquitetura
+Caso a resposta do Serviço de \textit{Auth} seja positiva então o \textit{Kong} procederá à realização do pedido à \acrshort{api} de dados. Caso contrário, o pedido à \acrshort{api} de dados não é efetuado e é devolvido ao utilizador a resposta de erro correspondente (erro de autenticação ou de autorização).
 
 \section{Resumo}
 
-%TODO
-TODO
+Este capítulo tem como principal objetivo tornar mais fácil a compreensão das várias decisões tomadas descrevendo os vários requisitos a cumprir. Além disso, apresenta-se também com base nessas decisões uma arquitetura/modelo inicial da solução a desenvolver. Foram assim abordados a proteção da \acrshort{api} de dados, a autenticação através de \acrfull{cmd}, a documentação da \acrshort{api} de dados, a migração de \acrshort{http} para \acrshort{https} e por fim, a \acrshort{api} Gateway.

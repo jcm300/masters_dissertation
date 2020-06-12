@@ -152,19 +152,6 @@ TODO: apresentar e falar da interface de exportação
 
 \section{Migração de \acrshort{http} para \acrshort{https}}
 
-O \acrfull{http} possui várias vulnerabilidades de segurança entre as quais \textit{man-in-the-middle attack} bem como a possibilidade de \textit{eavesdropping}\footnote{Ato de ouvir de forma secreta ou furtiva conversas ou comunicações particulares de outras pessoas sem o consentimento destas} e \textit{tampering}\footnote{Alteração deliberada ou adulteração dos dados enviados entre cliente e servidor} da comunicação entre cliente e servidor.
-
-Com o intuito principal de superar estas vulnerabilidades foi criada a extensão ao \acrshort{http} o \acrfull{https}. Este protocolo de comunicação é encriptado através do uso de \acrfull{tls} ou através do uso do já \textit{deprecated}, por razões de segurança, \acrfull{ssl}. O \acrshort{https} oferece autenticação dos \textit{websites} acedidos bem como privacidade e integridade dos dados trocados.  
-
-É assim de extrema importância a migração do atual \acrshort{http} para \acrshort{https} tanto na \acrshort{api} da \acrshort{clav} bem como na interface da \acrshort{clav}.
-
-Para realizar esta migração a primeira decisão a tomar é qual será o \acrfull{ca} de onde iremos comprar/obter os certificados. Existem vários \acrshort{ca}s mas visto termos a restrição de que este deve ser gratuito apenas nos sobra uma alternativa bastante popular, o \textit{Let's Encrypt}\footnote{Ver mais em \url{https://letsencrypt.org/}}. O único revêz de usar o \textit{Let's Encrypt} é o facto de que os certificados tem uma validade de apenas 90 dias.
-
-Após se decidir que será usado o \acrshort{ca} \textit{Let's Encrypt} é necessário decidir que cliente \textit{Let's Encrypt}. Este cliente permite a obtenção e renovação de certificados. Existem vários clientes\footnote{Ver \url{https://letsencrypt.org/docs/client-options/}} dos quais o \textit{Let's Encrypt} recomenda o \textit{Certbot}\footnote{Ver \url{https://certbot.eff.org/}}. Contudo para usar \textit{Certbot} é necessário ter permissões \texttt{root} (\texttt{sudo}) no servidor bem como é necessário instalar algumas dependências. Por tais razões foi usado \texttt{acme.sh}\footnote{Ver \url{https://github.com/acmesh-official/acme.sh}} que é nada mais que uma \textit{shell script} não sendo necessário ter permissões \texttt{root} (\texttt{sudo}) e onde as únicas dependências são \texttt{openssl} (para a geração de chaves), o \texttt{cron} (para criar um \textit{cron job} diário para a renovação do certificado) e do \texttt{curl} (para fazer download do \textit{script}). Em relação ao \texttt{Certbot} o \texttt{acme.sh} também é mais fácil de usar em \textit{docker containers}.
-
-O \texttt{acme.sh} é quem irá tratar de toda a gestão dos certificados, renovando-os quando necessário (a renovação é feita a cada 60 dias).
-Por forma a usar o \texttt{acme.sh} é necessário realizar o \textit{download} do \textit{script}, proceder à instalação do \textit{acme.sh}, fazer a primeira geração do certificado para os domínio(s) pretendido(s) e instalar estes certificados no local final. A partir daí, o \textit{acme.sh} é auto gerido bem como os certificados gerados como já referido. Para tratar automaticamente deste processo todo bem como gerar \textit{\acrshort{dh} parameters} mais fortes, algo que iremos referir mais à frente, foi criada a \textit{script} presente no anexo~\ref{script:acme}.
-
 %TODO
 TODO
 
@@ -437,10 +424,6 @@ Na imagem~\ref{fig:apiGatewayArch} apresentou-se uma visão inicial da arquitetu
     \end{center}
     \caption{Arquitetura desenvolvida com \textit{\acrshort{api} Gateway}}\label{fig:apiGatewayArchFinal}
 \end{figure}
-
-\section{Instalação/Migração/Integração}
-%TODO
-TODO
 
 \section{Resumo}
 %TODO

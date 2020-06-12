@@ -1115,7 +1115,7 @@ Caso não se tenha acesso à \textit{shell} irá depender se o provedor de \text
 
 Uma pequena chamada de atenção, o \textit{Let's Encrypt} possui \textit{Rate Limits}~\cite{LErateLimits} pelo que num ambiente de testes deve ser usado o ambiente de testes do \textit{Let's Encrypt}\footnote{Ver \url{https://letsencrypt.org/docs/staging-environment/}} e não o de produção.
 
-\subsection{Validação do Domínio}
+\subsection{Validação do Domínio}\label{sec:valDom}
 
 Nesta secção será explicado como é realizada a validação do domínio para a geração/renovação/revogação dos certificados.
 
@@ -1143,7 +1143,7 @@ Veja-se agora um exemplo concreto em que o cliente \acrshort{acme} usa o segundo
 
 Como o desafio teve sucesso e o \textit{nonce} assinado pelo cliente \acrshort{acme} é válido então o cliente \acrshort{acme} identificado pela chave pública está autorizado a gerir os certificados para o domínio \texttt{example.com}. Assim, para gerar/renovar/revogar o certificado para o domínio basta enviar mensagens de gestão do certificado assinadas com o chave privada (a que assinou o \textit{nonce}) para o \textit{Let's Encrypt}.
 
-\subsection{Cliente \textit{acme.sh}}
+\subsection{Cliente \textit{acme.sh}}\label{sec:soaACMEsh}
 Apesar do cliente recomendado pelo \textit{Let's Encrypt} ser o \textit{Certbot} este necessita de ter permissões \textit{root} bem como tem várias dependências para ser executado. Já o cliente \textit{acme.sh}\footnote{Ver \url{https://github.com/acmesh-official/acme.sh}} é uma \textit{script} \textit{bash} que para a sua instalação basta efetuar \textit{download} da \textit{script} deste. Além disso, não necessita de quaisquer dependências nem de acesso \textit{root} (apenas necessita em casos especiais). A sua utilização, tal como o \textit{Certbot}, é feita através da execução de comandos \textit{bash}.
 
 Para instalar basta:
