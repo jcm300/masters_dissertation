@@ -10,7 +10,7 @@
   % of the paper, leave as is for single sided prints or for viewing on screen.
   oneside,
   %twoside,
-  11pt, a4paper,
+  12pt, a4paper,
   footinclude=true,
   headinclude=true,
   cleardoublepage=empty
@@ -61,23 +61,24 @@
     \umtitlepage{}
 	
 	% Add acknowledgements ----------------------------
-	\chapter*{Agradecimentos}
-    \import{chapters/}{01_agradecimentos.tex}
-
     \chapter*{Direitos de Autor e Condições de Utilização do Trabalho por Terceiros}
     \import{chapters/}{01_01_direitosDeAutor.tex}
+
+	\chapter*{Agradecimentos}
+    \import{chapters/}{01_agradecimentos.tex}
 
     \chapter*{Declaração de Integridade}
     \import{chapters/}{01_02_declaracaoDeIntegridade.tex}
 
 	% Add abstracts (en,pt) ---------------------------
-	\chapter*{Abstract}
-    \import{chapters/}{02_resumoEN.tex}
-	
-    \cleardoublepage{}
 	\chapter*{Resumo}
     \import{chapters/}{03_resumoPT.tex}
 
+    \cleardoublepage{}
+
+	\chapter*{Abstract}
+    \import{chapters/}{02_resumoEN.tex}
+	
 	% Summary Lists ------------------------------------
 	\tableofcontents
 	\listoffigures
@@ -87,7 +88,8 @@
     %\printglossary[]
     \printglossary[type=\acronymtype, title={Lista de Acrónimos}, style=treenoname]
 	
-	\pagenumbering{arabic}
+    \cleardoublepage{}
+    \pagenumbering{arabic}
 	
 	% CHAPTER - Introduction -------------------------
     \chapter{Introdução}
@@ -129,5 +131,7 @@
 	% APPENDIX --------------------------------------
 	\umappendix{Appendix}
     \import{chapters/}{11_apendice.tex}
+
+    \umbackcover{}
 	
 \end{document}

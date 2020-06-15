@@ -5,9 +5,9 @@
 \usepackage[dvipsnames,rgb,table]{xcolor}
 \usepackage[portuguese]{babel}
 %\usepackage[utf8]{inputenc}
-\usepackage[linedheaders,parts,pdfspacing]{classicthesis}
-\usepackage{lmodern}
 \usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[linedheaders,parts,pdfspacing]{classicthesis}
 \usepackage{amsmath}
 %\usepackage{acronym}
 \usepackage{a4wide} % Setup for fullpage
@@ -40,6 +40,20 @@
 \usepackage{footnote}
 \usepackage{array}
 \usepackage{multirow}
+
+\usepackage{fontspec}
+\setmainfont{newsgott}[
+    Ligatures=TeX,
+    Extension=.ttf,
+    Path=./font/,
+    UprightFont=*-regular,
+    BoldFont=*-bold,
+    ItalicFont=*-regular,
+    ItalicFeatures={FakeSlant=0.25},
+    BoldItalicFont=*-bold,
+    BoldItalicFeatures={FakeSlant=0.25},
+    SmallCapsFont=*-regular-sc
+]
 
 %----------------- Using makeidx ----------------------------------------------%
 
@@ -97,7 +111,6 @@
 \renewcommand{\descfont}{\normalfont\bfseries}
 
 % GraphicX package
-\usepackage{graphicx}
 \usepackage{float}
 
 % Defining extra colors
@@ -146,6 +159,7 @@
 \end{tikzpicture}}
 
 % Wrap text around figures
+\usepackage{graphicx}
 \usepackage{wrapfig}
 
 % Professional looking tables
@@ -317,6 +331,7 @@
   \hyperref[#1]{\cref*{#1}: \nameref*{#1}}
 }
 
+\renewcommand{\footnotesize}{\fontsize{8pt}{10pt}\selectfont}
 \newcommand\footnoteref[1]{\protected@xdef\@thefnmark{\ref{#1}}\@footnotemark}
 
 % Index of terms and acronyms
@@ -452,9 +467,9 @@
 
 % cover layout
 \newcommand{\printcover}{
-\def\withnewsgott##1{\fontfamily{phv}\fontseries{mc}\selectfont ##1}
+\def\withnewsgott##1{\fontencoding{T1}\fontfamily{phv}\fontseries{mc}\selectfont ##1}
 \def\optionalwithnewsgott##1{\ifnum\hide=1\relax\else\withnewsgott{##1}\fi}
-\def\withboldnewsgott##1{\fontfamily{phv}\fontseries{mc}\fontseries{b}\selectfont ##1}
+\def\withboldnewsgott##1{\fontencoding{T1}\fontfamily{phv}\fontseries{mc}\fontseries{b}\selectfont ##1}
 \def\optionalwithboldnewsgott##1{\ifnum\hide=1\relax\else\withboldnewsgott{##1}\fi}
 ~\vskip-2cm\rule{4cm}{0pt}\begin{tabular}{l}
 \UMEng[\umc]{\engc}
@@ -476,7 +491,8 @@
 \\\optionalwithnewsgott{\large Dissertação realizada sob a orientação do Professor}
 \\\optionalwithboldnewsgott{\@supervisor}\rule{0pt}{4mm}
 \\\optionalwithboldnewsgott{\@cosupervisor}
-\\\rule{0pt}{2cm}
+%\\
+\rule{0pt}{2cm}
 \\\withnewsgott{{\small\@date}}
 \end{tabular}
 }

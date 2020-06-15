@@ -32,12 +32,12 @@ Na \textit{header} \textit{Authorization} é usado o esquema de autenticação \
     \item Caso seja uma Chave \acrshort{api} é:\newline
         \verb|apikey <Chave API>|
 \end{itemize}
-ao invés do esquema de autenticação predefinido do \textit{Bearer}: \verb|Bearer <token/Chave API>|
+ao invés do esquema de autenticação predefinido do \textit{Bearer}: \verb|Bearer <token/Chave API>|.
 
 Caso não seja respeitado um destes formatos, o pedido será recusado visto que a \acrshort{api} de dados não consegue identificar o \textit{token}.
 Com estas duas formas de enviar o \acrshort{jwt} é possível distinguir os utilizadores das Chaves \acrshort{api} e cumprir assim um dos requisitos. Além disso, esta divisão entre utilizadores e chaves \acrshort{api} permite uma mais fácil gestão dos \textit{tokens} recebidos pela \acrshort{api} bem como permite usar duas formas diferentes de os gerar/verificar com o possível benefício de melhorar a segurança da \acrshort{api} já que também permite usar dois pares de chaves pública/privada, uma para as Chaves \acrshort{api}'s e outra para os \textit{token}'s de utilizadores impedindo assim que um utilizador se faça passar por uma chave \acrshort{api} e vice-versa. Cada par de chaves permite gerar \textit{token}'s (chave privada) e validá-los (chave pública).
 
-Um dos requisitos é que os \textit{token}s gerados pela \acrshort{api} sejam \acrshort{jwt}s. Contudo poderiam ser outro tipo de \textit{tokens} (por exemplo uma \textit{string} aleatória e única) que o processo de envio dos \textit{tokens} para a \acrshort{api} manter-se-ia igual. Apenas é alterada a forma de geração e verificação do \textit{token}, ou seja, uma alteração interna invisível para o utilizador.
+Um dos requisitos é que os \textit{token}s gerados pela \acrshort{api} sejam \acrshort{jwt}s. Contudo poderiam ser outro tipo de \textit{tokens} (por exemplo uma \textit{string} aleatória e única) que o processo de envio dos \textit{tokens} para a \acrshort{api} manter-se-ia igual. Apenas seria alterada a forma de geração e verificação do \textit{token}, ou seja, uma alteração interna invisível para o utilizador.
 
 De seguida é apresentado um diagrama com a estratégia de proteção que será implementada para cumprir os requisitos anteriormente anunciados:
 %imagem
@@ -48,7 +48,7 @@ De seguida é apresentado um diagrama com a estratégia de proteção que será 
     \caption{Estratégia de proteção da \acrshort{api} de dados}\label{fig:protStrag}
 \end{figure}
 
-O \texttt{isLoggedInKey}, o \texttt{isLoggedInUser} e o \texttt{checkLevel} serão \textit{middlewares} que caso sejam usados definem desde logo quem pode aceder. Ou seja, se fou usado o \texttt{isLoggedInUser} sabe-se desde logo que apenas os utilizadores podem aceder. Por outro lado, se for usado o \texttt{isLoggedInKey} significa que podem aceder a rota as Chaves \acrshort{api} e os utilizadores. Para além disso, quando o \texttt{checkLevel} é usado após o \texttt{isLoggedInUser}, sabe-se que apenas parte dos utilizadores pode aceder, sendo que este \textit{middleware} recebe como argumento os níveis de utilizadores que podem aceder a rota. A informação do nível do utilizador está presente no \acrshort{jwt} (\textit{token}) enviado.
+O \texttt{isLoggedInKey}, o \texttt{isLoggedInUser} e o \texttt{checkLevel} serão \textit{middlewares} que caso sejam usados numa rota definem desde logo quem pode aceder. Ou seja, se fou usado o \texttt{isLoggedInUser} sabe-se desde logo que apenas os utilizadores podem aceder. Por outro lado, se for usado o \texttt{isLoggedInKey} significa que podem aceder a rota as Chaves \acrshort{api} e os utilizadores. Para além disso, quando o \texttt{checkLevel} é usado após o \texttt{isLoggedInUser}, sabe-se que apenas parte dos utilizadores pode aceder, sendo que este \textit{middleware} recebe como argumento os níveis de utilizadores que podem aceder a rota. A informação do nível do utilizador está presente no \acrshort{jwt} (\textit{token}) enviado.
 
 Cumpre-se assim, quase todos os requisitos anunciados com a exceção dos da validade dos \textit{token}'s. Estes são atingidos na geração dos \acrshort{jwt}'s no qual o \textit{token} de um utilizador é gerado para ter apenas a validade de 8 horas e uma Chave \acrshort{api} é gerada para ter a validade de 30 dias.
 
@@ -97,7 +97,7 @@ O fluxo de autenticação e renovação de uma Chave \acrshort{api} na \acrshort
 
 \section{Autenticação através de \acrshort{cmd}}
 
-A autenticação com \acrshort{cmd} é bastante semelhante à autenticação com o \acrshort{cc}. O que muda é o modo de autenticação perante o Autenticação.gov que em vez de ser efetuado com \acrshort{cc} (\acrlong{cc}, Leitor de Cartões e \acrshort{pin} de autenticação do \acrshort{cc}) será realizado através de \acrshort{cmd} (Número de telemóvel, \acrshort{pin} definido durante a ativação da \acrshort{cmd} e \acrshort{pin} temporário enviado para o número de telemóvel).
+A autenticação com \acrshort{cmd} é bastante semelhante à autenticação com o \acrshort{cc}. O que muda é o modo de autenticação perante o Autenticação.gov que em vez de ser efetuado com \acrshort{cc} (\acrlong{cc}, Leitor de Cartões, \textit{software} local do Autenticação.gov e \acrshort{pin} de autenticação do \acrshort{cc}) será realizado através de \acrshort{cmd} (Número de telemóvel, \acrshort{pin} definido durante a ativação da \acrshort{cmd} e \acrshort{pin} temporário enviado para o número de telemóvel).
 
 Os atributos pedidos ao Autenticação.gov são os mesmos que são pedidos com a autenticação com o \acrshort{cc} (\acrshort{nic} e Nome Completo) permitindo identificar unicamente o utilizador a partir do \acrshort{nic}. Para além disso, permite aproveitar todo o back-end e código já desenvolvido para a autenticação do utilizador perante a \acrshort{clav} através de \acrshort{cc} visto que os atributos usados são os mesmos. Além disso, permite uma melhor normalização da identificação dos utilizadores (não existindo assim vários ids para o mesmo utilizador) bem como evita ser necessário o utilizador partilhar atributos adicionais (como o número de telemóvel) com a \acrshort{clav} (o número de telemóvel é apenas partilhado com o Autenticação.gov sendo que a \acrshort{clav} não tem acesso a esta informação se apenas pediu para saber os atributos \acrshort{nic} e Nome Completo). Assim, a única implicação que pode ser gerada daqui é que o utilizador, quer queira usar a autenticação por \acrshort{cc} quer queira usar por \acrshort{cmd}, necessita de estar registado na \acrshort{clav} com o \acrshort{cc} sendo que, neste momento é obrigatório o registo dos utilizadores através de \acrshort{cc}. Voltasse a frisar que o \acrshort{nic} será usado por forma a identificar o utilizador, pelo que serve de id do utilizador tal como na autenticação com o \acrshort{cc}.
 
@@ -143,7 +143,7 @@ No estado da arte foram abordadas várias alternativas ao \textit{Swagger UI}. A
     \item Será usada a especificação \textit{OpenAPI}
 \end{itemize}
 
-as várias alternativas ficam reduzidas ao \textit{Swagger \acrshort{ui}} e ao \textit{ReDoc}. Optou-se por escolher o \textit{Swagger \acrshort{ui}} visto ser a ferramenta mais amplamente usada para além de que é possível obter também uma fácil integração no \textit{Swagger \acrshort{ui}} com recurso à \textit{package} \texttt{swagger-ui-express} já aprofundada no estado da arte. Além disso, escolheu-se a \textit{package} \texttt{yaml-include} por forma a auxiliar a produção da documentação na criação do ficheiro com a especificação \textit{OpenAPI}, permitindo que esta documentação seja modular.
+as várias alternativas ficam reduzidas ao \textit{Swagger \acrshort{ui}} e ao \textit{ReDoc}. Optou-se por escolher o \textit{Swagger \acrshort{ui}} visto ser a ferramenta mais amplamente usada para além de que é possível obter também uma fácil integração no \textit{Swagger \acrshort{ui}} com recurso à \textit{package} \texttt{swagger-ui-express} já aprofundada no estado da arte (ver~\ref{sec:soaDocAPI}). Além disso, escolheu-se a \textit{package} \texttt{yaml-include} por forma a auxiliar a produção da documentação na criação do ficheiro com a especificação \textit{OpenAPI}, permitindo que esta documentação seja modular.
 
 A documentação modular será estruturada da seguinte forma:
 
@@ -466,7 +466,7 @@ Com o intuito principal de superar estas vulnerabilidades foi criada a extensão
 
 É assim de extrema importância a migração do atual \acrshort{http} para \acrshort{https} tanto na \acrshort{api} da \acrshort{clav} bem como na interface da \acrshort{clav}.
 
-Por forma a realizar esta migração há um conjunto de requisitos a cumprir:
+Por forma a realizar esta migração há um conjunto de requisitos a cumprir:\label{sec:sol_httpsReq}
 \begin{itemize}
     \item Usar um \acrshort{ca} gratuito
     \item Os certificados devem ser renovados automaticamente
@@ -487,14 +487,14 @@ Após se decidir que será usado o \acrshort{ca} \textit{Let's Encrypt} é neces
 
 Tendo em conta os requisitos a solução passa por colocar um \textit{reverse proxy} em \textit{Nginx} à frente da \acrshort{api} de dados, algo que já não é necessário na interface visto este (\textit{Nginx}) já estar presente. Após isso, a solução passará por configurar o \textit{Nginx}, tanto na \acrshort{api} de dados como na interface, com as várias recomendações de segurança. Passa também por automatizar o \textit{deployment} através de \textit{Docker} e \textit{Docker-Compose} bem como a criação de algumas pequenas \textit{scripts} para:
 \begin{itemize}
-    \item gerar certificados locais com o único objetivo de permitir o primeiro inicio do \textit{Nginx} (ainda não foram gerados os certificados dos domínios) para ser possível o \texttt{Let's Encrypt} validar o controlo sobre o domínio (ver~\ref{sec:valDom}) permitindo a geração dos certificados necessários
+    \item gerar certificado local autoassinado com o único objetivo de permitir o primeiro inicio do \textit{Nginx} (ainda não foram gerados os certificados dos domínios) para ser possível o \texttt{Let's Encrypt} validar o controlo sobre o domínio (ver~\ref{sec:valDom}) permitindo a geração dos certificados necessários
     \item automatizar a instalação do cliente \acrshort{acme} \texttt{acme.sh} (\textit{download} e instalação)
     \item gerar o primeiro certificado para os domínio(s) pretendido(s) com o \texttt{acme.sh}
     \item instalar o primeiro certificado no caminho apropriado com o \texttt{acme.sh} de onde o \textit{reverse proxy} o irá obter
     \item gerar \textit{\acrshort{dh} parameters} mais fortes para a troca de chaves com recurso ao \textit{OpenSSL}
     \item instalar dependências no \textit{container} onde se encontra o \textit{Nginx}:
     \begin{itemize}
-        \item \texttt{openssl} para a geração de um certificado local e dos \acrshort{dh} \textit{paremeters}
+        \item \texttt{openssl} para a geração de um certificado local autoassinado e dos \acrshort{dh} \textit{paremeters}
         \item \texttt{cron} para o \texttt{acme.sh} criar um \textit{cron job} diário para a verificação/renovação do certificado
         \item \texttt{curl} para fazer \textit{download} do \texttt{acme.sh}
     \end{itemize}
@@ -572,7 +572,7 @@ Apesar das várias vantagens do \textit{Kong} não é possível, através dos \t
 
 Com esta separação a \acrshort{api} de dados precisará de realizar pedidos ao Serviço de \textit{Auth} para a verificação e geração de \textit{tokens} em casos particulares como o \textit{login} de um utilizador ou a \textit{criação} de uma Chave \acrshort{api}.
 
-Todos os pedidos realizados pelos clientes e pela interface da \acrshort{clav} tem como ponto de entrada o \textit{Kong}. Este, através de um \textit{plugin}, para cada pedido que recebido irá realizar um pedido ao Serviço de \textit{Auth} onde:
+Todos os pedidos realizados pelos clientes e pela interface da \acrshort{clav} tem como ponto de entrada o \textit{Kong}. Este, através de um \textit{plugin}, para cada pedido recebido irá realizar um pedido ao Serviço de \textit{Auth} onde:
 
 \begin{enumerate}
     \item Verifica-se quem pode aceder (que tipo de clientes) à rota do pedido

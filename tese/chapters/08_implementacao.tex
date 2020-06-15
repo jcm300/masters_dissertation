@@ -152,8 +152,40 @@ TODO: apresentar e falar da interface de exportação
 
 \section{Migração de \acrshort{http} para \acrshort{https}}
 
+A partir dos requisitos já enunciados em~\ref{sec:sol_httpsReq} foram criadas duas \textit{scripts} uma para correr antes de iniciar o \textit{Nginx} e outra para correr depois de o \textit{Nginx} iniciar.
+
+A \textit{script} que corre antes de iniciar o \textit{Nginx} instala o \texttt{openssl}, gera o certificado autoassinado e \acrshort{dh} \textit{parameters} para permitir o \textit{boot} do \textit{Nginx}.
+
+Já a \textit{script} que corre após o inicio do \textit{Nginx} realiza o \textit{download} do \texttt{acme.sh}, instala-o, obtém o primeiro certificado para o(s) domínio(s) com o \texttt{acme.sh}, instala o certificado com o \texttt{acme.sh}, gera \acrshort{dh} \textit{parameters} mais fortes e, por fim, reunicia o \textit{Nginx} para que o novo certificado e \acrshort{dh} \textit{parameters} tenham efeito, ou seja, sejam usados pelo \textit{Nginx}.
+
+Quanto à configuração do \textit{Nginx} entre a da \acrshort{api} de dados e a da interface à poucas diferenças. Estas consistem em que na configuração \textit{Nginx} na \acrshort{api} de dados é encaminhado os pedidos para o servidor em \textit{Node.js} enquanto que na configuração \textit{Nginx} da interface há duas variantes:
+\begin{itemize}
+    \item Apenas serve os ficheiros estáticos da interface
+    \item Serve os ficheiros estáticos da interface e reencaminha os pedidos para a \acrshort{api} de dados, aqueles em que o caminho começa em \texttt{/<versão\_api>/} ou é igual a \texttt{/clav.yaml}.
+\end{itemize}
+
+Quanto às configurações comuns estas serão apresentadas de seguida, explicando para que servem.
+
+Para cumprir o requisito de redirecionamento dos pedidos de \acrshort{http} para \acrshort{https} é colocado o seguinte bloco de código na configuração:
+\begin{lstlisting}
+  server {
+    listen $HTTP_PORT;
+    server_name localhost;
+
+    location /.well-known/acme-challenge/ {
+      alias /var/www/html/.well-known/acme-challenge/;
+    }
+
+    location / {
+      return 301 https://$host$request_uri;
+    }
+  }
+\end{lstlisting}
+Além disso,
+
 %TODO
 TODO
+%explicar config do nginx
 
 \section{\acrshort{api} Gateway}
 
