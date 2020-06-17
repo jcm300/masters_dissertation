@@ -1,10 +1,11 @@
+%TODO
+TODO
+
 \section{Proteção da \acrshort{api} de dados}
 
-Para proteger as rotas da \acrshort{api} é necessário haver métodos de verificação dos \textit{tokens} com o objetivo de decidir se o utilizador/Chave \acrshort{api} pode aceder a uma determinada rota. De seguida será apresentado o pseudo-código de verificação dos \textit{tokens} tendo em conta que os utilizadores registados conseguem aceder a todas as rotas que as Chaves \acrshort{api} conseguem mas que o inverso não acontece. Ou seja, um utilizador registado até o de nível mais baixo por exemplo, consegue aceder a todas as rotas que as Chaves \acrshort{api} tem acesso e mais algumas nas quais as Chaves \acrshort{api} não têm permissões de acesso.
+Para proteger as rotas da \acrshort{api} é necessário haver métodos de verificação dos \textit{tokens} com o objetivo de decidir se o utilizador/Chave \acrshort{api} pode aceder a uma determinada rota. Isto é percetível na imagem~\ref{fig:protStrag} onde se destacam 3 \textit{middlewares}, \texttt{isLoggedInKey}, \texttt{isLoggedInUser} e \texttt{checkLevel}. De seguida será apresentado o pseudo-código destes \textit{middlewares}. 
 
-Após se identificar o \textit{token}, verifica-se o \textit{token}. Esta verificação varia de acordo se o \textit{token} é de um utilizador ou de uma Chave \acrshort{api}. Caso seja de uma chave \acrshort{api}, verifica-se se existe a entrada no \textit{MongoDB} e se a chave \acrshort{api} ainda se encontra ativa. Em caso afirmativo, procede-se para a verificação do \textit{token} (se ainda não expirou) com recurso ao segredo. No caso de um utilizador verifica-se se o \textit{token} ainda não expirou e se a operação tiver restrições quanto ao nível de utilizador que pode aceder, verifica-se também se o nível presente no \textit{token} permite realizar a operação.
-
-Por forma a validar se uma Chave \acrshort{api} pode aceder a uma determinada rota pode ser executada a seguinte função em \textit{middleware}:
+Por forma a validar se uma Chave \acrshort{api} pode aceder a uma determinada rota é executado o \textit{middleware} \texttt{isLoggedInKey}:
 \begin{lstlisting}[language=pseudocode, caption=Verificação se um pedido com uma determinada Chave \acrshort{api} pode ser efetuado]
 function isLoggedInKey(req, res, next)
     key = getJWTfromHeaderOrQueryString('apikey')
@@ -12,58 +13,64 @@ function isLoggedInKey(req, res, next)
     if key then
         keyBD = getKeyFromMongoDB(key)
         if keyBD then
-            res = jwt.verify(key, secretForAPIkey)
+            res = jwt.verify(key, { algorithms: ["RS256"] }, secretForAPIkey)
             if res != expired then
                 if keyBD.active == True then
                     return next()
                 else
-                    return err
+                    #HTTP status 403
+                    return "API Key disabled"
             else
-                return err
+                #HTTP status 401
+                return "Unauthorized"
         else
-            return err
+            #HTTP status 401
+            return "Unauthorized"
     else
         return isLoggedInUser(req, res, next)
 \end{lstlisting}
 É importante destacar a chamada da função \texttt{isLoggedInUser} que é executada no caso de não ser detetado uma Chave \acrshort{api} no pedido (na \textit{header} \textit{Authorization} ou na \textit{query string} \texttt{apikey}) e como tal, com essa chamada, tenta-se perceber se afinal foi passado um \textit{token} de um utilizador já que todos os utilizadores conseguem aceder às rotas que as Chaves \acrshort{api} conseguem como já referido.
 
-No seguimento, para validar se um determinado \textit{token} de um utilizador registado pode aceder a uma determinada rota é executada a seguinte função em \textit{middleware}:
+No seguimento, para validar se um determinado \textit{token} de um utilizador pode aceder a uma determinada rota é executado o \textit{middleware} \texttt{isLoggedInUser}:
 \begin{lstlisting}[language=pseudocode, caption=Verificação se um pedido com um determinado \textit{token} de um utilizador registado pode ser efetuado]
 JWTstrategy = passport-jwt.Strategy
 
 passport.use("jwt", new JWTstrategy(
     secretOrKey: secret,
-    algorithms: ["HS256"],
+    algorithms: ["RS256"],
     jwtFromRequest: getJWTfromHeaderOrQueryString('token')
 , (token, done) => done(null, token)))
 
 function isLoggedInUser(req, res, next)
     passport.authenticate("jwt", { session: false }, function (err, user, info)
         if err then
-            return err
+            #HTTP status 401
+            return "Unauthorized"
         if !user then
-            return err
+            #HTTP status 401
+            return "Unauthorized"
         req.logIn(user, function(err)
             if err then
-                return err
+                #HTTP status 401
+                return "Unauthorized"
 
             next()
         )
     )(req, res, next)
 \end{lstlisting}
 
-Os \textit{tokens} tanto das Chaves \acrshort{api} como de \textit{tokens} de utilizadores registados são obtidos através da utilização de extratores presentes na estratégia \texttt{passport-jwt} do \texttt{passport}. Assim para extrair o \textit{token} da \textit{query string} basta:
+Os \textit{tokens} tanto das Chaves \acrshort{api} como de \textit{tokens} de utilizadores são obtidos através da utilização de extratores presentes na estratégia \texttt{passport-jwt} do \texttt{passport}. Assim para extrair o \textit{token} da \textit{query string} basta:
 \begin{lstlisting}[language=javascript, caption=Extração do \textit{token} da \textit{query string}]
 var ExtractJWT = require("passport-jwt").ExtractJwt
 token = ExtractJWT.fromUrlQueryParameter("<nome do campo, 'token' ou 'apikey' no caso da CLAV>")
 \end{lstlisting}
 Já para extrair o \textit{token} da \textit{header} \textit{Authorization} basta:
-\begin{lstlisting}[language=javascript, caption=Extração do \textit{token} da \textit{heaer} \textit{Authorization}]
+\begin{lstlisting}[language=javascript, caption=Extração do \textit{token} da \textit{header} \textit{Authorization}]
 var ExtractJWT = require("passport-jwt").ExtractJwt
 token = ExtractJWT.fromAuthHeaderWithScheme("<palavra antes do token, 'Bearer' no caso dum bearer token, 'token' ou 'apikey' no caso da CLAV>")
 \end{lstlisting}
 
-Para verificar se o utilizador registado tem um nível suficiente para aceder a uma rota, depois de se verificar que o utilizador está autenticado (\texttt{isLoggedInUser}), deve-se executar também em \textit{middleware} a seguinte função:
+Para verificar se o utilizador registado tem um nível suficiente para aceder a uma rota, depois de se verificar que o utilizador está autenticado (\texttt{isLoggedInUser}), deve-se executar o \textit{middleware} \texttt{checkLevel}:
 \begin{lstlisting}[language=pseudocode, caption=Verificação se um utilizador registado tem permissões suficientes para aceder a uma determinada rota]
 function checkLevel(clearance)
     return function(req, res, next)
@@ -79,22 +86,47 @@ function checkLevel(clearance)
         if havePermissions then
             return next()
         else
-            return err
+            #HTTP status 403
+            return "Without enough permissions"
 \end{lstlisting}
 Ou seja, a variável \texttt{clearance} poderá ser uma lista de números ou apenas um número. No primeiro caso verifica-se que o nível do utilizador está presente na lista, em caso afirmativo então o utilizador tem permissões para aceder. Já no segundo caso, o utilizador só terá permissões para aceder se o seu nível foi igual ou superior ao \texttt{clearance}.
 
-Com estas três funções (\texttt{isLoggedInKey}, \texttt{isLoggedInUser} e \texttt{checkLevel}) é possível proceder à proteção da \acrshort{api} da \acrshort{clav} garantindo que utilizadores com diferentes níveis de acesso apenas conseguem aceder ao que lhes é permitido.
+Com estas três \textit{middlewares} é possível proceder à proteção da \acrshort{api} da \acrshort{clav} garantindo que utilizadores com diferentes níveis de acesso apenas conseguem aceder ao que lhes é permitido.
 
-%TODO
-TODO: completar
+\subsection{Interface da \acrshort{clav}}
+
+A interface tem vários objetivos, um deles é a disponilibilização de várias informações de forma pública. Com a proteção da \acrshort{api} de dados, é obrigatório em quase todas as rotas o uso de uma Chave \acrshort{api} ou de um \textit{token} de utilizador o que impossibilita a disponibilização de dados de forma pública. Para contornar este obstáculo, criou-se uma Chave \acrshort{api} específica para a interface para esta puder realizar pedidos à \acrshort{api}. O único problema agora é, como a interface de cada cliente irá obter a Chave \acrshort{api}?
+
+A solução passa pela criação de uma rota específica na \acrshort{api} de dados (GET \path{/chaves/clavToken}) que caso o \texttt{Origin} do pedido seja uma das interfaces da \acrshort{clav} devolve a Chave \acrshort{api} da \acrshort{clav}. Esta rota internamente, cria a Chave \acrshort{api} caso não exista, renova-a se já tiver expirado e por fim devolve-a. Assim apenas permite-se a obtenção desta Chave \acrshort{api} pelas interfaces (através do cabeçalho \texttt{Origin}) e permite-se disponibilizar na interface de forma aberta várias informações obtidas a partir da \acrshort{api}. A Chave \acrshort{api} na interface é armazenada em \textit{localStorage}. Há uma variável, \texttt{interfaceHosts}, na \acrshort{api} de dados para definir os domínios válidos das interfaces.
+
+Para além da proteção na \acrshort{api} de dados é necessário a proteção na interface com o objetivo de impedir o acesso indevido de utilizadores a certas páginas da interface, naquelas em que não lhe são destinadas por alguma razão bem como aquelas em que um dos pedidos à \acrshort{api} de dados irá falhar por falta de permissões. Para tal, como a interface é criada em \textit{Vue.js} podemos associar a cada rota da interface (página) um meta valor \texttt{levels} com os níveis de quem pode aceder. Estes níveis vão de 0 a 7 e o 0 indica que qualquer pessoa pode aceder (sem proteção ou Chaves \acrshort{api}) e de 1 a 7 são os níveis de utilizadores iguais aos presentes na proteção da \acrshort{api} de dados. Com este meta valor, sempre que a rota da interface muda é verificado se o utilizador pode aceder à rota, ou seja, se tem autenticação (caso necessário) e/ou autorização (caso necessário). Caso não tenha autorização o utilizador é redirecionado para a página inicial da interface e é devolvida uma mensagem de falta de permissões, mantendo o utilizador autenticado. Já no caso de falta de autenticação o utilizador é redirecionado para a página de autenticação e devolve uma mensagem de falta de autenticação tendo como possíveis razões não estar autenticado ou o \textit{token} ter expirado. Convém acrescentar que o \textit{token}, o nome e a entidade do utilizador são armazenados em \textit{localStorage}.
+
+Ainda na interface foram feitas algumas melhorias de segurança e performance na realização dos pedidos à \acrshort{api} de dados. Por forma a evitar com antecedência pedidos que já se sabe que irão falhar por falta de autenticação o que se faz é verificar o \textit{token} antes de efetuar qualquer pedido à \acrshort{api} de dados. Isto é possível porque para gerar os \textit{tokens} são usados pares de chaves pública/privadas. Assim, para realizar esta verificação a interface apenas necessita de ter as chaves públicas. Em termos técnicos foi criado um \textit{plugin} \textit{Vue.js} que acrescenta o método \texttt{request} à \textit{framework} que deve ser usado para efetuar os pedidos à \acrshort{api} de dados, sendo que este método trata de tudo o que é necessário para realizar os pedidos, desde obter o \textit{token} do \textit{localStorage}, colocar o \textit{token} de forma apropriada no pedido a efetuar, bem como trata da verificação do \textit{token} antes de efetuar o pedido. No caso do \textit{token} de um utilizador expirar este é redirecionado para a página de autenticação enquanto que no caso da Chave \acrshort{api} da interface expirar pede de novo a Chave \acrshort{api} à \acrshort{api} pela rota anteriomente referida (GET \path{/chaves/clavToken}). Depois do pedido ser realizado, este método também faz \textit{parse} de parte dos erros, ou seja, quando a resposta do pedido tem \acrshort{http} \textit{status} 401 ou 403 este método redireciona o utilizador e devolve uma mensagem de erro de acordo com o \acrshort{http} \textit{status}. Portanto quando é 401 e o utilizador estava autenticado o utilizador é redirecionado para a página de autenticação com uma mensagem de falta de autenticação. Se for uma Chave \acrshort{api} é redirecionado para a página inicial com uma mensagem de erro para tentar de novo. Já quando é 403, este caso apenas acontece com utilizadores autenticados, o utilizador é redirecionado para a página inicial com uma mensagem de erro de falta de permissões, mantendo o utilizador autenticado. No caso de o \acrshort{http} \textit{status} não ser um destes o erro é devolvido à função que chamou este método. Assim quem desenvolve a interface não precisa de se preocupar com estas situações nem de acrescentar sempre manualmente o \textit{token} ao pedido. Necessitam apenas de enviar os dados referentes ao pedido a efetuar (verbo, caminho, \textit{body}, \textit{query string}, etc) pelo que diminui a ocorrência de erros e facilita a manutenção do código.
+
+Por fim, uma pequena nota, um utilizador estar ou não autenticado na interface depende apenas se o \textit{token} do utilizador ainda se encontra ou não em \textit{localStorage}. Em casos de \acrshort{http} \textit{status} 401 este \textit{token} é eliminado de \textit{localStorage} necessitando o utilizador de voltar a se autenticar para voltar a obter um \textit{token} e colocá-lo em \textit{localStorage}.
 
 \section{Autenticação através de \acrshort{cmd}}
 %TODO
 TODO
 
 \section{Documentação da \acrshort{api} da \acrshort{clav}}
-%TODO
-TODO: Apresentar imagens do swagger UI
+
+A documentação da \acrshort{api} de dados da \acrshort{clav} já se encontra disponível em \url{https://clav-api.dglab.gov.pt/v2/docs}, possuindo uma descrição inicial de como os utilizadores podem obter \textit{tokens} e usar a \acrshort{api} de dados a partir do \textit{Swagger UI}. Esta documentação em cada rota possui uma descrição, \textit{query strings} que podem ser definidas, exemplos de \textit{bodies} quando aplicável, possíveis respostas bem como exemplos de respostas. Além disso, tanto os \textit{bodies} e as respostas quando possuem exemplos possuem também o esquema desse \textit{body}/resposta.
+
+Para experimentar uma rota, é então apenas necessário selecionar uma rota, carregar em \textit{Try it out}, inserir os valores que pretende e carregar em \textit{Execute}. Isto claro sem a autenticação. Com autenticação, após obter o \textit{token} para o usar deve carregar no cadeado aberto, selecionar a forma de colocar o \textit{token} no pedido que pretende: 
+\begin{itemize}
+    \item para Chaves \acrshort{api}:
+    \begin{itemize}
+        \item Na \textit{query string}: \texttt{apiKeyQuery}
+        \item No cabeçalho \texttt{Authorization}: \texttt{apiKeyAuth}
+    \end{itemize}
+    \item para Utilizadores:
+    \begin{itemize}
+        \item Na \textit{query string}: \texttt{userQuery}
+        \item No cabeçalho \texttt{Authorization}: \texttt{userAuth}
+    \end{itemize}
+\end{itemize}
+inserir o \textit{token} corretamente (atenção que os casos em que é inserido no cabeçalho \texttt{Authorization} são especiais), carregar em \textit{Authorize} e depois já poderá aceder às rotas. Ao efetuar este passo uma vez, o \textit{Swagger UI} usa o mesmo \textit{token} nas restantes rotas que possui a mesma forma de autenticação não necessitando deste passo nessas (aquelas em que o cadeado se encontra fechado).
 
 \section{Exportação de dados}
 Um dos requisitos da \acrshort{api} da \acrshort{clav} é permitir a exportação de Classes, Entidades, Tipologias e Legislações em formato \acrshort{json}, \acrshort{xml} e \acrshort{csv}. Deve também permitir exportar toda a ontologia do projeto nos formatos \acrshort{turtle}, \acrshort{json-ld} e \acrshort{rdf}/\acrshort{xml}.
@@ -102,17 +134,69 @@ Um dos requisitos da \acrshort{api} da \acrshort{clav} é permitir a exportaçã
 Para a primeira parte foi necessário desenvolver dois conversores, de \acrshort{json} para \acrshort{xml} e de \acrshort{json} para \acrshort{csv} visto que o \acrshort{json} já é por predefinição devolvido.
 
 \subsection{\acrshort{xml}}
-O conversor de \acrshort{json} para \acrshort{xml} criado é representado pelo algoritmo presente no anexo~\ref{exem:convXML}.
+O conversor de \acrshort{json} para \acrshort{xml} criado funciona para qualquer estrutura em \acrshort{json}.
 
-Apresenta-se no anexo~\ref{conv:jsonTOxml} uma conversão exemplo.
+Se por exemplo tivermos o seguinte \acrshort{json} a converter:
+\begin{lstlisting}[language=json, caption=\acrshort{json} exemplo a converter, label=exem:json]
+{
+    "nivel": 2,
+    "codigo": "100.10",
+    "titulo": "Elaboração de diplomas jurídico-normativos",
+    "notasAp": [
+        {
+            "idNota": "http://jcr.di.uminho.pt/m51-clav#na_c100.10_MRIKl-RBu_2sz5u9FzPqH",
+            "nota": "Qualquer despacho com diretrizes gerais e abstratas"
+        }
+    ],
+    "subdivisao4Nivel01Sintetiza02": true,
+    "pca": {
+        "valores": "",
+        "notas": "",
+        "justificacao": []
+    },
+    "df": {
+        "valor": "NE",
+        "nota": null,
+        "justificacao": []
+    }
+}
+\end{lstlisting}
+
+O resultado com este conversor será:
+\begin{lstlisting}[language=xml, caption=\acrshort{xml} resultante da conversão do \acrshort{json} presente em~\ref{exem:json}]
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <nivel type="number">2</nivel>
+    <codigo type="string">100.10</codigo>
+    <titulo type="string">Elaboração de diplomas jurídico-normativos</titulo>
+    <notasAp type="array">
+        <item index="0" type="object">
+            <idNota type="string">http://jcr.di.uminho.pt/m51-clav#na_c100.10_MRIKl-RBu_2sz5u9FzPqH</idNota>
+            <nota type="string">Qualquer despacho com diretrizes gerais e abstratas</nota>
+        </item>
+    </notasAp>
+    <subdivisao4Nivel01Sintetiza02 type="boolean">true</subdivisao4Nivel01Sintetiza02>
+    <pca type="object">
+        <valores type="string"></valores>
+        <notas type="string"></notas>
+        <justificacao type="array">
+        </justificacao>
+    </pca>
+    <df type="object">
+        <valor type="string">NE</valor>
+        <nota type="object">
+        </nota>
+        <justificacao type="array">
+        </justificacao>
+    </df>
+</root>
+\end{lstlisting}
 
 \subsection{\acrshort{csv}}
 
 Da mesma forma que o \acrshort{xml}, o \acrshort{csv} é convertido sem recurso a uma biblioteca que converta já de si o \acrshort{json} para \acrshort{csv} visto que cada objeto \acrshort{json} a exportar necessita de uma exportação personalizada para \acrshort{csv}. Ao contrário do conversor desenvolvido para \acrshort{xml}, o conversor para \acrshort{csv} não converte qualquer objeto para \acrshort{csv} mas apenas um conjunto restrito de objetos \acrshort{json}.
 
-O algoritmo de conversão de \acrshort{json} para \acrshort{csv} desenvolvido pode ser visualizado no anexo~\ref{exem:convCSV}.
-
-O conjunto de objetos permitidos é lista de classes, de entidades, de tipologias e de legislações e objeto de classe, de entidade, de tipologia e de legislação.
+O conjunto de objetos permitidos é lista de classes, de entidades, de tipologias e de legislações, objeto de classe, de entidade, de tipologia e de legislação e mais algumas estruturas especiais de classes.
 
 Quanto à conversão em si, possui uma estrutura interna durante a conversão. Esta estrutura é uma lista de listas, em que cada lista representa uma linha do \acrshort{csv}. Cada elemento de uma das listas representará uma célula do \acrshort{csv}. A primeira lista será a primeira linha do \acrshort{csv} e como tal possuirá os títulos. As restantes listas serão as linhas seguintes do \acrshort{csv} em que cada elemento possuirá os valores já transformados em \textit{strings} dos campos dos objetos.
 
@@ -131,24 +215,31 @@ No caso da conversão de um objeto e consoante a transformação (ou seja, o tí
 
 No caso da conversão de uma lista de objetos, para cada objeto será feita a conversão já apresentada para um objeto, onde depois é ignorada a linha dos títulos em todos os objetos exceto no primeiro objeto da lista onde é mantido os títulos gerados. Ou seja, na primeira linha estará presente os títulos e nas seguintes linhas, em cada linha estará presente os valores de um objeto.
 
-O último passo seja para uma lista ou para um único objeto é transformar a estrutura interna no \acrshort{csv}. Este papel é desempenhado pela função \texttt{joinLines} em que os elementos de cada lista da lista são juntos de acordo com um separador (neste caso é usado o ponto e vírgula, ``\texttt{;}'') tornando a lista de listas numa lista de \textit{strings}. Por fim, as \textit{strings} desta lista são juntas através da inserção de novas linhas (``\texttt{\textbackslash{}n}'') entre cada \textit{string} gerando o \acrshort{csv} final.
+O último passo seja para uma lista ou para um único objeto é transformar a estrutura interna no \acrshort{csv}. Para tal, os elementos de cada lista da lista são juntos de acordo com um separador (neste caso é usado o ponto e vírgula, ``\texttt{;}'') tornando a lista de listas numa lista de \textit{strings}. Por fim, as \textit{strings} desta lista são juntas através da inserção de novas linhas (``\texttt{\textbackslash{}n}'') entre cada \textit{string} gerando o \acrshort{csv} final.
 
-No anexo~\ref{conv:jsonTOcsv} apresenta-se um exemplo de uma conversão, onde o ficheiro \acrshort{json} a converter é o mesmo usado para exemplificar a conversão de \acrshort{xml} presente em~\ref{exem:json}.
+De seguida apresenta-se um exemplo de uma conversão, onde o ficheiro \acrshort{json} a converter é o mesmo usado para exemplificar a conversão de \acrshort{xml} presente em~\ref{exem:json}.
 
-\subsection{Exportação da Ontologia}
-
-%TODO: o que colocar?
-TODO
+\begin{lstlisting}[language=pseudocode, caption=\acrshort{csv} resultante da conversão do \acrshort{json} presente em~\ref{exem:json}]
+"Código";"Título";"Notas de aplicação";"Prazo de conservação administrativa";"Nota ao PCA";"Forma de contagem do PCA";"Sub Forma de contagem do PCA";"Critério PCA";"ProcRefs/LegRefs PCA";"Destino final";"Notas ao DF";"Critério DF";"ProcRefs/LegRefs DF"
+"100.10";"Elaboração de diplomas jurídico-normativos";"Qualquer despacho com diretrizes gerais e abstratas";"";"";"";"";"";"";"NE";"";"";""
+\end{lstlisting}
 
 \subsection{Exportação na \acrshort{api} de dados}
 
-%TODO: explicar como foi colocado esta parte na API, como middleware
-TODO
+As conversões de \acrshort{json} para \acrshort{xml} ou \acrshort{csv} são realizadas por um \textit{middleware} após a obtenção dos dados em \acrshort{json}. Ou seja, como já referido apenas após se obter os dados pretendidos é que é feita a conversão para o formato de saída pretendido permitindo assim uma maior facilidade de desenvolvimento.
 
 \subsection{Interface de Exportação}
 
-%TODO: apresentar e falar da interface de exportação
-TODO: apresentar e falar da interface de exportação
+Para facilitar a exportação dos dados foi criada uma página de exportação na interface da \acrshort{clav}. Esta página permite definir todos os parâmetros tal como através da \acrshort{api} de dados e, adicionalmente, o \textit{enconding} de saída dos ficheiros. Assim esta interface permite exportar Classes, Entidades, Tipologias, Legislações e a Ontologia.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.9\textwidth]{img/paginaExportacao.png}
+    \end{center}
+    \caption{Interface de exportação}
+\end{figure}
+
+Esta página de exportação está acessível em \url{https://clav.dglab.gov.pt/exportar}.
 
 \section{Migração de \acrshort{http} para \acrshort{https}}
 
@@ -158,7 +249,7 @@ A \textit{script} que corre antes de iniciar o \textit{Nginx} instala o \texttt{
 
 Já a \textit{script} que corre após o inicio do \textit{Nginx} realiza o \textit{download} do \texttt{acme.sh}, instala-o, obtém o primeiro certificado para o(s) domínio(s) com o \texttt{acme.sh}, instala o certificado com o \texttt{acme.sh}, gera \acrshort{dh} \textit{parameters} mais fortes e, por fim, reunicia o \textit{Nginx} para que o novo certificado e \acrshort{dh} \textit{parameters} tenham efeito, ou seja, sejam usados pelo \textit{Nginx}.
 
-Quanto à configuração do \textit{Nginx} entre a da \acrshort{api} de dados e a da interface à poucas diferenças. Estas consistem em que na configuração \textit{Nginx} na \acrshort{api} de dados é encaminhado os pedidos para o servidor em \textit{Node.js} enquanto que na configuração \textit{Nginx} da interface há duas variantes:
+Quanto à configuração do \textit{Nginx} entre a da \acrshort{api} de dados e a da interface há poucas diferenças. Estas diferenças são que na configuração \textit{Nginx} na \acrshort{api} de dados é encaminhado os pedidos para o servidor em \textit{Node.js} enquanto que na configuração \textit{Nginx} da interface há duas variantes onde só uma é usada:
 \begin{itemize}
     \item Apenas serve os ficheiros estáticos da interface
     \item Serve os ficheiros estáticos da interface e reencaminha os pedidos para a \acrshort{api} de dados, aqueles em que o caminho começa em \texttt{/<versão\_api>/} ou é igual a \texttt{/clav.yaml}.
@@ -167,9 +258,9 @@ Quanto à configuração do \textit{Nginx} entre a da \acrshort{api} de dados e 
 Quanto às configurações comuns estas serão apresentadas de seguida, explicando para que servem.
 
 Para cumprir o requisito de redirecionamento dos pedidos de \acrshort{http} para \acrshort{https} é colocado o seguinte bloco de código na configuração:
-\begin{lstlisting}
+\begin{lstlisting}[caption=Redirecionamento de \acrshort{http} para \acrshort{https} e validação do domínio na configuração \textit{Nginx}]
   server {
-    listen $HTTP_PORT;
+    listen <Porta HTTP>;
     server_name localhost;
 
     location /.well-known/acme-challenge/ {
@@ -181,11 +272,60 @@ Para cumprir o requisito de redirecionamento dos pedidos de \acrshort{http} para
     }
   }
 \end{lstlisting}
-Além disso,
+Além disso, permite a validação do controlo do domínio por parte do \textit{Let's Encrypt} visto que este pequeno excerto permite que o \textit{Nginx} receba pedidos em \path{/.well-known/acme-challenge/}, caminho este onde é colocado a resposta de um desafio do \textit{Let's Encrypt}.
 
-%TODO
-TODO
-%explicar config do nginx
+Fica assim definido o que se faz quando se recebe um pedido \acrshort{http}. Para os pedidos \acrshort{https} é criado também um bloco \texttt{server} onde é ativado o \acrshort{http}2 e é indicado os ficheiros com o certificado:
+\begin{lstlisting}[caption=Certificado na configuração \textit{Nginx}]
+  server {
+    listen <Porta HTTPS> ssl http2;
+    server_name localhost;
+
+    ssl_certificate $CERTS/fullchain.pem;
+    ssl_certificate_key $CERTS/key.pem;
+    ...
+  }
+\end{lstlisting}
+Depois são adicionadas várias configurações recomendadas~\cite{helmet,letEnA+,dhparams,secExpress,strongSSL,helmetCSP,csp,hsts,hsts2}:
+\begin{lstlisting}[caption=Recomendações de segurança na configuração \textit{Nginx}]
+  server {
+    ...
+
+    #Protocolos SSL permitidos
+    ssl_protocols TLSv1.2 TLSv1.3;
+
+    #Ciphers SSL permitidos a usar por ordem de preferência
+    ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:ECDHE-RSA-AES128-GCM-SHA256:AES256+EECDH:DHE-RSA-AES128-GCM-SHA256:AES256+EDH:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4";
+
+    #DH parameters mais forte
+    ssl_dhparam $CERTS/dhparam.pem;
+    #Especifica a curva a usar para os ciphers ECDHE
+    ssl_ecdh_curve secp384r1;
+
+    #Ativa stapling
+    ssl_stapling on;
+    ssl_stapling_verify on;
+
+    #Melhora tolerância quando o endereço de um dominio muda
+    resolver 8.8.8.8 8.8.4.4 valid=300s;
+    resolver_timeout 5s;
+
+    #Adição de cabeçalhos que melhoram a segurança
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload";
+    add_header X-DNS-Prefetch-Control off;
+    add_header X-Frame-Options SAMEORIGIN;
+    add_header X-Download-Options noopen;
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
+    add_header Content-Security-Policy <Cabeçalho CSP>;
+  }
+\end{lstlisting}
+O valor do cabeçalho \texttt{Content-Security-Policy} varia de acordo se for para a \acrshort{api} de dados ou para a interface. A adição dos cabeçalhos na \acrshort{api} de dados é feita pelo \texttt{helmet} (Ver~\cite{helmet}) no servidor \textit{Node.js} em vez de ser no \textit{Nginx} mas o resultado final é igual ao uso desta configuração.
+
+Por fim, na configuração do \textit{Nginx} é também adicionado fora dos \texttt{servers} a diretiva 
+\begin{verbatim}
+ssl_prefer_server_ciphers on;
+\end{verbatim}
+com o objetivo de indicar a prefêrencia de uso dos \textit{ciphers} \acrshort{ssl} do servidor definida na configuração (diretiva \texttt{ssl\_ciphers}) em vez dos \textit{ciphers} do cliente. Ficam assim cumpridas todas as recomendações de segurança e os requisitos apresentados em~\ref{sec:sol_httpsReq}, sendo usado para o \textit{deployment} o \textit{docker} e o \textit{docker-compose}. O \textit{deployment} é explicado mais à frente na secção~\ref{sec:deployNoKong}.
 
 \section{\acrshort{api} Gateway}
 
@@ -375,7 +515,7 @@ plugins:
           host: $REDIS_HOST
       tos_accepted: true
 \end{lstlisting}
-Para manter a configuração e os certificados do \textit{plugin} após reunícios do \textit{Kong} usa-se o \textit{Redis} para guardar a configuração bem como os certificados. Convém referir que este \textit{plugin} tem de ser global na configuração declarativa e não associado a um único serviço. Além disso, para permitir a geração dos certificados pelo \textit{Let's Encrypt} é necessário permitir o acesso à rota que começa em \texttt{/.well-known/acme-challenge}. Assim foi adicionado o seguinte serviço à configuração declarativa:
+Para manter a configuração e os certificados do \textit{plugin} após reunícios do \textit{Kong} usa-se o \textit{Redis} para guardar a configuração bem como os certificados. Convém referir que este \textit{plugin} tem de ser global na configuração declarativa e não associado a um único serviço. Além disso, para permitir a geração dos certificados pelo \textit{Let's Encrypt} é necessário permitir o acesso à rota que começa em \texttt{/.well-known/acme-challenge} para permitir a validação do controlo do domínio. Assim foi adicionado o seguinte serviço à configuração declarativa:
 \begin{lstlisting}[language=yaml, caption=Configuração declarativa do \textit{Kong}: Serviço para a geração de certificados \acrshort{tls}]
 services:
   - name: acme-dummy
@@ -425,7 +565,7 @@ nginx_http_ssl_protocols = TLSv1.2 TLSv1.3
 #Indicar que se deve preferir os ciphers do servidor em vez do cliente
 nginx_http_ssl_prefer_server_ciphers = on
 
-#Uso de DH params mais forte (com 2048 bits)
+#DH parameters mais forte
 nginx_http_ssl_dhparam = /etc/ssl/certs/dhparam.pem
 
 #Especifica a curva a usar para os ciphers ECDHE
@@ -448,11 +588,13 @@ nginx_upstream_keepalive_timeout = 65
 
 Uma pequena nota. As variáveis ambiente (\verb|${var}| ou \verb|$var|) serão substituidas antes de serem usadas pelo \textit{Kong} ao aplicar o comando \texttt{envsubst} ao ficheiro da configuração declarativa.
 
+Convém também referir que, esta versão da \acrshort{api} de dados com \textit{Kong} respeita todos os requisitos enunciados na migração de \acrshort{http} para \acrshort{https} (~\ref{sec:sol_httpsReq}) com o objetivo primordial de melhorar a segurança. Para o \textit{deployment} foi também usado o \textit{docker} e o \textit{docker-compose} e é descrito na secção~\ref{sec:deployKong}
+
 \subsection{Arquitetura}
 Na imagem~\ref{fig:apiGatewayArch} apresentou-se uma visão inicial da arquitetura. Apresenta-se de seguida a arquitetura final com \textit{Kong}: 
 \begin{figure}[H]
     \begin{center}
-        \includegraphics[width=1\textwidth]{img/apiGatewayArchFinal.png}
+        \includegraphics[width=0.9\textwidth]{img/apiGatewayArchFinal.png}
     \end{center}
     \caption{Arquitetura desenvolvida com \textit{\acrshort{api} Gateway}}\label{fig:apiGatewayArchFinal}
 \end{figure}
