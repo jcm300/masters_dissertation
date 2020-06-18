@@ -1,5 +1,4 @@
-%TODO
-TODO
+Neste capítulo são aprofundadas algumas das soluções anteriormente apresentadas de uma vertente da implementação. Além disso, noutros casos é apresentado o estado final da solução desenvolvida. O objetivo deste capítulo é dar uma melhor perceção do que foi implementado e do seu estado de implementação.
 
 \section{Proteção da \acrshort{api} de dados}
 
@@ -95,19 +94,69 @@ Com estas três \textit{middlewares} é possível proceder à proteção da \acr
 
 \subsection{Interface da \acrshort{clav}}
 
-A interface tem vários objetivos, um deles é a disponilibilização de várias informações de forma pública. Com a proteção da \acrshort{api} de dados, é obrigatório em quase todas as rotas o uso de uma Chave \acrshort{api} ou de um \textit{token} de utilizador o que impossibilita a disponibilização de dados de forma pública. Para contornar este obstáculo, criou-se uma Chave \acrshort{api} específica para a interface para esta puder realizar pedidos à \acrshort{api}. O único problema agora é, como a interface de cada cliente irá obter a Chave \acrshort{api}?
+A interface tem vários objetivos, um deles é a disponibilização de várias informações de forma pública. Com a proteção da \acrshort{api} de dados, é obrigatório em quase todas as rotas o uso de uma Chave \acrshort{api} ou de um \textit{token} de utilizador o que impossibilita a disponibilização de dados de forma pública. Para contornar este obstáculo, criou-se uma Chave \acrshort{api} específica para a interface para esta puder realizar pedidos à \acrshort{api}. O único problema agora é, como a interface de cada cliente irá obter a Chave \acrshort{api}?
 
 A solução passa pela criação de uma rota específica na \acrshort{api} de dados (GET \path{/chaves/clavToken}) que caso o \texttt{Origin} do pedido seja uma das interfaces da \acrshort{clav} devolve a Chave \acrshort{api} da \acrshort{clav}. Esta rota internamente, cria a Chave \acrshort{api} caso não exista, renova-a se já tiver expirado e por fim devolve-a. Assim apenas permite-se a obtenção desta Chave \acrshort{api} pelas interfaces (através do cabeçalho \texttt{Origin}) e permite-se disponibilizar na interface de forma aberta várias informações obtidas a partir da \acrshort{api}. A Chave \acrshort{api} na interface é armazenada em \textit{localStorage}. Há uma variável, \texttt{interfaceHosts}, na \acrshort{api} de dados para definir os domínios válidos das interfaces.
 
 Para além da proteção na \acrshort{api} de dados é necessário a proteção na interface com o objetivo de impedir o acesso indevido de utilizadores a certas páginas da interface, naquelas em que não lhe são destinadas por alguma razão bem como aquelas em que um dos pedidos à \acrshort{api} de dados irá falhar por falta de permissões. Para tal, como a interface é criada em \textit{Vue.js} podemos associar a cada rota da interface (página) um meta valor \texttt{levels} com os níveis de quem pode aceder. Estes níveis vão de 0 a 7 e o 0 indica que qualquer pessoa pode aceder (sem proteção ou Chaves \acrshort{api}) e de 1 a 7 são os níveis de utilizadores iguais aos presentes na proteção da \acrshort{api} de dados. Com este meta valor, sempre que a rota da interface muda é verificado se o utilizador pode aceder à rota, ou seja, se tem autenticação (caso necessário) e/ou autorização (caso necessário). Caso não tenha autorização o utilizador é redirecionado para a página inicial da interface e é devolvida uma mensagem de falta de permissões, mantendo o utilizador autenticado. Já no caso de falta de autenticação o utilizador é redirecionado para a página de autenticação e devolve uma mensagem de falta de autenticação tendo como possíveis razões não estar autenticado ou o \textit{token} ter expirado. Convém acrescentar que o \textit{token}, o nome e a entidade do utilizador são armazenados em \textit{localStorage}.
 
-Ainda na interface foram feitas algumas melhorias de segurança e performance na realização dos pedidos à \acrshort{api} de dados. Por forma a evitar com antecedência pedidos que já se sabe que irão falhar por falta de autenticação o que se faz é verificar o \textit{token} antes de efetuar qualquer pedido à \acrshort{api} de dados. Isto é possível porque para gerar os \textit{tokens} são usados pares de chaves pública/privadas. Assim, para realizar esta verificação a interface apenas necessita de ter as chaves públicas. Em termos técnicos foi criado um \textit{plugin} \textit{Vue.js} que acrescenta o método \texttt{request} à \textit{framework} que deve ser usado para efetuar os pedidos à \acrshort{api} de dados, sendo que este método trata de tudo o que é necessário para realizar os pedidos, desde obter o \textit{token} do \textit{localStorage}, colocar o \textit{token} de forma apropriada no pedido a efetuar, bem como trata da verificação do \textit{token} antes de efetuar o pedido. No caso do \textit{token} de um utilizador expirar este é redirecionado para a página de autenticação enquanto que no caso da Chave \acrshort{api} da interface expirar pede de novo a Chave \acrshort{api} à \acrshort{api} pela rota anteriomente referida (GET \path{/chaves/clavToken}). Depois do pedido ser realizado, este método também faz \textit{parse} de parte dos erros, ou seja, quando a resposta do pedido tem \acrshort{http} \textit{status} 401 ou 403 este método redireciona o utilizador e devolve uma mensagem de erro de acordo com o \acrshort{http} \textit{status}. Portanto quando é 401 e o utilizador estava autenticado o utilizador é redirecionado para a página de autenticação com uma mensagem de falta de autenticação. Se for uma Chave \acrshort{api} é redirecionado para a página inicial com uma mensagem de erro para tentar de novo. Já quando é 403, este caso apenas acontece com utilizadores autenticados, o utilizador é redirecionado para a página inicial com uma mensagem de erro de falta de permissões, mantendo o utilizador autenticado. No caso de o \acrshort{http} \textit{status} não ser um destes o erro é devolvido à função que chamou este método. Assim quem desenvolve a interface não precisa de se preocupar com estas situações nem de acrescentar sempre manualmente o \textit{token} ao pedido. Necessitam apenas de enviar os dados referentes ao pedido a efetuar (verbo, caminho, \textit{body}, \textit{query string}, etc) pelo que diminui a ocorrência de erros e facilita a manutenção do código.
+Ainda na interface foram feitas algumas melhorias de segurança e performance na realização dos pedidos à \acrshort{api} de dados. Por forma a evitar com antecedência pedidos que já se sabe que irão falhar por falta de autenticação o que se faz é verificar o \textit{token} antes de efetuar qualquer pedido à \acrshort{api} de dados. Isto é possível porque para gerar os \textit{tokens} são usados pares de chaves pública/privadas. Assim, para realizar esta verificação a interface apenas necessita de ter as chaves públicas. Em termos técnicos foi criado um \textit{plugin} \textit{Vue.js} que acrescenta o método \texttt{request} à \textit{framework} que deve ser usado para efetuar os pedidos à \acrshort{api} de dados, sendo que este método trata de tudo o que é necessário para realizar os pedidos, desde obter o \textit{token} do \textit{localStorage}, colocar o \textit{token} de forma apropriada no pedido a efetuar, bem como trata da verificação do \textit{token} antes de efetuar o pedido. No caso do \textit{token} de um utilizador expirar este é redirecionado para a página de autenticação enquanto que no caso da Chave \acrshort{api} da interface expirar pede de novo a Chave \acrshort{api} à \acrshort{api} pela rota anteriormente referida (GET \path{/chaves/clavToken}). Depois do pedido ser realizado, este método também faz \textit{parse} de parte dos erros, ou seja, quando a resposta do pedido tem \acrshort{http} \textit{status} 401 ou 403 este método redireciona o utilizador e devolve uma mensagem de erro de acordo com o \acrshort{http} \textit{status}. Portanto quando é 401 e o utilizador estava autenticado o utilizador é redirecionado para a página de autenticação com uma mensagem de falta de autenticação. Se for uma Chave \acrshort{api} é redirecionado para a página inicial com uma mensagem de erro para tentar de novo. Já quando é 403, este caso apenas acontece com utilizadores autenticados, o utilizador é redirecionado para a página inicial com uma mensagem de erro de falta de permissões, mantendo o utilizador autenticado. No caso de o \acrshort{http} \textit{status} não ser um destes o erro é devolvido à função que chamou este método. Assim quem desenvolve a interface não precisa de se preocupar com estas situações nem de acrescentar sempre manualmente o \textit{token} ao pedido. Necessitam apenas de enviar os dados referentes ao pedido a efetuar (verbo, caminho, \textit{body}, \textit{query string}, etc) pelo que diminui a ocorrência de erros e facilita a manutenção do código.
 
 Por fim, uma pequena nota, um utilizador estar ou não autenticado na interface depende apenas se o \textit{token} do utilizador ainda se encontra ou não em \textit{localStorage}. Em casos de \acrshort{http} \textit{status} 401 este \textit{token} é eliminado de \textit{localStorage} necessitando o utilizador de voltar a se autenticar para voltar a obter um \textit{token} e colocá-lo em \textit{localStorage}.
 
 \section{Autenticação através de \acrshort{cmd}}
-%TODO
-TODO
+
+Nesta secção será demonstrado como pode utilizar esta forma de autenticação através da interface da \acrshort{clav}. Para iniciar o processo o utilizador deve aceder a \url{https://clav.dglab.gov.pt/users/autenticacao} e carregar no botão ``Chave Móvel Digital''. Após carregar no botão, o utilizador é redirecionado para o Autenticação.gov onde lhe é apresentada uma página a pedir autorização para a partilha do Nome Completo e do \acrshort{nic} do utilizador com a \acrshort{clav}. O utilizador ao autorizar, aparece-lhe o formulário para a inserção do número de telemóvel e do \acrshort{pin} da \acrshort{cmd}. Após carregar em ``Autenticar'' se os valores estiverem corretos aparecerá o formulário para introduzir o \acrshort{pin} temporário enviado por \acrshort{sms}.
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.32\textwidth}
+    \begin{center}
+        \includegraphics[width=1\linewidth]{img/CMDauto.png}
+    \end{center}
+    \caption{Pedido de autorização para partilha de atributos}
+\end{subfigure}
+\begin{subfigure}{.32\textwidth}
+    \begin{center}
+        \includegraphics[width=1\linewidth]{img/CMDcreds.png}
+    \end{center}
+    \caption{Formulário da \acrshort{cmd}}
+\end{subfigure}
+\begin{subfigure}{.32\textwidth}
+    \begin{center}
+        \includegraphics[width=1\linewidth]{img/CMDcredTemp.png}
+    \end{center}
+    \caption{Formulário do \acrshort{pin} temporário da \acrshort{cmd}}
+\end{subfigure}
+\caption{Autenticação.gov: Processo de autenticação com \acrshort{cmd}}
+\end{figure}
+
+Ao fim de carregar em ``Confirmar'' e caso o \acrshort{pin} temporário esteja correto, o utilizador é redirecionado de volta para a \acrshort{clav} onde aparecerá ao utilizador uma de duas hipóteses:
+\begin{itemize}
+    \item Se o utilizador já se encontra registado na \acrshort{clav} então autentica-se com sucesso:
+    \begin{figure}[H]
+        \begin{center}
+            \includegraphics[width=0.5\textwidth]{img/CMDauthSuc.png}
+        \end{center}
+        \caption{Utilizador autenticado com sucesso através de \acrshort{cmd}}
+    \end{figure}
+    \item Se o utilizador ainda não se encontra registado na \acrshort{clav} então não é autenticado na \acrshort{clav}:
+    \begin{figure}[H]
+        \begin{center}
+            \includegraphics[width=0.5\textwidth]{img/CMDnotReg.png}
+        \end{center}
+        \caption{Mensagem de erro na \acrshort{clav} caso não se encontre registado na \acrshort{clav} mas tenha se autenticado com sucesso no Autenticação.gov}
+    \end{figure}
+\end{itemize}
+
+Por fim, caso o utilizador cancele algum dos passos de autenticação do Autenticação.gov, se engane em alguma credencial ou aconteça algum erro no Autenticação.gov é redirecionado de volta para a \acrshort{clav} onde lhe é apresentado a seguinte mensagem:
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.5\textwidth]{img/CMDerror.png}
+    \end{center}
+    \caption{Mensagem de erro na \acrshort{clav} após falha no Autenticação.gov}
+\end{figure}
 
 \section{Documentação da \acrshort{api} da \acrshort{clav}}
 
@@ -247,7 +296,7 @@ A partir dos requisitos já enunciados em~\ref{sec:sol_httpsReq} foram criadas d
 
 A \textit{script} que corre antes de iniciar o \textit{Nginx} instala o \texttt{openssl}, gera o certificado autoassinado e \acrshort{dh} \textit{parameters} para permitir o \textit{boot} do \textit{Nginx}.
 
-Já a \textit{script} que corre após o inicio do \textit{Nginx} realiza o \textit{download} do \texttt{acme.sh}, instala-o, obtém o primeiro certificado para o(s) domínio(s) com o \texttt{acme.sh}, instala o certificado com o \texttt{acme.sh}, gera \acrshort{dh} \textit{parameters} mais fortes e, por fim, reunicia o \textit{Nginx} para que o novo certificado e \acrshort{dh} \textit{parameters} tenham efeito, ou seja, sejam usados pelo \textit{Nginx}.
+Já a \textit{script} que corre após o inicio do \textit{Nginx} realiza o \textit{download} do \texttt{acme.sh}, instala-o, obtém o primeiro certificado para o(s) domínio(s) com o \texttt{acme.sh}, instala o certificado com o \texttt{acme.sh}, gera \acrshort{dh} \textit{parameters} mais fortes e, por fim, reinicia o \textit{Nginx} para que o novo certificado e \acrshort{dh} \textit{parameters} tenham efeito, ou seja, sejam usados pelo \textit{Nginx}.
 
 Quanto à configuração do \textit{Nginx} entre a da \acrshort{api} de dados e a da interface há poucas diferenças. Estas diferenças são que na configuração \textit{Nginx} na \acrshort{api} de dados é encaminhado os pedidos para o servidor em \textit{Node.js} enquanto que na configuração \textit{Nginx} da interface há duas variantes onde só uma é usada:
 \begin{itemize}
@@ -305,7 +354,7 @@ Depois são adicionadas várias configurações recomendadas~\cite{helmet,letEnA
     ssl_stapling on;
     ssl_stapling_verify on;
 
-    #Melhora tolerância quando o endereço de um dominio muda
+    #Melhora tolerância quando o endereço de um domínio muda
     resolver 8.8.8.8 8.8.4.4 valid=300s;
     resolver_timeout 5s;
 
@@ -325,7 +374,7 @@ Por fim, na configuração do \textit{Nginx} é também adicionado fora dos \tex
 \begin{verbatim}
 ssl_prefer_server_ciphers on;
 \end{verbatim}
-com o objetivo de indicar a prefêrencia de uso dos \textit{ciphers} \acrshort{ssl} do servidor definida na configuração (diretiva \texttt{ssl\_ciphers}) em vez dos \textit{ciphers} do cliente. Ficam assim cumpridas todas as recomendações de segurança e os requisitos apresentados em~\ref{sec:sol_httpsReq}, sendo usado para o \textit{deployment} o \textit{docker} e o \textit{docker-compose}. O \textit{deployment} é explicado mais à frente na secção~\ref{sec:deployNoKong}.
+com o objetivo de indicar a preferência de uso dos \textit{ciphers} \acrshort{ssl} do servidor definida na configuração (diretiva \texttt{ssl\_ciphers}) em vez dos \textit{ciphers} do cliente. Ficam assim cumpridas todas as recomendações de segurança e os requisitos apresentados em~\ref{sec:sol_httpsReq}, sendo usado para o \textit{deployment} o \textit{docker} e o \textit{docker-compose}. O \textit{deployment} é explicado mais à frente na secção~\ref{sec:deployNoKong}.
 
 \section{\acrshort{api} Gateway}
 
@@ -359,9 +408,9 @@ A necessidade de rotas diferentes para utilizadores e Chaves API deve-se ao fact
 Com a existência deste serviço, a \acrshort{api} de dados deixou de estar protegida e em casos que necessita de forma excecional a verificação ou a geração de \textit{tokens} recorre à \acrshort{api} do Serviço de \textit{Auth}. Apesar disso continua a ser essencial que a \acrshort{api} de dados saiba quem realizou o pedido. Essa informação será enviada num cabeçalho pelo \textit{Kong} algo que será explicado na próxima secção.
 
 \subsection{\textit{Plugin} \texttt{external-auth}}
-Como já referido anteriormente não é possível, usando os plugins disponíveis do \textit{Kong}, obter uma proteção semelhante à presente na \acrshort{api} de dados. Para resolver esta situação havia duas hipóteses, criar um plugin que trata da autenticação e da autorização ou criar um plugin que interceta os pedidos, realiza um pedido a um serviço externo para tratar da autenticação e da autorização, e consoante a resposta deixa ou não o pedido ser realizado. A segunda hipótese foi a escolhida visto que implica a criação de um plugin de menores dimensões, que tem de ser desenvolvido em \textit{Lua}, e permite por outro lado aproveitar parte do código de autenticação e autorização presente na \acrshort{api} de dados e usá-lo no serviço externo. Ou seja, é uma abordagem mais rápida e simples para além de que este \textit{plugin} de menores dimensões encontrava-se já em parte desenvolvido\footnote{Ver \url{https://github.com/aunkenlabs/kong-external-auth}} onde foi apenas necessário realizar algumas melhorias como a possibilidade de devolver respostas 403 e 404 entre outras alterações\footnote{Ver \url{https://github.com/jcm300/kong-external-auth}}.
+Como já referido anteriormente não é possível, usando os \textit{plugins} disponíveis do \textit{Kong}, obter uma proteção semelhante à presente na \acrshort{api} de dados. Para resolver esta situação havia duas hipóteses, criar um \textit{plugin} que trata da autenticação e da autorização ou criar um \textit{plugin} que interceta os pedidos, realiza um pedido a um serviço externo para tratar da autenticação e da autorização, e consoante a resposta deixa ou não o pedido ser realizado. A segunda hipótese foi a escolhida visto que implica a criação de um \textit{plugin} de menores dimensões, que tem de ser desenvolvido em \textit{Lua}, e permite por outro lado aproveitar parte do código de autenticação e autorização presente na \acrshort{api} de dados e usá-lo no serviço externo. Ou seja, é uma abordagem mais rápida e simples para além de que este \textit{plugin} de menores dimensões encontrava-se já em parte desenvolvido\footnote{Ver \url{https://github.com/aunkenlabs/kong-external-auth}} onde foi apenas necessário realizar algumas melhorias como a possibilidade de devolver respostas 403 e 404 entre outras alterações\footnote{Ver \url{https://github.com/jcm300/kong-external-auth}}.
 
-De uma forma mais permenorizada, quando um pedido é recebido pelo \textit{Kong}, este pedido poderá passar por vários plugins de acordo com a configuração usada antes e após ser efetuado o pedido à \acrshort{api} de dados. O plugin \texttt{external-auth} se adicionado na configuração é executado antes do pedido ser efetuado à \acrshort{api} de dados. Este plugin obtém do pedido o caminho, verbo, \textit{query string} e cabeçalhos e envia-os no \textit{body} para o serviço externo. Quando o plugin recebe a resposta do serviço externo, consoante o \textit{\acrshort{http} status}:
+De uma forma mais pormenorizada, quando um pedido é recebido pelo \textit{Kong}, este pedido poderá passar por vários \textit{plugins} de acordo com a configuração usada antes e após ser efetuado o pedido à \acrshort{api} de dados. O \textit{plugin} \texttt{external-auth} se adicionado na configuração é executado antes do pedido ser efetuado à \acrshort{api} de dados. Este \textit{plugin} obtém do pedido o caminho, verbo, \textit{query string} e cabeçalhos e envia-os no \textit{body} para o serviço externo. Quando o \textit{plugin} recebe a resposta do serviço externo, consoante o \textit{\acrshort{http} status}:
 \begin{itemize}
     \item 200: Insere no pedido a efetuar à \acrshort{api} de dados o cabeçalho \textit{CLAV-Auth} onde é enviado em formato \textit{string} a resposta do serviço externo
     \item 401: Devolve uma resposta de erro para o utilizador com \textit{\acrshort{http} status} 401
@@ -374,11 +423,11 @@ De uma forma mais permenorizada, quando um pedido é recebido pelo \textit{Kong}
 Portanto quando um pedido possui autenticação e autorização pelo serviço externo, este pedido inclui também um cabeçalho \textit{CLAV-Auth} onde estará presente a informação presente no \textit{token}, seja de um utilizador ou de uma Chave API. Este cabeçalho será interpretado pela \acrshort{api} de dados por forma a esta saber quem realizou o pedido. No caso do cabeçalho não ser enviado, for vazio ou num formato incorreto, a \acrshort{api} de dados irá considerar o pedido foi efetuado por alguém ``Desconhecido''.
 
 \subsection{Configuração \textit{Kong}}
-O \textit{Kong} pode ser configurado através de um ficheiro de configuração \texttt{.conf} onde é definido o modo em que executa, possíveis ligações a bases de dados, configurações do Nginx entre outros. Contudo não é neste ficheiro que se define o comportamento que o \textit{Kong} efetua quando recebe determinado pedido, apesar de se puder alterar algum comportamento através de configurações do Nginx. Para definir o comportamento do \textit{Kong} há três hipóteses. A que foi escolhida, configuração declarativa, permite que o \textit{Kong} execute sem necessitar de uma base de dados para armazenar as configurações visto que as configurações são definidas num ficheiro \acrshort{yaml} ou \acrshort{json} que é carregado para memória. Assim não se sobrecarrega desnecessariamente o servidor que executa o \textit{Kong}.
+O \textit{Kong} pode ser configurado através de um ficheiro de configuração \texttt{.conf} onde é definido o modo em que executa, possíveis ligações a bases de dados, configurações do \textit{Nginx} entre outros. Contudo não é neste ficheiro que se define o comportamento que o \textit{Kong} efetua quando recebe determinado pedido, apesar de se puder alterar algum comportamento através de configurações do \textit{Nginx}. Para definir o comportamento do \textit{Kong} há três hipóteses. A que foi escolhida, configuração declarativa, permite que o \textit{Kong} execute sem necessitar de uma base de dados para armazenar as configurações visto que as configurações são definidas num ficheiro \acrshort{yaml} ou \acrshort{json} que é carregado para memória. Assim não se sobrecarrega desnecessariamente o servidor que executa o \textit{Kong}.
 
 Para usar este configuração declarativa é necessário no ficheiro de configuração \texttt{.conf} colocar a diretiva \texttt{database} com o valor \texttt{off} e a diretiva \texttt{declarative\_config} com o caminho do ficheiro da configuração declarativa.
 
-Na configuração declarativa são usados vários \textit{plugins} a maioria desenvolvidos pelo \textit{Kong} exceto o \textit{external-auth}. Por predefinição os plugins do \textit{Kong} estão disponíveis. Para se puder usar \textit{plugins} externos é necessário indicá-los no ficheiro \textit{.conf} na diretiva \texttt{plugins}. Assim o valor aqui colocado foi \texttt{blunded,external-auth} indicando que se pretende usar os plugins do \textit{Kong} (\texttt{blunded}) e o \textit{external-auth}. Antes de iniciar o \textit{Kong} será depois necessário instalar o \textit{plugin} \textit{external-auth}. No ficheiro \textit{.conf} é também indicado para onde os logs de erro e acesso são enviados sendo os de erro enviados para o \texttt{stderr} e os de acesso para o \texttt{stdout}. Além disso indicasse também em que portas (\acrshort{http} e \acrshort{https}) o \textit{Kong} irá receber os pedidos bem como em que portas está acessível a \acrshort{api} de administrador (como é usada uma configuração declarativa esta \acrshort{api} será apenas de leitura).
+Na configuração declarativa são usados vários \textit{plugins} a maioria desenvolvidos pelo \textit{Kong} exceto o \textit{external-auth}. Por predefinição os \textit{plugins} do \textit{Kong} estão disponíveis. Para se puder usar \textit{plugins} externos é necessário indicá-los no ficheiro \textit{.conf} na diretiva \texttt{plugins}. Assim o valor aqui colocado foi \texttt{blunded,external-auth} indicando que se pretende usar os plugins do \textit{Kong} (\texttt{blunded}) e o \textit{external-auth}. Antes de iniciar o \textit{Kong} será depois necessário instalar o \textit{plugin} \textit{external-auth}. No ficheiro \textit{.conf} é também indicado para onde os logs de erro e acesso são enviados sendo os de erro enviados para o \texttt{stderr} e os de acesso para o \texttt{stdout}. Além disso indicasse também em que portas (\acrshort{http} e \acrshort{https}) o \textit{Kong} irá receber os pedidos bem como em que portas está acessível a \acrshort{api} de administrador (como é usada uma configuração declarativa esta \acrshort{api} será apenas de leitura).
 
 O primeiro passo na configuração declarativa foi adicionar o serviço da \acrshort{api} de dados e associar desde logo o \textit{plugin} necessário para a proteção da \acrshort{api} de dados:
 \begin{lstlisting}[language=yaml, caption=Configuração declarativa do \textit{Kong}: \acrshort{api} de dados]
@@ -395,6 +444,7 @@ services:
           url: ${SERVER_AUTH_HOST}
           path: /auth
 \end{lstlisting}
+
 Com esta configuração inicial o \textit{Kong} reencaminha todos os pedidos que comecem por \texttt{/} para a \acrshort{api} de dados, usando neste serviço o \textit{plugin} \texttt{external-auth} já descrito. Temos assim uma primeira versão funcional com autenticação e autorização da \acrshort{api} de dados.
 
 Contudo a \acrshort{api} de dados necessita de permitir \acrshort{cors} e para tal é adicionado o \textit{plugin} do \textit{Kong} chamado \texttt{cors}\cite{kongCORS}:
@@ -496,6 +546,7 @@ routes:
               ...
               - "Content-Security-Policy: default-src 'self' $DOMAINS; img-src 'self' https://validator.swagger.io data: $DOMAINS; style-src 'self' 'unsafe-inline' $DOMAINS; script-src 'self' 'unsafe-inline' $DOMAINS"
 \end{lstlisting}
+
 A propriedade \texttt{strip\_path} com valor falso impede que o \textit{Kong} associe (parecido com um \textit{bind}) o caminho \texttt{/<Versão API>/docs} do \textit{Kong} ao caminho \texttt{/} da \acrshort{api} de dados. Assim, quando se faz o pedido a esta rota o pedido que é feito na \acrshort{api} de dados é no caminho \texttt{/<Versão API>/docs} desta. 
 
 Por fim, procedeu-se à configuração do \acrshort{https} no \textit{Kong}. Como se usa os certificados do \textit{Let's Encrpyt} pode-se usar o \textit{plugin} \texttt{acme} do \textit{Kong}\cite{kongACME}:
@@ -600,5 +651,7 @@ Na imagem~\ref{fig:apiGatewayArch} apresentou-se uma visão inicial da arquitetu
 \end{figure}
 
 \section{Resumo}
-%TODO
-TODO
+
+Resumindo, foi aprofundado a proteção da \acrshort{api} de dados passando pela proteção da interface e como esta melhora o desempenho da \acrshort{api} de dados e da própria interface. De seguida foi apresentado o processo de autenticação através de \acrlong{cmd} e de que forma pode ser usada a documentação da \acrshort{api} de dados disponível em \url{https://clav-api.dglab.gov.pt/v2/docs}. Passasse de seguida para a exportação de dados na \acrshort{api} dando exemplos das conversões que os conversores realizam. Quanto à migração de \acrshort{http} para \acrshort{https} foi aprofundada a configuração do \textit{Nginx} com várias recomendações de segurança. É por fim, aprofundado o desenvolvimento da proteção \acrshort{api} de dados com \textit{Kong} e a configuração deste.
+
+No próximo capítulo é descrito como se pode realizar a instalação tanto da versão \acrshort{https} sem \textit{Kong} bem como com \textit{Kong}.
