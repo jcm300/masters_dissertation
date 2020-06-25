@@ -120,18 +120,16 @@ A \acrshort{clav} está dividida em duas partes:
 Através da figura~\ref{fig:clav_struct} é possível ver o possível fluxo tanto de um utilizador a aceder à interface como a de um utilizador a aceder diretamente à \acrshort{api} de dados. No primeiro caso, quando um utilizador acede o servidor da interface da \acrshort{clav} é descarregado para o lado do utilizador o ficheiro \acrshort{html} (\textit{index}) e os vários ficheiros \textit{JavaScript}, \acrshort{css} e \textit{assets} (como imagens, \acrshort{pdf}s, etc) quando necessários. O servidor da interface é nada mais que um servidor \textit{web} com recurso ao \textit{Nginx} que hospeda estes ficheiros, os quais representam a interface construída com o \textit{Vue} e o \textit{Vuetify}. Como tal o código apresenta-se todo do lado do utilizador sendo os pedidos à \acrshort{api} realizados do computador do utilizador para o servidor da \acrshort{api} de dados sem a intervenção do servidor da interface. Ou seja, o fluxo de cada um desses pedidos será igual ao fluxo no caso em que se acede diretamente a \acrshort{api} sem uso de qualquer interface.
 
 \begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=0.7\textwidth]{img/clav_struct.png}
-    \end{center}
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/clav_struct.png}
     \caption{Estrutura da \acrshort{clav} incluindo a interação de um utilizador com a mesma}\label{fig:clav_struct}
 \end{figure}
 
 Esta estrutura evoluiu depois para a estrutura presente na figura~\ref{fig:clav_struct2} em que continua a ser possível efetuar pedidos diretamente à \acrshort{api} de dados bem como obter a interface a partir do servidor da interface. Contudo passa a ser possível fazer os pedidos à \acrshort{api} de dados a partir do servidor da interface impedindo problemas de \acrshort{cors} ao efetuar pedidos a partir da interface localmente armazenada no cliente. Assim, o \textit{Nginx} reencaminha os pedidos que são para a \acrshort{api} de dados.
 
 \begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=0.7\textwidth]{img/clav_struct2.png}
-    \end{center}
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/clav_struct2.png}
     \caption{Estrutura evoluída da \acrshort{clav}}\label{fig:clav_struct2}
 \end{figure}
 
@@ -197,9 +195,8 @@ O \textit{Passport} é um \textit{middleware} de autenticação para \textit{Nod
 No caso do \textit{login} através do Autenticação.gov, o utilizador tem de se autenticar na interface do Autenticação.gov (a partir do botão disponível na área de autenticação da interface do \acrshort{clav}). O fluxo do \textit{login} antes da limitação do registo de utilizadores apenas por pessoal autorizado é:
 
 \begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=0.5\textwidth]{img/authgov.png}
-    \end{center}
+    \centering
+    \includegraphics[width=0.5\textwidth]{img/authgov.png}
     \caption{Fluxo do \textit{login} de um utilizador através do Autenticação.gov antes da limitação do registo de utilizadores apenas por pessoal autorizado}\label{fig:authgov}
 \end{figure}
 

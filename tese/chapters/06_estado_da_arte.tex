@@ -90,18 +90,16 @@ De seguida vamos aprofundar cada elemento referido:
 Na figura~\ref{fig:buildJWT} é apresentada a construção de um \acrshort{jwt} em que o atributo \texttt{alg} (algoritmo) tem o seu valor igual a \texttt{none}, ou seja, o \acrshort{jwt} não é assinado nem encriptado.
 
 \begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=1\textwidth]{img/buildJWT.png}
-    \end{center}
+    \centering
+    \includegraphics[width=1\textwidth]{img/buildJWT.png}
     \caption{Criação de um \acrshort{jwt}}\label{fig:buildJWT}
 \end{figure}
 
 Já na figura~\ref{fig:buildJWS} é demonstrada a construção de um \acrshort{jwt} assinado, ou seja, um \acrshort{jws}.
 
 \begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=1\textwidth]{img/buildJWS.png}
-    \end{center}
+    \centering
+    \includegraphics[width=1\textwidth]{img/buildJWS.png}
     \caption{Criação de um \acrshort{jws}}\label{fig:buildJWS}
 \end{figure}
 
@@ -146,9 +144,8 @@ No projeto \acrshort{clav} irá ser implementado a autenticação com recurso ao
 
 De forma a completar a figura~\ref{fig:authgov} apresenta-se de seguida o fluxo de pedidos efetuado entre a \acrshort{clav} e o Autenticação.gov de forma a autenticar um utilizador na \acrshort{clav}:~\cite{agov}
 \begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=1\textwidth]{img/fluxoauthgov.png}
-    \end{center}
+    \centering
+    \includegraphics[width=1\textwidth]{img/fluxoauthgov.png}
     \caption{Fluxo de pedidos entre a \acrshort{clav} e o Autenticação.gov de forma a autenticar um utilizador na \acrshort{clav}.~\cite{agov}}\label{fig:fluxoauthgov}
 \end{figure}
 
@@ -450,7 +447,7 @@ Em termos de alternativas à especificação \textit{OpenAPI} existem duas conco
 Comparemos as três hipóteses:~\cite{specsComp}
 \begin{table}[H]
     \footnotesize
-    \begin{center}
+    \centering
     \begin{tabular}{|r|p{0.385\textwidth}|p{0.385\textwidth}|}
     \hline
     Especificação & Vantagens & Desvantagens \\ \hline
@@ -498,7 +495,6 @@ Comparemos as três hipóteses:~\cite{specsComp}
         \end{itemize}
         \\ \hline
     \end{tabular}
-    \end{center}
     \caption{Comparação entre especificações de documentação de \acrshort{api}s}
 \end{table}
 
@@ -509,9 +505,8 @@ Além das vantagens apresentadas as três são \textit{open-source}. Para além 
 O \textit{Swagger \acrshort{ui}} permite a qualquer um visualizar uma \acrshort{api} \acrshort{rest}. A partir de um documento \acrshort{json} ou \acrshort{yaml} (especificação \textit{OpenAPI}) é automaticamente gerado uma documentação interativa.
 
 \begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=0.7\textwidth]{img/swaggerUI.png}
-    \end{center}
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/swaggerUI.png}
     \caption{\textit{Swagger \acrshort{ui}} exemplo}
 \end{figure}
 
@@ -520,7 +515,7 @@ Existem várias alternativas ao \textit{Swagger \acrshort{ui}}:
 \begin{savenotes}
 \begin{table}[H]
     \footnotesize
-    \begin{center}
+    \centering
     \begin{tabular}{|r|p{0.39\textwidth}|p{0.39\textwidth}|}
     \hline
     Ferramenta & Vantagens & Desvantagens \\ \hline
@@ -599,7 +594,6 @@ Existem várias alternativas ao \textit{Swagger \acrshort{ui}}:
         %\end{itemize}
         \\ \hline
     \end{tabular}
-    \end{center}
     \caption{Comparação entre ferramentas de \acrshort{api}s}
     \label{table:swaggerUI}
 \end{table}
@@ -1135,9 +1129,8 @@ Juntamente com os desafios, o \textit{Let's Encrypt} envia um \textit{nonce} (\t
 Veja-se agora um exemplo concreto em que o cliente \acrshort{acme} usa o segundo desafio para provar que controla o domínio (\texttt{example.com}):
 
 \begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=1\textwidth]{img/domainValidation.png}
-    \end{center}
+    \centering
+    \includegraphics[width=1\textwidth]{img/domainValidation.png}
     \caption{Exemplo de validação do domínio pelo \textit{Let's Encrypt} com sucesso}
 \end{figure}
 
@@ -1241,9 +1234,8 @@ Existem várias \textit{\acrshort{api} Gateway}s das quais se destacam \textit{E
 \end{itemize}
 
 \begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=0.7\textwidth]{img/expressGatArch.png}
-    \end{center}
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/expressGatArch.png}
     \caption{Arquitetura do \textit{Express Gateway}.~\cite{kongArch}}
 \end{figure}
 
@@ -1271,9 +1263,8 @@ Algumas das funcionalidades presentes são:~\cite{kong}
 \end{itemize}
 
 \begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=0.85\textwidth]{img/kongArch.png}
-    \end{center}
+    \centering
+    \includegraphics[width=0.85\textwidth]{img/kongArch.png}
     \caption{Arquitetura do \textit{Kong}.~\cite{kongArch}}
 \end{figure}
 
@@ -1325,9 +1316,8 @@ Em termos de funcionalidades, o \textit{Tyk} possui:~\cite{tyk}
 \end{itemize}
 
 \begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=0.5\textwidth]{img/tykArch.png}
-    \end{center}
+    \centering
+    \includegraphics[width=0.5\textwidth]{img/tykArch.png}
     \caption{Arquitetura do \textit{Tyk}.~\cite{tyk}}
 \end{figure}
 

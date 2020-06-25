@@ -88,9 +88,8 @@ As imagens usadas na instalação podem ser geradas com antecedência, fora da m
     Para criar a imagem \texttt{graphdb} é necessário dois ficheiros adicionais: um ficheiro zip com a distribuição do \textit{GraphDB} e um ficheiro \textit{Turtle} com a ontologia a carregar para o \textit{GraphDB}. A distribuição do \textit{GraphDB} deve ser obtida através do site \textit{GraphDB}\footnote{Versão gratuita: \url{https://www.ontotext.com/products/graphdb/graphdb-free/}} ao preencher o formulário. Após o preenchimento do formulário irá receber um email do \textit{GraphDB} de onde deve realizar o \textit{download} da versão ``stand-alone server''. O ficheiro zip tem um nome parecido com ``graphdb-free-8.11.0-dist.zip'' onde ``free-8.11.0'' indica a versão do \textit{GraphDB} que deve colocar na variável ambiente \texttt{GRAPHDB\_VERSION} do ficheiro .env da pasta \texttt{deploy}. Deve colocar o ficheiro zip na pasta \texttt{graphdb} da pasta \texttt{deploy}. Nesta pasta (\texttt{graphdb}) deve também colocar o ficheiro \textit{Turtle} e indicar na variável ambiente \texttt{GRAPHDB\_DATA\_FILE} o nome deste ficheiro (ex: clav-2020-01-04-false.ttl). Sempre que um destes ficheiros é alterado é necessário criar de novo a imagem.
 
     \begin{figure}[H]
-        \begin{center}
+        \centering
         \includegraphics[width=0.4\textwidth]{img/graphdb_email.png}
-        \end{center}
         \caption{Parte do email recebido pelo GraphDB\label{fig:instalacao-email}}
     \end{figure}
 
@@ -540,7 +539,67 @@ No backup as únicas diferenças em relação à versão sem \textit{Kong} (ver~
 
 Na migração será seguir a primeira instalação desta versão. De resto, os passos serão iguais aos apresentados na versão sem \textit{Kong} (ver~\ref{sec:inst-migracao}) tirando o código para parar e para iniciar os \textit{containers}.
 
+\section{Versão sem \textit{Kong} vs com \textit{Kong}}
+
+Esta secção tem como objetivo realizar uma comparação entre as duas versões com o objetivo de decidir qual delas se adequa mais.
+
+A versão com \textit{Kong} permite um melhor desempenho ou uso do recursos disponíveis desde que corretamente configurada visto possuir \textit{rate limiting} e \textit{cache} dos resultados.
+
+Para comparar a performance foi realizado um teste em que 100 utilizadores fazem dois pedidos, um pedido das classes e quando termina o pedido de uma classe específica. Um utilizador começa os seus pedidos 1 segundo após o anterior. Para realizar este teste foi usado o \textit{Apache JMeter}. Os resultados obtidos foram os seguintes (atenção que a \textit{cache} estava ``quente'' nas duas versões, portanto o pedido das classes deverá ser proveniente da cache):
+
+\begin{table}[H]
+    \footnotesize
+    \centering
+    \begin{tabular}{| c | c | c | c | c | }
+        \hline
+        Versão \acrshort{api} & Pedido & Tempo de Resposta (média em ms) & \% de Erro & \textit{Throughput} (pedidos por) \\ \hline
+        \multirow{3}{*}{sem \textit{Kong}} & Classes & 1650 & 0 & 59.9/min \\ \cline{2-5}
+        & Classe & 465 & 0 & 1.0/s \\ \cline{2-5}
+        & Total & 1057 & 0 & 2.0/s \\ \hline
+        \multirow{3}{*}{com \textit{Kong}} & Classes & 2469 & 0 & 59.6/min \\ \cline{2-5}
+        & Classe & 588 & 0 & 1.0/s \\ \cline{2-5}
+        & Total & 1529 & 0 & 2.0/s \\ \hline
+    \end{tabular}
+    \caption{Resultados de performance para a \acrshort{api} de dados}
+\end{table}
+
+O \textit{throughput} é bastante semelhante entre as duas, contudo o tempo de resposta é menor no caso sem \textit{Kong}, o que faz algum sentido já que a versão com \textit{Kong} (o \textit{Kong} tem embutido o \textit{Nginx}) é mais pesada em termos de componentes em execução.
+
+Em termos de facilidade de instalação, as duas são bastante semelhantes pelo que quem conseguir instalar com uma delas consegue instalar a outra.
+
+Quanto à proteção da \acrshort{api} apesar das várias alterações (componente externo à \acrshort{api} de dados), é semelhante tendo como principal diferença o não uso do \texttt{passport} na versão com \textit{Kong} o que não afeta a forma como é realizada a proteção. De certa forma, o uso do \texttt{passport} na versão sem \textit{Kong} é atualmente desnecessária desde que se coloque em \texttt{req.user} a informação presente no \textit{token} do utilizador. A essência da proteção da \acrshort{api} de dados manteve-se basicamente igual.
+
+\subsection{Configuração do \acrshort{https}}
+
+A plataforma \textit{SSL Labs} possui uma ferramenta \textit{online} que permite-nos auferir a qualidade da configuração do \acrshort{https} num domínio.\footnote{Ver \url{https://www.ssllabs.com/ssltest/}} Para perceber melhor a classificação realizada pelo \textit{SSL Labs} recomenda-se a leitura de \url{https://github.com/ssllabs/research/wiki/SSL-Server-Rating-Guide}.
+
+Nesta secção foi também comparada a configuração do \acrshort{https} da interface:
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{img/sslLabsAPISemKong.png}
+    \caption{Classificação \textit{SSL Labs} da \acrshort{api} sem \textit{Kong}}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{img/sslLabsAPIComKong.png}
+    \caption{Classificação \textit{SSL Labs} da \acrshort{api} com \textit{Kong}}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{img/sslLabsInterface.png}
+    \caption{Classificação \textit{SSL Labs} da Interface}
+\end{figure}
+
+Para testar, cada componente foi executado numa máquina do \textit{Digital Ocean} com \textit{Ubuntu 20.04 x64}, 8 GB de memória \acrshort{ram} e 4 \acrshort{cpu}s. Para traduzir o domínio no \acrshort{ip} da máquina foi usado o \textit{No-IP}\footnote{ver \url{https://www.noip.com/}}.
+
+Como é possível verificar pelas imagens as 3 tem a classificação máxima, A+, bem como a mesma classificação em cada componente específica. A \acrshort{api} sem \textit{Kong} é normal ter a mesma classificação que a interface porque a configuração usada é praticamente a mesma. Quanto ao caso da \acrshort{api} de dados com \textit{Kong} esta apenas funciona em \textit{browsers} que suportam \acrshort{sni} o que são raros já que quase todos suportam atualmente. Além disso a versão com \textit{Kong} não tem ativado o \acrshort{ocsp} \textit{stapling} (uma das recomendações de segurança) enquanto que nos outros casos esta está ativa. Estas duas diferenças da versão com \textit{Kong} devem-se à forma como o \textit{Kong} e o \textit{plugin} do \textit{Kong} \texttt{acme} funcionam.
+
+Por fim, nos 3 casos há um único sinal de aviso, que se deve à falta do \textit{\acrshort{caa} record} (uma das melhorias de segurança referidas) no \acrshort{dns}. Contudo, com os resultados obtidos conseguimos ter alguma certeza de que as configurações realizadas são atualmente seguras.
+
+\subsection{Resumo}
+
+Em conclusão, apesar de a configuração do \acrshort{https} da \acrshort{api} com \textit{Kong} ser ligeiramente pior bem como a performance (tempo de resposta), em termos gerais permite obter uma melhor \acrshort{api}, com melhor desempenho e uma maior modularidade. Permite também futuramente escalar mais facilmente a \acrshort{api} de dados bem como modularizar esta \acrshort{api} em mais componentes.
+
 \section{Resumo}
 
-%TODO
-TODO
+Neste capítulo foi descrito o procedimento de instalação da \acrshort{api} sem \textit{Kong}, da \acrshort{api} com \textit{Kong} e da interface. No fim é feita uma comparação entre as duas versões da \acrshort{api}, concluindo que no nosso caso se adequa mais a versão com \textit{Kong}.

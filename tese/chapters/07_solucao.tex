@@ -40,11 +40,9 @@ Com estas duas formas de enviar o \acrshort{jwt} é possível distinguir os util
 Um dos requisitos é que os \textit{token}s gerados pela \acrshort{api} sejam \acrshort{jwt}s. Contudo poderiam ser outro tipo de \textit{tokens} (por exemplo uma \textit{string} aleatória e única) que o processo de envio dos \textit{tokens} para a \acrshort{api} manter-se-ia igual. Apenas seria alterada a forma de geração e verificação do \textit{token}, ou seja, uma alteração interna invisível para o utilizador.
 
 De seguida é apresentado um diagrama com a estratégia de proteção que será implementada para cumprir os requisitos anteriormente anunciados:
-%imagem
 \begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=0.7\textwidth]{img/protecaoStrag.png}
-    \end{center}
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/protecaoStrag.png}
     \caption{Estratégia de proteção da \acrshort{api} de dados}\label{fig:protStrag}
 \end{figure}
 
@@ -56,9 +54,8 @@ Após descrito como devem ser feitos os pedidos à \acrshort{api} e a estratégi
 
 O fluxo de autenticação de um utilizador na \acrshort{api} a ser implementado permite o seguinte:
 \begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=0.5\textwidth]{img/userAuth.png}
-    \end{center}
+    \centering
+    \includegraphics[width=0.5\textwidth]{img/userAuth.png}
     \caption{Fluxo de autenticação e posteriores pedidos de um utilizador}\label{fig:userAuth}
 \end{figure}
 
@@ -76,9 +73,8 @@ O fluxo de autenticação de um utilizador na \acrshort{api} a ser implementado 
 
 O fluxo de autenticação e renovação de uma Chave \acrshort{api} na \acrshort{api} a ser implementado permite o seguinte:
 \begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=0.5\textwidth]{img/chaveAuth.png}
-    \end{center}
+    \centering
+    \includegraphics[width=0.5\textwidth]{img/chaveAuth.png}
     \caption{Fluxo de autenticação e posteriores pedidos de uma chave \acrshort{api}}\label{fig:chaveAuth}
 \end{figure}
 
@@ -423,7 +419,7 @@ Nesta secção será explicado de que forma será possível exportar os dados da
 De seguida são apresentadas as rotas onde é possível realizar exportação, os formatos de saída disponíveis para cada rota bem como os valores a usar de forma a obter uma exportação nesse formato:
 \begin{table}[H]
     \footnotesize
-    \begin{center}
+    \centering
     \begin{tabular}{| m{5cm} | m{8cm}|}
     \hline
     Rota & Formato de saída (valor a usar) \\ \hline
@@ -449,7 +445,6 @@ De seguida são apresentadas as rotas onde é possível realizar exportação, o
             \item \acrshort{rdf}/\acrshort{xml} (\texttt{application/rdf+xml})
         \end{itemize} \\ \hline
     \end{tabular}
-    \end{center}
     \caption{Rotas com exportação, formatos de saída disponíveis para cada rota e valores a usar por forma a exportar nesse formato de saída}
     \label{table:rotasExp}
 \end{table}
@@ -502,9 +497,8 @@ Tendo em conta os requisitos a solução passa por colocar um \textit{reverse pr
 
 A arquitetura a desenvolver será a seguinte:
 \begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=0.9\textwidth]{img/apiHttpsArch.png}
-    \end{center}
+    \centering
+    \includegraphics[width=0.9\textwidth]{img/apiHttpsArch.png}
     \caption{Arquitetura a desenvolver com \acrshort{https}}
 \end{figure}
 
@@ -532,7 +526,7 @@ Antes de fazer uma comparação entre as várias \textit{\acrshort{api} Gateway}
 
 \begin{table}[H]
     \footnotesize
-    \begin{center}
+    \centering
     \begin{tabular}{|>{\centering\arraybackslash}p{0.3\textwidth}|>{\centering\arraybackslash}p{0.14\textwidth}|>{\centering\arraybackslash}p{0.14\textwidth}|>{\centering\arraybackslash}p{0.14\textwidth}|>{\centering\arraybackslash}p{0.14\textwidth}|}
     \hline
         Requisito & \textit{Nginx} & \textit{Kong} & \textit{Tyk} & \textit{Express Gateway} \\ \hline
@@ -547,7 +541,6 @@ Antes de fazer uma comparação entre as várias \textit{\acrshort{api} Gateway}
         \textit{Logs} e métricas & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} \\ \hline
         Integração da documentação desenvolvida na especificação \textit{OpenAPI} & {\color{red}\ding{54}} & {\color{red}\ding{54}} & {\color{green}\ding{52}} & {\color{red}\ding{54}} \\ \hline
     \end{tabular}
-    \end{center}
     \caption{Comparação entre \textit{\acrshort{api} Gateway}s~\cite{compAPIGat,kong,tyk}}
     \label{table:APIGateway}
 \end{table}
@@ -562,9 +555,8 @@ Entre o \textit{Nginx} e o \textit{Kong} a escolha irá prender-se com a facilid
 
 Após a escolha da \textit{\acrshort{api} Gateway} a usar (\textit{Kong}) é necessário proceder ao esboço de uma arquitetura base a desenvolver. Esta arquitetura apresenta-se de seguida, onde apenas se inclui a \acrshort{api} visto a interface não sofrer qualquer alteração:
 \begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=1\textwidth]{img/apiGatewayArch.png}
-    \end{center}
+    \centering
+    \includegraphics[width=1\textwidth]{img/apiGatewayArch.png}
     \caption{Arquitetura a desenvolver com \textit{\acrshort{api} Gateway}}\label{fig:apiGatewayArch}
 \end{figure}
 

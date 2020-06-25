@@ -109,42 +109,37 @@ Por fim, uma pequena nota, um utilizador estar ou não autenticado na interface 
 Nesta secção será demonstrado como se pode utilizar esta forma de autenticação através da interface da \acrshort{clav}. Para iniciar o processo o utilizador deve aceder a \url{https://clav.dglab.gov.pt/users/autenticacao} e carregar no botão ``Chave Móvel Digital''. Após carregar no botão, o utilizador é redirecionado para o Autenticação.gov onde lhe é apresentada uma página a pedir autorização para a partilha do Nome Completo e do \acrshort{nic} do utilizador com a \acrshort{clav}. O utilizador ao autorizar, aparece-lhe o formulário para a inserção do número de telemóvel e do \acrshort{pin} da \acrshort{cmd}. Após carregar em ``Autenticar'' se os valores estiverem corretos aparecerá o formulário para introduzir o \acrshort{pin} temporário enviado por \acrshort{sms}.
 
 \begin{figure}[H]
-\centering
-\begin{subfigure}{.32\textwidth}
-    \begin{center}
+    \centering
+    \begin{subfigure}{.32\textwidth}
+        \centering
         \includegraphics[width=1\linewidth]{img/CMDauto.png}
-    \end{center}
-    \caption{Pedido de autorização para partilha de atributos}
-\end{subfigure}
-\begin{subfigure}{.32\textwidth}
-    \begin{center}
+        \caption{Pedido de autorização para partilha de atributos}
+    \end{subfigure}
+    \begin{subfigure}{.32\textwidth}
+        \centering
         \includegraphics[width=1\linewidth]{img/CMDcreds.png}
-    \end{center}
-    \caption{Formulário da \acrshort{cmd}}
-\end{subfigure}
-\begin{subfigure}{.32\textwidth}
-    \begin{center}
+        \caption{Formulário da \acrshort{cmd}}
+    \end{subfigure}
+    \begin{subfigure}{.32\textwidth}
+        \centering
         \includegraphics[width=1\linewidth]{img/CMDcredTemp.png}
-    \end{center}
-    \caption{Formulário do \acrshort{pin} temporário da \acrshort{cmd}}
-\end{subfigure}
-\caption{Autenticação.gov: Processo de autenticação com \acrshort{cmd}}
+        \caption{Formulário do \acrshort{pin} temporário da \acrshort{cmd}}
+    \end{subfigure}
+    \caption{Autenticação.gov: Processo de autenticação com \acrshort{cmd}}
 \end{figure}
 
 Ao fim de carregar em ``Confirmar'' e caso o \acrshort{pin} temporário esteja correto, o utilizador é redirecionado de volta para a \acrshort{clav} onde aparecerá ao utilizador uma de duas hipóteses:
 \begin{itemize}
     \item Se o utilizador já se encontra registado na \acrshort{clav} então autentica-se com sucesso:
     \begin{figure}[H]
-        \begin{center}
-            \includegraphics[width=0.5\textwidth]{img/CMDauthSuc.png}
-        \end{center}
+        \centering
+        \includegraphics[width=0.5\textwidth]{img/CMDauthSuc.png}
         \caption{Utilizador autenticado com sucesso através de \acrshort{cmd}}
     \end{figure}
     \item Se o utilizador ainda não se encontra registado na \acrshort{clav} então não é autenticado na \acrshort{clav}:
     \begin{figure}[H]
-        \begin{center}
-            \includegraphics[width=0.5\textwidth]{img/CMDnotReg.png}
-        \end{center}
+        \centering
+        \includegraphics[width=0.5\textwidth]{img/CMDnotReg.png}
         \caption{Mensagem de erro na \acrshort{clav} caso não se encontre registado na \acrshort{clav} mas tenha se autenticado com sucesso no Autenticação.gov}
     \end{figure}
 \end{itemize}
@@ -152,9 +147,8 @@ Ao fim de carregar em ``Confirmar'' e caso o \acrshort{pin} temporário esteja c
 Por fim, caso o utilizador cancele algum dos passos de autenticação do Autenticação.gov, se engane em alguma credencial ou aconteça algum erro no Autenticação.gov é redirecionado de volta para a \acrshort{clav} onde lhe é apresentado a seguinte mensagem:
 
 \begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=0.5\textwidth]{img/CMDerror.png}
-    \end{center}
+    \centering
+    \includegraphics[width=0.5\textwidth]{img/CMDerror.png}
     \caption{Mensagem de erro na \acrshort{clav} após falha no Autenticação.gov}
 \end{figure}
 
@@ -282,9 +276,8 @@ As conversões de \acrshort{json} para \acrshort{xml} ou \acrshort{csv} são rea
 Para facilitar a exportação dos dados foi criada uma página de exportação na interface da \acrshort{clav}. Esta página permite definir todos os parâmetros tal como através da \acrshort{api} de dados e, adicionalmente, o \textit{enconding} de saída dos ficheiros. Assim esta interface permite exportar Classes, Entidades, Tipologias, Legislações e a Ontologia.
 
 \begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=0.9\textwidth]{img/paginaExportacao.png}
-    \end{center}
+    \centering
+    \includegraphics[width=0.9\textwidth]{img/paginaExportacao.png}
     \caption{Interface de exportação}
 \end{figure}
 
@@ -652,9 +645,8 @@ Convém também referir que, esta versão da \acrshort{api} de dados com \textit
 \subsection{Arquitetura}
 Na imagem~\ref{fig:apiGatewayArch} apresentou-se uma visão inicial da arquitetura. Apresenta-se de seguida a arquitetura final com \textit{Kong} sem incluir a interface da \acrshort{clav}: 
 \begin{figure}[H]
-    \begin{center}
-        \includegraphics[width=0.9\textwidth]{img/apiGatewayArchFinal.png}
-    \end{center}
+    \centering
+    \includegraphics[width=0.9\textwidth]{img/apiGatewayArchFinal.png}
     \caption{Arquitetura desenvolvida com \textit{\acrshort{api} Gateway}}\label{fig:apiGatewayArchFinal}
 \end{figure}
 
