@@ -1,4 +1,4 @@
-Nesta dissertação foram também desenvolvidos os mecanismos de \textit{deployment} necessários tanto para a versão sem \textit{Kong} bem como para a versão com \textit{Kong}. Neste capítulo é realizada uma descrição dos passos necessários para realizar o \textit{deployment} de cada versão.
+No decorrer desta dissertação foram também desenvolvidos os mecanismos de \textit{deployment} necessários tanto para a versão sem \textit{Kong} bem como para a versão com \textit{Kong}. Neste capítulo é realizada uma descrição dos passos necessários para realizar o \textit{deployment} de cada versão.
 
 \section{Versão sem \textit{Kong}}\label{sec:deployNoKong}
 
@@ -7,13 +7,13 @@ Nesta dissertação foram também desenvolvidos os mecanismos de \textit{deploym
 Um dos primeiros passos é verificar se na máquina de instalação já se encontra instalado o \texttt{git}, o \texttt{docker} e o \texttt{docker-compose}. A especificação do \texttt{docker-compose} usada é a versão 3.5 pelo que é necessário pelo menos instalar a versão 17.06.0 ou maior do \texttt{docker} e a versão 1.18.0 ou maior do \texttt{docker-compose}. Numa máquina \textit{Ubuntu} podem ser instalados através de~\cite{installDocker,installDC}:
 \begin{lstlisting}[caption=Instalar \textit{docker} e \textit{docker-compose}]
 sudo apt-get update
-sudo apt-get install git
+sudo apt-get install -y git
 
 sudo apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
 sudo curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
@@ -85,7 +85,7 @@ As imagens usadas na instalação podem ser geradas com antecedência, fora da m
 
     Necessário realizar a criação de duas imagens: \texttt{graphdb} e \texttt{server}.
 
-    Para criar a imagem \texttt{graphdb} é necessário dois ficheiros adicionais: um ficheiro zip com a distribuição do \textit{GraphDB} e um ficheiro \textit{Turtle} com a ontologia a carregar para o \textit{GraphDB}. A distribuição do \textit{GraphDB} deve ser obtida através do site \textit{GraphDB}\footnote{Versão gratuita: \url{https://www.ontotext.com/products/graphdb/graphdb-free/}} ao preencher o formulário. Após o preenchimento do formulário irá receber um email do \textit{GraphDB} de onde deve realizar o \textit{download} da versão ``stand-alone server''. O ficheiro zip tem um nome parecido com ``graphdb-free-8.11.0-dist.zip'' onde ``free-8.11.0'' indica a versão do \textit{GraphDB} que deve colocar na variável ambiente \texttt{GRAPHDB\_VERSION} do ficheiro .env da pasta \texttt{deploy}. Deve colocar o ficheiro zip na pasta \texttt{graphdb} da pasta \texttt{deploy}. Nesta pasta (\texttt{graphdb}) deve também colocar o ficheiro \textit{Turtle} e indicar na variável ambiente \texttt{GRAPHDB\_DATA\_FILE} o nome deste ficheiro (ex: clav-2020-01-04-false.ttl). Sempre que um destes ficheiros é alterado é necessário criar de novo a imagem.
+    Para criar a imagem \texttt{graphdb} é necessário dois ficheiros adicionais: um ficheiro zip com a distribuição do \textit{GraphDB} e um ficheiro \textit{Turtle} com a ontologia a carregar para o \textit{GraphDB}. A distribuição do \textit{GraphDB} deve ser obtida através do site do \textit{GraphDB}\footnote{Versão gratuita: \url{https://www.ontotext.com/products/graphdb/graphdb-free/}} ao preencher o formulário. Após o preenchimento do formulário irá receber um email do \textit{GraphDB} de onde deve realizar o \textit{download} da versão ``stand-alone server''. O ficheiro zip tem um nome parecido com ``graphdb-free-8.11.0-dist.zip'' onde ``free-8.11.0'' indica a versão do \textit{GraphDB} que deve colocar na variável ambiente \texttt{GRAPHDB\_VERSION} do ficheiro \textit{.env} da pasta \texttt{deploy}. Deve colocar o ficheiro zip na pasta \texttt{graphdb} da pasta \texttt{deploy}. Nesta pasta (\texttt{graphdb}) deve também colocar o ficheiro \textit{Turtle} e indicar na variável ambiente \texttt{GRAPHDB\_DATA\_FILE} o nome deste ficheiro (ex: clav-2020-01-04-false.ttl). Sempre que um destes ficheiros é alterado é necessário criar de novo a imagem.
 
     \begin{figure}[H]
         \centering
@@ -97,7 +97,7 @@ As imagens usadas na instalação podem ser geradas com antecedência, fora da m
 
     \item \textbf{Interface}
 
-    Existe apenas uma imagem (\texttt{interface}) que deve ser recriada sempre que a versão da \acrshort{api} de dados (variável ambiente \texttt{API\_VERSION} do ficheiro .env da pasta \textit{deploy}) ou o \acrshort{url} da \acrshort{api} de dados (variável ambiente \texttt{API\_URL} do ficheiro .env da pasta \textit{deploy}) ou o código mude.
+    Existe apenas uma imagem (\texttt{interface}) que deve ser recriada sempre que a versão da \acrshort{api} de dados (variável ambiente \texttt{API\_VERSION} do ficheiro \textit{.env} da pasta \textit{deploy}) ou o \acrshort{url} da \acrshort{api} de dados para onde a interface irá fazer os pedidos (variável ambiente \texttt{API\_URL} do ficheiro \textit{.env} da pasta \textit{deploy}) ou o código mude.
 \end{description}
 
 Pode associar uma \textit{tag} a cada imagem a criar, no ficheiro \textit{.env} da \acrshort{api} de dados, nas variáveis ambiente \texttt{GRAPHDB\_IMG} (imagem \texttt{graphdb}) e \texttt{SERVER\_IMG} (imagem \texttt{server}) onde deve inserir o nome do repositório do \textit{DockerHub} e a \textit{tag} a usar (\verb|<repositório>:<tag>|). Já no ficheiro \textit{.env} da interface está presente a variável ambiente \texttt{INTERFACE\_IMG} com o mesmo intuito mas para a imagem da interface. Para criar estas imagens basta correr na pasta \texttt{deploy} da \acrshort{api} de dados (para criar as imagens da \acrshort{api} de dados) ou da interface (para criar a imagem da interface):
@@ -130,7 +130,7 @@ Na \acrshort{api} de dados para além das já referidas variáveis ambiente (\te
     \texttt{API\_VERSION} & Versão da \acrshort{api} de dados \\ \hline
     \texttt{DOMAINS} & Domínios dos quais a \acrshort{api} de dados irá estar acessível \\ \hline
     \texttt{SWAGGER\_URL} & \acrshort{url} principal a colocar na documentação \textit{OpenAPI} (\textit{Swagger}) \\ \hline
-    \texttt{INTERFACE\_HOSTS} & \textit{Hosts} das interfaces da CLAV que podem aceder a \acrshort{api} de dados \\ \hline
+    \texttt{INTERFACE\_HOSTS} & \textit{Hosts} das interfaces da \acrshort{clav} que podem aceder a \acrshort{api} de dados \\ \hline
     \texttt{HTTP\_PORT} & Porta \acrshort{http} em que a \acrshort{api} de dados recebe os pedidos \acrshort{http} dentro da máquina de instalação \\ \hline
     \texttt{HTTPS\_PORT} & Porta \acrshort{https} em que a \acrshort{api} de dados recebe os pedidos \acrshort{https} dentro da máquina de instalação \\ \hline
 \end{tabularx}
@@ -160,7 +160,7 @@ Quanto à interface para além das já referidas variáveis ambiente (\texttt{AP
 \caption{Variáveis ambiente do ficheiro \textit{.env} da interface}
 \end{table}
 
-Tanto na \acrshort{api} de dados como na interface, caso sejam alteradas estas variáveis ambiente não é necessário recriar as imagems, basta apenas reiniciar os \textit{containers}.
+Tanto na \acrshort{api} de dados como na interface, caso sejam alteradas estas variáveis ambiente não é necessário recriar as imagens, basta apenas reiniciar os \textit{containers}.
 
 Após realizar as alterações necessárias pode correr o seguinte comando na pasta \texttt{deploy} da \acrshort{api} de dados (para iniciar a \acrshort{api} de dados) ou da interface (para iniciar a interface):
 
@@ -201,7 +201,7 @@ Até ao momento nesta instalação a \acrshort{bd} \textit{MongoDB} continua vaz
     De forma a realizar backup é necessário que o \textit{MongoDB} esteja a correr.
     \item \textbf{Inserção do backup}
 
-    Primeiro pare os containers:
+    Primeiro pare os \textit{containers}:
     \footnotesize
     \begin{verbatim}
     docker stop clav_nginx
@@ -219,7 +219,7 @@ Até ao momento nesta instalação a \acrshort{bd} \textit{MongoDB} continua vaz
     \end{verbatim}
     \normalsize
     \vspace{-0.3cm}
-    Por fim, volte a iniciar os containers:
+    Por fim, volte a iniciar os \textit{containers}:
     \footnotesize
     \begin{verbatim}
     docker start clav_mongo clav_graphdb
@@ -230,12 +230,12 @@ Até ao momento nesta instalação a \acrshort{bd} \textit{MongoDB} continua vaz
     \vspace{-0.5cm}
 \end{description}
 
-\subsubsection{Melhorias de segurança do HTTPS}\label{sec:inst-melhorias}
-Após concluir a instalação recomenda-se duas melhorias de segurança do \acrshort{https} onde uma delas apenas se pode realizar agora. Nesta secção quando se refere o domínio ou domínios pretende-se fazer referência aos presentes nos \texttt{DOMAINS} dos ficheiros de configuração \texttt{.env} da \acrshort{api} de dados e da interface.
+\subsubsection{Melhorias de segurança do \acrshort{https}}\label{sec:inst-melhorias}
+Após concluir a instalação recomenda-se duas melhorias de segurança do \acrshort{https} onde uma delas apenas se pode realizar agora. Nesta secção quando se refere o domínio ou domínios pretende-se fazer referência aos presentes nos \texttt{DOMAINS} dos ficheiros de configuração \textit{.env} da \acrshort{api} de dados e da interface.
 
 A melhoria apenas agora possível é a adição dos domínios à \textit{\acrshort{hsts} preload list}. Para isso deve aceder a \url{https://hstspreload.org/}, começar por inserir um dos domínios e seguir os passos indicados. Repita para os restantes domínios. O \textit{\acrshort{hsts} preloading} permite que os \textit{browsers} saibam à partida que dominíos devem ser acedidos apenas por \acrshort{https}.\footnote{Ver \url{https://scotthelme.co.uk/hsts-preloading/} para perceber esta melhoria de segurança} 
 
-A outra melhoria de segurança é a adição de \textit{\acrshort{caa} records} associados aos dominínios no \acrshort{dns} (tem de suportar \textit{\acrshort{caa} records}) no qual os domínios estão indexados. Os \textit{\acrshort{caa} records} a adicionar podem ser obtidos em \url{https://sslmate.com/caa/} indicando o nome do domínio e escolhendo como \textit{Authorized Certificate Authorities} o \textit{Let's Encrypt}. Na secção 4 da página Web estará presente os \textit{\acrshort{caa} records} a adicionar. Repita para os restantes domínios. Estes \textit{\acrshort{caa} records} indicam a(s) autoridade(s) emissora(s) de certificados permitida(s) para o(s) domínio(s) por forma a impedir a emissão de um certificado para o(s) mesmo(s) domínio(s) noutra autoridade emissora de certificados.\footnote{Ver \url{https://sslmate.com/caa/about} para perceber esta melhoria de segurança} 
+A outra melhoria de segurança é a adição de \textit{\acrshort{caa} records} associados aos domínios no \acrshort{dns} (tem de suportar \textit{\acrshort{caa} records}) no qual os domínios estão indexados. Os \textit{\acrshort{caa} records} a adicionar podem ser obtidos em \url{https://sslmate.com/caa/} indicando o nome do domínio e escolhendo como \textit{Authorized Certificate Authorities} o \textit{Let's Encrypt}. Na secção 4 da página Web estará presente os \textit{\acrshort{caa} records} a adicionar. Repita para os restantes domínios. Estes \textit{\acrshort{caa} records} indicam a(s) autoridade(s) emissora(s) de certificados permitida(s) para o(s) domínio(s) por forma a impedir a emissão de um certificado para o(s) mesmo(s) domínio(s) noutra autoridade emissora de certificados.\footnote{Ver \url{https://sslmate.com/caa/about} para perceber esta melhoria de segurança} 
 
 \subsection{Atualizações}\label{sec:inst-update}
 
@@ -266,7 +266,7 @@ Antes de recriar as imagens se pretender realizar \textit{push} destas deve alte
 
 De seguida recria-se os \textit{containers} necessários:
 \begin{itemize}
-    \item Caso tenha mudado a ontologia ou pretenda atualizar a distribuição do \textit{GraphDB} recria-se a imagem do \texttt{clav\_graphdb} após as devidas alterações no ficheiro .env da pasta \textit{deploy}:
+    \item Caso tenha mudado a ontologia ou pretenda atualizar a distribuição do \textit{GraphDB} recria-se a imagem do \texttt{clav\_graphdb} após as devidas alterações no ficheiro \textit{.env} da pasta \textit{deploy}:
     \footnotesize
     \begin{verbatim}
     docker-compose -f docker-compose-build.yml build graphdb
@@ -378,7 +378,7 @@ Nesta versão será apenas abordado a instalação da \acrshort{api} de dados j�
 
 Os dois primeiros passos são exatamente iguais aos já descritos na primeira instalação da versão sem \textit{Kong} (ver~\ref{sec:inst-prim}), instalar as dependências necessárias e abrir as portas na máquina de instalação para a \acrshort{api} de dados.
 
-De seguida realiza-se a clonagem do repositório \texttt{git}, muda-se de raíz e de \textit{branch}:
+De seguida realiza-se a clonagem do repositório \texttt{git}, muda-se de raiz e de \textit{branch}:
 
 \footnotesize
 \begin{verbatim}
@@ -396,7 +396,7 @@ Além disso, obtém-se o conteúdo dos submódulos do repositório ao correr:
 \end{verbatim}
 \normalsize
 
-Tal como na versão sem \textit{Kong} é necessário gerar dois novos pares de chaves pública/privada e copiar as novas chaves públicas para interface:
+Tal como na versão sem \textit{Kong}, numa versão de produção é necessário gerar dois novos pares de chaves pública/privada e copiar as novas chaves públicas para interface:
 
 \footnotesize
 \begin{center}
@@ -425,9 +425,9 @@ cp CLAV-auth/config/keys/apiKey.pub CLAV-auth/config/keys/userKey.pub \
 
 \subsubsection{Criação de Imagens}
 
-A criação da imagem \texttt{graphdb} não sofre muitas alterações em relação à versão sem \textit{Kong} (ver~\ref{sec:int-imagens}). As únicas diferenças a ter em conta são que a pasta \texttt{graphdb} e o ficheiro \textit{.env} encontram-se na pasta \texttt{docker-clav}. A criação da imagem \texttt{server} não sofreu quaisquer alterações.
+A criação da imagem \texttt{graphdb} não sofre muitas alterações em relação à versão sem \textit{Kong} (ver~\ref{sec:int-imagens}). Algumas das diferenças a ter em conta são que a pasta \texttt{graphdb} e o ficheiro \textit{.env} encontram-se na pasta \texttt{docker-clav}. A criação da imagem \texttt{server} não sofreu quaisquer alterações.
 
-A maior diferença desta versão em relação à versão sem \textit{Kong} é a necessidade de também criar a imagem \texttt{clav-auth} que como a imagem \texttt{server} apenas necessita de ser criada quando não existe ou quando o seu código muda.
+A maior diferença desta versão em relação à versão sem \textit{Kong} é a necessidade de também criar a imagem \texttt{clav-auth} que, como a imagem \texttt{server}, apenas necessita de ser criada quando não existe ou quando o seu código muda.
 
 \subsubsection{Configuração}
 
@@ -442,7 +442,7 @@ No ficheiro \textit{.env} desta versão para além das variáveis ambiente \text
     \texttt{EMAIL} & Email a usar para gerar os certificados \\ \hline
     \texttt{API\_VERSION} & Versão da \acrshort{api} de dados \\ \hline
     \texttt{DOMAINS} & Domínios dos quais a \acrshort{api} de dados irá estar acessível \\ \hline
-    \texttt{INTERFACE\_HOSTS} & \textit{Hosts} das interfaces da CLAV que podem aceder \\ \hline
+    \texttt{INTERFACE\_HOSTS} & \textit{Hosts} das interfaces da \acrshort{clav} que podem aceder \\ \hline
     \texttt{HTTP\_PORT} & Porta \acrshort{http} em que a \acrshort{api} de dados recebe os pedidos \acrshort{http} dentro da máquina de instalação \\ \hline
     \texttt{HTTPS\_PORT} & Porta \acrshort{https} em que a \acrshort{api} de dados recebe os pedidos \acrshort{https} dentro da máquina de instalação \\ \hline
 \end{tabularx}
@@ -471,7 +471,7 @@ De igual forma como na versão sem \textit{Kong} não deve eliminar os volumes \
 
 \subsubsection{Povoamento do \textit{MongoDB}}
 
-O povoamento do \textit{MongoDB} pode ser efetuado de igual forma como na primeira instalação sem \textit{Kong} (ver~\ref{sec:inst-povMDB}). As únicas diferenças é que para parar os \textit{contaienrs} deve executar:
+O povoamento do \textit{MongoDB} pode ser efetuado de igual forma como na primeira instalação sem \textit{Kong} (ver~\ref{sec:inst-povMDB}). As únicas diferenças é que para parar os \textit{containers} deve executar:
 
 \footnotesize
 \begin{verbatim}
@@ -493,7 +493,7 @@ e para iniciar os \textit{containers} deve correr:
 \normalsize
 \vspace{-0.5cm}
 
-\subsubsection{Melhorias de segurança do HTTPS}
+\subsubsection{Melhorias de segurança do \acrshort{https}}
 
 Quanto às melhorias de segurança são iguais e são aplicadas de igual forma como na versão sem \textit{Kong} (ver~\ref{sec:inst-melhorias}).
 
@@ -543,9 +543,9 @@ Na migração será seguir a primeira instalação desta versão. De resto, os p
 
 Esta secção tem como objetivo realizar uma comparação entre as duas versões com o objetivo de decidir qual delas se adequa mais.
 
-A versão com \textit{Kong} permite um melhor desempenho ou uso do recursos disponíveis desde que corretamente configurada visto possuir \textit{rate limiting} e \textit{cache} dos resultados.
+Para realizar os testes nesta secção, cada componente foi executado numa máquina do \textit{Digital Ocean} com \textit{Ubuntu 20.04 x64}, 8 GB de memória \acrshort{ram} e 4 \acrshort{cpu}s. Para traduzir o domínio no \acrshort{ip} da máquina foi usado o \textit{No-IP}\footnote{ver \url{https://www.noip.com/}}.
 
-Para comparar a performance foi realizado um teste em que 100 utilizadores fazem dois pedidos, um pedido das classes e quando termina o pedido de uma classe específica. Um utilizador começa os seus pedidos 1 segundo após o anterior. Para realizar este teste foi usado o \textit{Apache JMeter}. Os resultados obtidos foram os seguintes (atenção que a \textit{cache} estava ``quente'' nas duas versões, portanto o pedido das classes deverá ser proveniente da cache):
+Para comparar a performance foi realizado um teste em que 100 utilizadores fazem dois pedidos, um pedido das classes e quando termina um pedido de uma classe específica. Um utilizador começa os seus pedidos 1 segundo após o anterior. Para realizar este teste foi usado o \textit{Apache JMeter}. Os resultados obtidos foram os seguintes (atenção que a \textit{cache} estava ``quente'' nas duas versões, portanto o pedido das classes deverá ser proveniente da cache):
 
 \begin{table}[H]
     \footnotesize
@@ -563,17 +563,17 @@ Para comparar a performance foi realizado um teste em que 100 utilizadores fazem
     \caption{Resultados de performance para a \acrshort{api} de dados}
 \end{table}
 
-O \textit{throughput} é bastante semelhante entre as duas, contudo o tempo de resposta é menor no caso sem \textit{Kong}, o que faz algum sentido já que a versão com \textit{Kong} (o \textit{Kong} tem embutido o \textit{Nginx}) é mais pesada em termos de componentes em execução.
+Olhando para os resultados, o \textit{throughput} é bastante semelhante entre as duas, contudo o tempo de resposta é menor na versão sem \textit{Kong}, o que faz algum sentido já que a versão com \textit{Kong} (o \textit{Kong} tem embutido o \textit{Nginx}) é mais pesada em termos de componentes em execução.
 
 Em termos de facilidade de instalação, as duas são bastante semelhantes pelo que quem conseguir instalar com uma delas consegue instalar a outra.
 
-Quanto à proteção da \acrshort{api} apesar das várias alterações (componente externo à \acrshort{api} de dados), é semelhante tendo como principal diferença o não uso do \texttt{passport} na versão com \textit{Kong} o que não afeta a forma como é realizada a proteção. De certa forma, o uso do \texttt{passport} na versão sem \textit{Kong} é atualmente desnecessária desde que se coloque em \texttt{req.user} a informação presente no \textit{token} do utilizador. A essência da proteção da \acrshort{api} de dados manteve-se basicamente igual.
+Quanto à proteção da \acrshort{api} apesar das várias alterações (componente externo à \acrshort{api} de dados), são semelhantes tendo como principal diferença o não uso do \texttt{passport} na versão com \textit{Kong} o que não afeta a forma como é realizada a proteção. De certa forma, o uso do \texttt{passport} na versão sem \textit{Kong} é atualmente desnecessária desde que se coloque em \texttt{req.user} a informação presente no \textit{token} do utilizador. A essência da proteção da \acrshort{api} de dados manteve-se basicamente igual.
 
 \subsection{Configuração do \acrshort{https}}
 
 A plataforma \textit{SSL Labs} possui uma ferramenta \textit{online} que permite-nos auferir a qualidade da configuração do \acrshort{https} num domínio.\footnote{Ver \url{https://www.ssllabs.com/ssltest/}} Para perceber melhor a classificação realizada pelo \textit{SSL Labs} recomenda-se a leitura de \url{https://github.com/ssllabs/research/wiki/SSL-Server-Rating-Guide}.
 
-Nesta secção foi também comparada a configuração do \acrshort{https} da interface:
+Nesta secção foi também comparada a configuração do \acrshort{https} da interface para além das versões da \acrshort{api}:
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\textwidth]{img/sslLabsAPISemKong.png}
@@ -590,15 +590,13 @@ Nesta secção foi também comparada a configuração do \acrshort{https} da int
     \caption{Classificação \textit{SSL Labs} da Interface}
 \end{figure}
 
-Para testar, cada componente foi executado numa máquina do \textit{Digital Ocean} com \textit{Ubuntu 20.04 x64}, 8 GB de memória \acrshort{ram} e 4 \acrshort{cpu}s. Para traduzir o domínio no \acrshort{ip} da máquina foi usado o \textit{No-IP}\footnote{ver \url{https://www.noip.com/}}.
-
 Como é possível verificar pelas imagens as 3 tem a classificação máxima, A+, bem como a mesma classificação em cada componente específica. A \acrshort{api} sem \textit{Kong} é normal ter a mesma classificação que a interface porque a configuração usada é praticamente a mesma. Quanto ao caso da \acrshort{api} de dados com \textit{Kong} esta apenas funciona em \textit{browsers} que suportam \acrshort{sni} o que são raros já que quase todos suportam atualmente. Além disso a versão com \textit{Kong} não tem ativado o \acrshort{ocsp} \textit{stapling} (uma das recomendações de segurança) enquanto que nos outros casos esta está ativa. Estas duas diferenças da versão com \textit{Kong} devem-se à forma como o \textit{Kong} e o \textit{plugin} do \textit{Kong} \texttt{acme} funcionam.
 
 Por fim, nos 3 casos há um único sinal de aviso, que se deve à falta do \textit{\acrshort{caa} record} (uma das melhorias de segurança referidas) no \acrshort{dns}. Contudo, com os resultados obtidos conseguimos ter alguma certeza de que as configurações realizadas são atualmente seguras.
 
 \subsection{Resumo}
 
-Em conclusão, apesar de a configuração do \acrshort{https} da \acrshort{api} com \textit{Kong} ser ligeiramente pior bem como a performance (tempo de resposta), em termos gerais permite obter uma melhor \acrshort{api}, com melhor desempenho e uma maior modularidade. Permite também futuramente escalar mais facilmente a \acrshort{api} de dados bem como modularizar esta \acrshort{api} em mais componentes.
+Em conclusão, apesar de a configuração do \acrshort{https} da \acrshort{api} com \textit{Kong} ser ligeiramente pior bem como a performance (tempo de resposta), em termos gerais permite obter futuramente uma melhor \acrshort{api}, com uma maior modularidade. Permite também futuramente escalar mais facilmente a \acrshort{api} de dados bem como modularizar esta \acrshort{api} em mais componentes.
 
 \section{Resumo}
 
