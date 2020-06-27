@@ -1,5 +1,18 @@
-%TODO
-TODO
+Esta dissertação tem vários objetivos distintos mas todos com a motivação de continuar o desenvolvimento da plataforma \acrshort{clav} cumprindo alguns dos requisitos em falta na plataforma.
+
+A documentação em \textit{OpenAPI} (nova versão do \textit{Swagger}) da \acrshort{api} de dados da \acrshort{clav} desenvolvida está presente em \url{https://clav-api.dglab.gov.pt/v2/docs/} e facilita assim o desenvolvimento da plataforma \acrshort{clav} bem como quem desenvolve sistemas arquivísticos que irão usar esta \acrshort{api} visto a documentação possuir uma descrição em cada rota, os parâmetros que se podem usar bem como exemplos e as estruturas dos \textit{bodies} e das respostas.
+
+A exportação na \acrshort{api} de dados da \acrshort{clav} dos principais tipos de dados em \acrshort{xml}, \acrshort{csv} e \acrshort{rdf} foi também alcançada, tendo ainda sido desenvolvido adicionalmente uma interface de exportação que permite escolher o \textit{enconding} de saída. Permite assim que os utilizadores possam, por exemplo visualizar/transformar os dados em \textit{Excel} ou ferramentas similares para além de permitir que aplicações possam usar outros formatos para tratar estes dados, por exemplo, ao exportar em \acrshort{xml}.
+
+Por outro lado, foi protegida a \acrshort{api} de dados com múltiplos níveis de acesso, garantindo assim que os dados presentes na \acrshort{api} da \acrshort{clav} não são alterados indevidamente por utilizadores mal intencionados. Assim, apenas pessoal autorizado (de acordo com o nível de utilizador) pode fazer alterações.
+
+Além disso, é agora também possível entrar na plataforma \acrshort{clav} através de \acrfull{cmd}, um dos mecanismos de autenticação disponíveis no Autenticação.gov. É dada assim mais uma hipótese de autenticação aos utilizadores para além das já implementadas através de \acrshort{cc} e de \textit{email}+\textit{password}.
+
+Através do \textit{Kong} foi desenvolvida uma \textit{\acrshort{api} Gateway} separando da \acrshort{api} de dados toda a proteção, colocando esta num serviço independente. O uso do \textit{Kong} permitirá futuramente se assim se pretender modularizar ainda mais a \acrshort{api} de dados em microserviços. Da perspetiva dos utilizadores a proteção da \acrshort{api} de dados manteve-se igual, mas permitiu simplificar a complexidade do código da \acrshort{api} de dados.
+
+Quanto ao objetivo de integração da \acrshort{clav} no \acrshort{iap} este é conseguido com o uso do Autenticação.gov para autenticar os utilizadores a quem é requisitado a obtenção de dados pessoais do utilizador, como o \acrshort{nic} e o nome completo para autenticar o utilizador na \acrshort{clav}.
+
+São assim atingidos todos os objetivos da dissertação. Adicionalmente realizou-se a migração de \acrshort{http} para \acrshort{https} melhorando a segurança de utilização da plataforma. Além disso, apesar de não referidas neste documento, já ele extenso, foram adicionados mecanismos de \textit{cache} na \acrshort{api} de dados, otimizado o cálculo do fecho transitivo da \acrshort{lc}, desenvolvido a importação de uma \acrshort{ts} a partir de um ficheiro, desenvolvida uma interface de pesquisa avançada para a \acrshort{lc}, adicionada a filtragem das classes da \acrshort{lc} de acordo com o nível do utilizador e com o \textit{status} de cada classe e finalmente foi adicionado a validação de parâmetros na \acrshort{api} de dados com recurso ao \texttt{express-validator} garantindo uma maior resiliência da \acrshort{api} e devolvendo um maior \textit{feedback} aos utilizadores indicando que parâmetros estão errados e porquê.
 
 \section{Trabalho Futuro}
 
