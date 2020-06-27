@@ -449,7 +449,12 @@ De seguida são apresentadas as rotas onde é possível realizar exportação, o
     \label{table:rotasExp}
 \end{table}
 
-Portanto, por exemplo para obter as Classes em \acrshort{csv} basta realizar o seguinte pedido à \acrshort{api}: \verb|GET /versãoAPI/classes?fs=application/json|
+Portanto, por exemplo para obter as Classes em \acrshort{csv} basta realizar o seguinte pedido à \acrshort{api}:
+\footnotesize
+\begin{verbatim}
+    GET /<versãoAPI>/classes?fs=application/json
+\end{verbatim}
+\normalsize
 
 Já em termos de fluxo dos dados durante esta exportação, para as 8 primeiras rotas da tabela~\ref{table:rotasExp} inicialmente os dados são obtidos da \acrshort{bd} ou da \textit{cache} da \acrshort{api}. Caso o formato de saída seja \acrshort{json} é devolvido ao utilizador sem qualquer conversão. Caso contrário os dados são convertidos através de um dos conversores já descritos para o formato de saída apropriado. Na última rota, a da exportação da ontologia, a informação é devolvida no formato apropriado pela própria \acrshort{bd} (\textit{GraphDB}) ou da \textit{cache} referida em~\ref{sec:expOntCache} de acordo com o pedido.
 
