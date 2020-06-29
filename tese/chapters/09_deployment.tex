@@ -1,10 +1,12 @@
-No decorrer desta dissertação foram também desenvolvidos os mecanismos de \textit{deployment} necessários tanto para a versão sem \textit{Kong} bem como para a versão com \textit{Kong}. Neste capítulo é realizada uma descrição dos passos necessários para realizar o \textit{deployment} de cada versão.
+No decorrer desta dissertação foram também desenvolvidos os mecanismos de \textit{deployment} necessários tanto para a versão sem \textit{Kong} bem como para a versão com \textit{Kong}. Para  facilitar  a  instalação  e  a  manutenção  do  código,  criaram-se  vários ``\textit{containers}'' cada um contendo um serviço. Mais tarde, orquestraram-se dois meta-serviços utilizando o \texttt{docker-compose}, a API de dados e a interface. Neste capítulo descrevem-se os procedimentos de \textit{deployment} e de manutenção de cada versão.
 
 \section{Versão sem \textit{Kong}}\label{sec:deployNoKong}
 
 \subsection{Primeira instalação}\label{sec:inst-prim}
 
-Um dos primeiros passos é verificar se na máquina de instalação já se encontra instalado o \texttt{git}, o \texttt{docker} e o \texttt{docker-compose}. A especificação do \texttt{docker-compose} usada é a versão 3.5 pelo que é necessário pelo menos instalar a versão 17.06.0 ou maior do \texttt{docker} e a versão 1.18.0 ou maior do \texttt{docker-compose}. Numa máquina \textit{Ubuntu} podem ser instalados através de~\cite{installDocker,installDC}:
+Para uma primeira instalação deve-se garantir que a máquina de instalação tem instalado o \texttt{git}, o \texttt{docker} e o \texttt{docker-compose}. A especificação do \texttt{docker-compose} usada é a versão 3.5 pelo que é necessário a versão 17.06.0 ou superior do \texttt{docker} e a versão 1.18.0 ou superior do \texttt{docker-compose}. 
+
+A instalação do \textit{software} depende do \acrshort{os} pelo que numa máquina \textit{Ubuntu} o \textit{software} pode ser instalado através das seguintes linhas de comando~\cite{installDocker,installDC}:
 \begin{lstlisting}[caption=Instalar \textit{docker} e \textit{docker-compose}]
 sudo apt-get update
 sudo apt-get install -y git
@@ -22,9 +24,9 @@ sudo chmod +x /usr/local/bin/docker-compose
 sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 \end{lstlisting}
 
-O passo seguinte é abrir as portas na máquina de instalação que serão usadas para a \acrshort{api} dados e/ou interface (É necessário abrir duas portas para a \acrshort{api} de dados (uma \acrshort{http} e outra \acrshort{https}) e duas para a interface (uma \acrshort{http} e outra \acrshort{https}). Se instalar a \acrshort{api} de dados e a interface na mesma máquina as 4 portas tem de ser diferentes.
+O passo seguinte é abrir as portas na máquina de instalação que serão usadas para a \acrshort{api} dados e/ou interface (É necessário abrir duas portas para a \acrshort{api} de dados (\acrshort{http} e \acrshort{https}) e duas para a interface (\acrshort{http} e \acrshort{https}). Se instalar a \acrshort{api} de dados e a interface na mesma máquina as 4 portas têm de ser diferentes.
 
-De seguida realiza-se a clonagem dos repositórios \texttt{git} que se pretende instalar, muda-se de raíz e de \textit{branch}:
+De seguida realiza-se a clonagem dos repositórios \texttt{git} que se pretende instalar, posiciona-se na raíz da pasta correta e muda-se de \textit{branch}:
 
 \footnotesize
 \begin{center}
@@ -76,7 +78,7 @@ cp config/keys/apiKey.pub config/keys/userKey.pub \
 
 Sem estes passos qualquer utilizador que saiba as chaves privadas usadas pode gerar um \textit{token} e assim ter acesso indevido à \acrshort{clav}. Portanto as chaves privadas devem estar apenas acessíveis na máquina de produção da \acrshort{api} de dados (não partilhe nem faça \textit{push} destas chaves).
 
-Antes de avançar é realizada uma mudança de raiz (\verb|cd deploy|) para a realização dos próximos passos.
+Antes de avançar posicionamo-nos na pasta \texttt{deploy} (\verb|cd deploy|) para a realização dos próximos passos.
 
 \subsubsection{Criação de Imagens}\label{sec:int-imagens}
 
@@ -187,12 +189,12 @@ Na \acrshort{api} de dados se pretende manter os dados entre atualizações (cri
 Do lado da interface os volumes que não deve eliminar são \texttt{acme-interface-data} e \texttt{crontabs-interface} pelas mesmas razões já referidas para os volumes \texttt{acme-data} e \texttt{crontabs}. 
 
 \subsubsection{Povoamento do \textit{MongoDB}}\label{sec:inst-povMDB}
-Até ao momento nesta instalação a \acrshort{bd} \textit{MongoDB} continua vazia. Se já possui uma \acrshort{bd} do \textit{MongoDB} já povoada é possível proceder à migração. Caso contrário precisará de pelo menos inserir à mão (através do cliente do \textit{MongoDB}) um utilizador com o nível de Administrador de Perfil Tecnológico à coleção \texttt{users} caso contrário será impossível registar/inserir utilizadores pela interface.
+Até ao momento nesta instalação a \acrshort{bd} \textit{MongoDB} continua vazia. Se já possui uma \acrshort{bd} do \textit{MongoDB} já povoada é possível proceder à migração. Caso contrário precisará de pelo menos inserir à mão (através do cliente do \textit{MongoDB}) um utilizador com o nível de Administrador de Perfil Tecnológico à coleção \texttt{users} caso contrário será impossível registar/inserir utilizadores pela interface já que apenas pessoal registado e com determinado nívelpode registar/inserir utilizadores.
 
 \begin{description}
     \item \textbf{Backup}
 
-    De forma a realizar a migração é necessário primeiro fazer o backup da \acrshort{bd} já povoada. Basta realizar o seguinte comando de forma a realizar backup:
+    De forma a realizar a migração é necessário primeiro fazer o backup da \acrshort{bd} já povoada. Para realizar o backup executa-se o comando seguinte:
     \footnotesize
     \begin{verbatim}
     mongodump --db <nome da BD> --out <caminho a guardar o backup>
@@ -200,10 +202,10 @@ Até ao momento nesta instalação a \acrshort{bd} \textit{MongoDB} continua vaz
     \normalsize
     \vspace{-0.5cm}
     No destino final será criada uma pasta com o nome da \acrshort{bd} que irá possuir o backup da \acrshort{bd}.
-    De forma a realizar backup é necessário que o \textit{MongoDB} esteja a correr.
-    \item \textbf{Inserção do backup}
+    Para se poder realizar backup é necessário que o \textit{MongoDB} esteja a correr.
+    \item \textbf{Importação da informação}
 
-    Primeiro pare os \textit{containers}:
+    Primeiro, é necessário parar \textit{containers}:
     \footnotesize
     \begin{verbatim}
     docker stop clav_nginx
@@ -212,7 +214,7 @@ Até ao momento nesta instalação a \acrshort{bd} \textit{MongoDB} continua vaz
     \end{verbatim}
     \normalsize
     \vspace{-0.3cm}
-    Para inserir os dados nesta instalação basta executar o seguinte comando:
+    Para importar os dados nesta instalação basta executar o seguinte comando:
     \footnotesize
     \begin{verbatim}
     docker run --rm -v clav-mongodb-data:/data/db \
@@ -221,7 +223,7 @@ Até ao momento nesta instalação a \acrshort{bd} \textit{MongoDB} continua vaz
     \end{verbatim}
     \normalsize
     \vspace{-0.3cm}
-    Por fim, volte a iniciar os \textit{containers}:
+    No fim, é necessário voltar a iniciar os \textit{containers}:
     \footnotesize
     \begin{verbatim}
     docker start clav_mongo clav_graphdb
@@ -264,7 +266,7 @@ docker stop interface
 \end{center}
 \normalsize
 
-Antes de recriar as imagens se pretender realizar \textit{push} destas deve alterar as \textit{tags} nos ficheiros de configuração \textit{.env} da(s) imagem(s) que precisará de recriar por forma a não sobescrever \textit{tags}. Fica à escolha do utilizador. Apenas tem de ter em conta que as variáveis ambiente \texttt{GRAPHDB\_IMG}, \texttt{SERVER\_IMG} e \texttt{INTERFACE\_IMG} podem ser utilizadas para gerir as imagens da forma que pretender.
+Antes de recriar as imagens se pretender colocá-las no \textit{DockerHub} deve alterar as \textit{tags} nos ficheiros de configuração \textit{.env} da(s) imagem(s) que precisará de recriar por forma a não sobescrever \textit{tags}. Fica à escolha do utilizador. Apenas tem de ter em conta que as variáveis ambiente \texttt{GRAPHDB\_IMG}, \texttt{SERVER\_IMG} e \texttt{INTERFACE\_IMG} podem ser utilizadas para gerir as imagens da forma que pretender.
 
 De seguida recria-se os \textit{containers} necessários:
 \begin{itemize}
@@ -305,9 +307,11 @@ Caso o \textit{build} use a \textit{cache} para construir as imagens adicione a 
 Por fim, inicia-se os \textit{containers} da \acrshort{api} de dados ou da interface dependendo em que pasta \texttt{deploy} está através do comando:
 \footnotesize
 \begin{verbatim}
-    docker-compose up
+    docker-compose up -d
 \end{verbatim}
 \normalsize
+
+Note que, a opção \texttt{-d} é necessária para o comando libertar novamente a consola e colocar os \textit{containers} a correr em background.
 
 \subsection{Backup}\label{sec:inst-backup}
 
@@ -329,7 +333,7 @@ Em termos de backup, os volumes de maior importância são o do \textit{MongoDB}
         -v $(pwd):/backup ubuntu bash -c "cd /data/db && \
         tar cvf /backup/clav_mongo.tar ."
         
-    #Pode agora voltar a iniciar os containers
+    #Pode agora iniciar os containers
     docker start clav_mongo clav_graphdb
     docker start clav_server
     docker start clav_nginx
@@ -341,9 +345,9 @@ A partir daqui pode armazenar estes onde achar mais conveniente e seguro.
 
 \subsection{Migração}\label{sec:inst-migracao}
 
-Para realizar a migração para outra máquina é necessário primeiro realizar o backup dos volumes da máquina atual. Pode para isso seguir a secção~\ref{sec:inst-backup}. Depois deve copiar os ficheiros comprimidos (\acrshort{tar}) para a nova máquina de instalação.
+Para realizar a migração para outra máquina é necessário primeiro realizar o backup dos volumes da máquina atual. Pode para isso seguir a descrição dada na secção~\ref{sec:inst-backup}. Depois deve copiar os ficheiros comprimidos (\acrshort{tar}) para a nova máquina de instalação.
 
-Os passos seguintes serão a realização da primeira instalação na nova máquina, bastando para isso seguir a secção~\ref{sec:inst-prim} mas sem realizar o povoamento do \textit{MongoDB}.
+Os passos seguintes serão a realização da primeira instalação na nova máquina, bastando para isso seguir descrição dada na secção~\ref{sec:inst-prim} mas sem realizar o povoamento do \textit{MongoDB}.
 
 O passo final é restaurar os volumes através dos backups (ficheiros comprimidos). Para tal siga os seguintes passos para restaurar os volumes:
 \begin{lstlisting}[caption=Restauro dos volumes do \textit{docker}]
