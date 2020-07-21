@@ -101,7 +101,7 @@ As imagens usadas na instalação podem ser geradas com antecedência, fora da m
 
     \item \textbf{Interface}
 
-    Existe apenas uma imagem (\texttt{interface}) que deve ser recriada sempre que a versão da \acrshort{api} de dados (variável ambiente \texttt{API\_VERSION} do ficheiro \textit{.env} da pasta \textit{deploy}) ou o \acrshort{url} da \acrshort{api} de dados para onde a interface irá fazer os pedidos (variável ambiente \texttt{API\_URL} do ficheiro \textit{.env} da pasta \textit{deploy}) ou o código mude.
+    Existe apenas uma imagem (\texttt{interface}) que deve ser recriada sempre que a versão da \acrshort{api} de dados (variável ambiente \texttt{API\_VERSION} do ficheiro \textit{.env} da pasta \textit{deploy}) ou o \acrshort{url} da \acrshort{api} de dados para onde a interface irá fazer os pedidos (variável ambiente \texttt{API\_URL} do ficheiro \textit{.env} da pasta \textit{deploy}) ou a versão da interface (variável ambiente \texttt{INTERFACE\_VERSION} do ficheiro \textit{.env} da pasta \textit{deploy} ou o código mude.
 \end{description}
 
 Pode associar uma \textit{tag} a cada imagem a criar, no ficheiro \textit{.env} da \acrshort{api} de dados, nas variáveis ambiente \texttt{GRAPHDB\_IMG} (imagem \texttt{graphdb}) e \texttt{SERVER\_IMG} (imagem \texttt{server}) onde deve inserir o nome do repositório do \textit{DockerHub} e a \textit{tag} a usar (\verb|<repositório>:<tag>|). Já no ficheiro \textit{.env} da interface está presente a variável ambiente \texttt{INTERFACE\_IMG} com o mesmo intuito mas para a imagem da interface. Para criar estas imagens basta correr na pasta \texttt{deploy} da \acrshort{api} de dados (para criar as imagens da \acrshort{api} de dados) ou da interface (para criar a imagem da interface):
@@ -141,7 +141,7 @@ Na \acrshort{api} de dados para além das já referidas variáveis ambiente (\te
 \caption{Variáveis ambiente do ficheiro \textit{.env} da \acrshort{api} de dados sem \textit{Kong}}
 \end{table}
 
-Quanto à interface para além das já referidas variáveis ambiente (\texttt{API\_VERSION}, \texttt{API\_URL} e \texttt{INTERFACE\_IMG}) possui também as seguintes variáveis ambiente:
+Quanto à interface para além das já referidas variáveis ambiente (\texttt{API\_VERSION}, \texttt{API\_URL}, \texttt{INTERFACE\_VERSION} e \texttt{INTERFACE\_IMG}) possui também as seguintes variáveis ambiente:
 
 \begin{table}[H]
 \fontsize{10}{12}\selectfont
