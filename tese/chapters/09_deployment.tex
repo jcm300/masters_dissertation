@@ -89,12 +89,12 @@ As imagens usadas na instalação podem ser geradas com antecedência, fora da m
 
     Necessário realizar a criação de duas imagens: \texttt{graphdb} e \texttt{server}.
 
-    Para criar a imagem \texttt{graphdb} é necessário dois ficheiros adicionais: um ficheiro zip com a distribuição do \textit{GraphDB} e um ficheiro \textit{Turtle} com a ontologia a carregar para o \textit{GraphDB}. A distribuição do \textit{GraphDB} deve ser obtida através do site do \textit{GraphDB}\footnote{Versão gratuita: \url{https://www.ontotext.com/products/graphdb/graphdb-free/}} ao preencher o formulário. Após o preenchimento do formulário irá receber um email do \textit{GraphDB} de onde deve realizar o \textit{download} da versão ``stand-alone server''. O ficheiro zip tem um nome parecido com ``graphdb-free-8.11.0-dist.zip'' onde ``free-8.11.0'' indica a versão do \textit{GraphDB} que deve colocar na variável ambiente \texttt{GRAPHDB\_VERSION} do ficheiro \textit{.env} da pasta \texttt{deploy}. Deve colocar o ficheiro zip na pasta \texttt{graphdb} da pasta \texttt{deploy}. Nesta pasta (\texttt{graphdb}) deve também colocar o ficheiro \textit{Turtle} e indicar na variável ambiente \texttt{GRAPHDB\_DATA\_FILE} o nome deste ficheiro (ex: clav-2020-01-04-false.ttl). Sempre que um destes ficheiros é alterado é necessário criar de novo a imagem.
+    Para criar a imagem \texttt{graphdb} é necessário dois ficheiros adicionais: um ficheiro zip com a distribuição do \textit{GraphDB} e um ficheiro \textit{Turtle} com a ontologia a carregar para o \textit{GraphDB}. A distribuição do \textit{GraphDB} deve ser obtida através do site do \textit{GraphDB}\footnote{Versão gratuita: \url{https://www.ontotext.com/products/graphdb/graphdb-free/}} ao preencher o formulário. Após o preenchimento do formulário irá receber um email do \textit{GraphDB}, como na figura~\ref{fig:graphdb_email}, de onde deve realizar o \textit{download} da versão ``stand-alone server''. O ficheiro zip tem um nome parecido com ``graphdb-free-8.11.0-dist.zip'' onde ``free-8.11.0'' indica a versão do \textit{GraphDB} que deve colocar na variável ambiente \texttt{GRAPHDB\_VERSION} do ficheiro \textit{.env} da pasta \texttt{deploy}. Deve colocar o ficheiro zip na pasta \texttt{graphdb} da pasta \texttt{deploy}. Nesta pasta (\texttt{graphdb}) deve também colocar o ficheiro \textit{Turtle} e indicar na variável ambiente \texttt{GRAPHDB\_DATA\_FILE} o nome deste ficheiro (ex: clav-2020-01-04-false.ttl). Sempre que um destes ficheiros é alterado é necessário criar de novo a imagem.
 
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.4\textwidth]{img/graphdb_email.png}
-        \caption{Parte do email recebido pelo GraphDB\label{fig:instalacao-email}}
+        \caption{Parte do email recebido pelo GraphDB\label{fig:instalacao-email}\label{fig:graphdb_email}}
     \end{figure}
 
     A criação da imagem \texttt{server} é necessária quando não existe ou quando o código da \acrshort{api} de dados muda.
@@ -141,7 +141,7 @@ Na \acrshort{api} de dados para além das já referidas variáveis ambiente (\te
 \caption{Variáveis ambiente do ficheiro \textit{.env} da \acrshort{api} de dados sem \textit{Kong}}
 \end{table}
 
-Quanto à interface para além das já referidas variáveis ambiente (\texttt{API\_VERSION}, \texttt{API\_URL}, \texttt{INTERFACE\_VERSION} e \texttt{INTERFACE\_IMG}) possui também as seguintes variáveis ambiente:
+Quanto à interface para além das já referidas variáveis ambiente (\texttt{API\_VERSION}, \texttt{INTERFACE\_VERSION}, \texttt{API\_URL} e \texttt{INTERFACE\_IMG}) possui também as seguintes variáveis ambiente:
 
 \begin{table}[H]
 \fontsize{10}{12}\selectfont
@@ -584,20 +584,20 @@ Nesta secção foi também comparada a configuração do \acrshort{https} da int
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\textwidth]{img/sslLabsAPISemKong.png}
-    \caption{Classificação \textit{SSL Labs} da \acrshort{api} sem \textit{Kong}}
+    \caption{Classificação \textit{SSL Labs} da \acrshort{api} sem \textit{Kong}\label{fig:sslLabsAPISemKong}}
 \end{figure}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\textwidth]{img/sslLabsAPIComKong.png}
-    \caption{Classificação \textit{SSL Labs} da \acrshort{api} com \textit{Kong}}
+    \caption{Classificação \textit{SSL Labs} da \acrshort{api} com \textit{Kong}\label{fig:sslLabsAPIComKong}}
 \end{figure}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\textwidth]{img/sslLabsInterface.png}
-    \caption{Classificação \textit{SSL Labs} da Interface}
+    \caption{Classificação \textit{SSL Labs} da Interface\label{fig:sslLabsInterface}}
 \end{figure}
 
-Como é possível verificar pelas imagens as 3 tem a classificação máxima, A+, bem como a mesma classificação em cada componente específica. A \acrshort{api} sem \textit{Kong} é normal ter a mesma classificação que a interface porque a configuração usada é praticamente a mesma. Quanto ao caso da \acrshort{api} de dados com \textit{Kong} esta apenas funciona em \textit{browsers} que suportam \acrshort{sni} o que são raros já que quase todos suportam atualmente. Além disso a versão com \textit{Kong} não tem ativado o \acrshort{ocsp} \textit{stapling} (uma das recomendações de segurança) enquanto que nos outros casos esta está ativa. Estas duas diferenças da versão com \textit{Kong} devem-se à forma como o \textit{Kong} e o \textit{plugin} do \textit{Kong} \texttt{acme} funcionam.
+Como é possível verificar pelas figuras~\ref{fig:sslLabsAPISemKong},~\ref{fig:sslLabsAPIComKong} e~\ref{fig:sslLabsInterface} as 3 tem a classificação máxima, A+, bem como a mesma classificação em cada componente específica. A \acrshort{api} sem \textit{Kong} é normal ter a mesma classificação que a interface porque a configuração usada é praticamente a mesma. Quanto ao caso da \acrshort{api} de dados com \textit{Kong} esta apenas funciona em \textit{browsers} que suportam \acrshort{sni} o que são raros já que quase todos suportam atualmente. Além disso a versão com \textit{Kong} não tem ativado o \acrshort{ocsp} \textit{stapling} (uma das recomendações de segurança) enquanto que nos outros casos esta está ativa. Estas duas diferenças da versão com \textit{Kong} devem-se à forma como o \textit{Kong} e o \textit{plugin} do \textit{Kong} \texttt{acme} funcionam.
 
 Por fim, nos 3 casos há um único sinal de aviso, que se deve à falta do \textit{\acrshort{caa} record} (uma das melhorias de segurança referidas) no \acrshort{dns}. Contudo, com os resultados obtidos conseguimos ter alguma certeza de que as configurações realizadas são atualmente seguras.
 

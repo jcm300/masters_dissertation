@@ -46,13 +46,13 @@ De seguida é apresentado um diagrama com a estratégia de proteção que será 
     \caption{Estratégia de proteção da \acrshort{api} de dados}\label{fig:protStrag}
 \end{figure}
 
-O \texttt{isLoggedInKey}, o \texttt{isLoggedInUser} e o \texttt{checkLevel} serão \textit{middlewares} que caso sejam usados numa rota definem desde logo quem pode aceder. Ou seja, se fou usado o \texttt{isLoggedInUser} sabe-se desde logo que apenas os utilizadores podem aceder. Por outro lado, se for usado o \texttt{isLoggedInKey} significa que podem aceder a rota as Chaves \acrshort{api} e os utilizadores. Para além disso, quando o \texttt{checkLevel} é usado após o \texttt{isLoggedInUser}, sabe-se que apenas parte dos utilizadores pode aceder, sendo que este \textit{middleware} recebe como argumento os níveis de utilizadores que podem aceder a rota. A informação do nível do utilizador está presente no \acrshort{jwt} (\textit{token}) enviado.
+Como se pode observar na figura~\ref{fig:protStrag}, o \texttt{isLoggedInKey}, o \texttt{isLoggedInUser} e o \texttt{checkLevel} serão \textit{middlewares} que caso sejam usados numa rota definem desde logo quem pode aceder. Ou seja, se for usado o \texttt{isLoggedInUser} sabe-se desde logo que apenas os utilizadores podem aceder. Por outro lado, se for usado o \texttt{isLoggedInKey} significa que podem aceder a rota as Chaves \acrshort{api} e os utilizadores. Para além disso, quando o \texttt{checkLevel} é usado após o \texttt{isLoggedInUser}, sabe-se que apenas parte dos utilizadores pode aceder, sendo que este \textit{middleware} recebe como argumento os níveis de utilizadores que podem aceder a rota. A informação do nível do utilizador está presente no \acrshort{jwt} (\textit{token}) enviado.
 
 Cumpre-se assim, quase todos os requisitos anunciados com a exceção dos da validade dos \textit{token}'s. Estes são atingidos na geração dos \acrshort{jwt}'s no qual o \textit{token} de um utilizador é gerado para ter apenas a validade de 8 horas e uma Chave \acrshort{api} é gerada para ter a validade de 30 dias.
 
 Após descrito como devem ser feitos os pedidos à \acrshort{api} e a estratégia de proteção a desenvolver, irá ser apresentado possíveis fluxos de interação entre utilizadores (\textit{browser}, \textit{app}, etc) e o servidor da \acrshort{api}.
 
-O fluxo de autenticação de um utilizador na \acrshort{api} a ser implementado permite o seguinte:
+O fluxo de autenticação de um utilizador na \acrshort{api} a ser implementado pode observar-se na figura~\ref{fig:userAuth}:
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{img/userAuth.png}
@@ -71,7 +71,7 @@ O fluxo de autenticação de um utilizador na \acrshort{api} a ser implementado 
     \item Caso o \textit{token} enviado seja válido e não tenha expirado são devolvidas as entidades
 \end{enumerate}
 
-O fluxo de autenticação e renovação de uma Chave \acrshort{api} na \acrshort{api} a ser implementado permite o seguinte:
+O fluxo de autenticação e renovação de uma Chave \acrshort{api} na \acrshort{api} a ser implementado pode ser observado na figura~\ref{fig:chaveAuth}:
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{img/chaveAuth.png}
@@ -500,11 +500,11 @@ Tendo em conta os requisitos a solução passa por colocar um \textit{reverse pr
     \end{itemize}
 \end{itemize}
 
-A arquitetura a desenvolver será a seguinte:
+A arquitetura a desenvolver com \acrshort{https}, presente na figura~\ref{fig:apiHttpsArch}, é semelhante à presente na figura~\ref{fig:clav_struct2} tendo como única diferença a adição do \textit{Nginx} à frente da \acrshort{api} de dados:
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{img/apiHttpsArch.png}
-    \caption{Arquitetura a desenvolver com \acrshort{https}}
+    \caption{Arquitetura a desenvolver com \acrshort{https}\label{fig:apiHttpsArch}}
 \end{figure}
 
 A ligação a tracejado entre os dois \textit{Nginx}'s pode ou não existir, irá depender se se pretende ou não que o servidor da interface reencaminhe pedidos para o servidor da \acrshort{api} de dados.
@@ -558,7 +558,7 @@ Entre o \textit{Nginx} e o \textit{Kong} a escolha irá prender-se com a facilid
 
 \subsection{Arquitetura}
 
-Após a escolha da \textit{\acrshort{api} Gateway} a usar (\textit{Kong}) é necessário proceder ao esboço de uma arquitetura base a desenvolver. Esta arquitetura apresenta-se de seguida, onde apenas se inclui a \acrshort{api} visto a interface não sofrer qualquer alteração:
+Após a escolha da \textit{\acrshort{api} Gateway} a usar (\textit{Kong}) é necessário proceder ao esboço de uma arquitetura base a desenvolver. Esta arquitetura apresenta-se de seguida, na figura~\ref{fig:apiGatewayArch}, onde apenas se inclui a \acrshort{api} visto a interface não sofrer qualquer alteração:
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{img/apiGatewayArch.png}

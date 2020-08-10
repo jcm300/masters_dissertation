@@ -142,7 +142,7 @@ No projeto \acrshort{clav} irá ser implementado a autenticação com recurso ao
     \item \acrfull{cmd}: Um dos objetivos desta tese é a implementação da autenticação com recurso a este certificado digital. Com o \acrshort{cmd}, após o utilizador associar um número de telemóvel ao \acrshort{nic}, o utilizador pode autenticar-se com o número de telemóvel, o código \acrshort{pin} da \acrshort{cmd} e o código de segurança temporário enviado por \acrshort{sms}.
 \end{itemize}
 
-De forma a completar a figura~\ref{fig:authgov} apresenta-se de seguida o fluxo de pedidos efetuado entre a \acrshort{clav} e o Autenticação.gov de forma a autenticar um utilizador na \acrshort{clav}:~\cite{agov}
+De forma a completar a figura~\ref{fig:authgov} apresenta-se de seguida, na figura~\ref{fig:fluxoauthgov}, o fluxo de pedidos efetuado entre a \acrshort{clav} e o Autenticação.gov de forma a autenticar um utilizador na \acrshort{clav}:~\cite{agov}
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{img/fluxoauthgov.png}
@@ -502,12 +502,12 @@ Além das vantagens apresentadas as três são \textit{open-source}. Para além 
 
 \subsection{\textit{Swagger \acrshort{ui}}}
 
-O \textit{Swagger \acrshort{ui}} permite a qualquer um visualizar uma \acrshort{api} \acrshort{rest}. A partir de um documento \acrshort{json} ou \acrshort{yaml} (especificação \textit{OpenAPI}) é automaticamente gerado uma documentação interativa.
+O \textit{Swagger \acrshort{ui}} permite a qualquer um visualizar uma \acrshort{api} \acrshort{rest}. A partir de um documento \acrshort{json} ou \acrshort{yaml} (especificação \textit{OpenAPI}) é automaticamente gerado uma documentação interativa. Na figura~\ref{fig:swaggerUI} está presente a visualização da documentação de uma \acrshort{api} através do \textit{Swagger \acrshort{ui}}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{img/swaggerUI.png}
-    \caption{\textit{Swagger \acrshort{ui}} exemplo}
+    \caption{\textit{Swagger \acrshort{ui}} exemplo\label{fig:swaggerUI}}
 \end{figure}
 
 \subsubsection{Alternativas}
@@ -1126,12 +1126,12 @@ Há duas formas (desafios) do cliente \acrshort{acme} provar que controla o dom�
 
 Juntamente com os desafios, o \textit{Let's Encrypt} envia um \textit{nonce} (\textit{string} usada uma única vez) que o cliente deve assinar com a chave privada por forma a garantir que este controla o par de chaves evitando \textit{replay attacks}\footnote{Para mais informação ver \url{https://www.kaspersky.com/resource-center/definitions/replay-attack}}.
 
-Veja-se agora um exemplo concreto em que o cliente \acrshort{acme} usa o segundo desafio para provar que controla o domínio (\texttt{example.com}):
+Veja-se agora, na figura~\ref{fig:domainValidation}, um exemplo concreto em que o cliente \acrshort{acme} usa o segundo desafio para provar que controla o domínio (\texttt{example.com}):
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{img/domainValidation.png}
-    \caption{Exemplo de validação do domínio pelo \textit{Let's Encrypt} com sucesso}
+    \caption{Exemplo de validação do domínio pelo \textit{Let's Encrypt} com sucesso\label{fig:domainValidation}}
 \end{figure}
 
 Como o desafio teve sucesso e o \textit{nonce} assinado pelo cliente \acrshort{acme} é válido então o cliente \acrshort{acme} identificado pela chave pública está autorizado a gerir os certificados para o domínio \texttt{example.com}. Assim, para gerar/renovar/revogar o certificado para o domínio basta enviar mensagens de gestão do certificado assinadas com o chave privada (a que assinou o \textit{nonce}) para o \textit{Let's Encrypt}.
@@ -1233,12 +1233,6 @@ Existem várias \textit{\acrshort{api} Gateway}s das quais se destacam \textit{E
     \item Suporte para \acrshort{https}, \acrshort{cors}, \acrshort{jwt} entre outros
 \end{itemize}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.7\textwidth]{img/expressGatArch.png}
-    \caption{Arquitetura do \textit{Express Gateway}.~\cite{kongArch}}
-\end{figure}
-
 Por definição, o \textit{Express Gateway} usa uma base de dados em memória para testes e para começar a experimentar. O \textit{Express Gateway} pode correr com ou sem \textit{backend} e se uma base de dados persistente for desejada é suportado o \textit{Redis}. A configuração do \textit{Express Gateway} é armazenada num ficheiro \acrshort{yaml} e como tal o \textit{Express Gateway} apenas guarda dados transacionais como informação de utilizadores e de \textit{tokens} de acesso na base de dados. Ou seja, nem sempre é necessário o uso da base de dados, depende do caso de uso.
 
 A configuração como já referido é definida num ficheiro \acrshort{yaml} sendo que existe uma \acrshort{api} e uma \acrshort{cli} para gerir utilizadores e credenciais. Oficialmente não existe uma \acrshort{gui} para a \acrshort{api}.
@@ -1261,12 +1255,6 @@ Algumas das funcionalidades presentes são:~\cite{kong}
     \item Suporta todos os casos de uso de microserviços, padrões e arquiteturas
     \item Suporte para \acrshort{https}, \acrshort{cors}, \acrshort{jwt} entre outros
 \end{itemize}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.85\textwidth]{img/kongArch.png}
-    \caption{Arquitetura do \textit{Kong}.~\cite{kongArch}}
-\end{figure}
 
 A forma mais fácil de instalar (\textit{deploy}) o \textit{Kong} é através do uso de \textit{Docker} ou de \textit{Kubernetes}.
 
@@ -1314,12 +1302,6 @@ Em termos de funcionalidades, o \textit{Tyk} possui:~\cite{tyk}
     \item \textit{Restarts} sem tempo de inatividade
     \item Suporte para \acrshort{https}, \acrshort{cors}, \acrshort{jwt} entre outros
 \end{itemize}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.5\textwidth]{img/tykArch.png}
-    \caption{Arquitetura do \textit{Tyk}.~\cite{tyk}}
-\end{figure}
 
 O \textit{core} da \textit{\acrshort{api} Gateway} apenas necessita do \textit{Redis} contudo o produto todo (incluindo o \textit{dashboard}) necessita também como dependências \textit{MongoDB} e \textit{Tyk Pump}. Isto coloca uma maior carga na máquina do servidor que se pode evitar tornando também mais difícil de instalar e de gerir numa máquina local.
 
