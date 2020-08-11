@@ -1,5 +1,4 @@
 \RequirePackage{silence}
-\WarningFilter{hyperref}{Token not allowed in a PDF string (Unicode)}
 \WarningFilter{titlesec}{Non standard sectioning command}
 \WarningFilter{remreset}{The remreset package is obsolete}
 \WarningFilter{scrlayer-scrpage}{Very small head height detected!}
@@ -99,24 +98,30 @@
 	\chapter{Estado da Arte da CLAV}
     \import{chapters/}{05_estado_da_arte_da_clav.tex}
 
-	% CHAPTER - State of the Art ---------------------
-	\chapter{Estado da Arte}
-    \import{chapters/}{06_estado_da_arte.tex}
+    \chapter{Proteção da \glsentryshort{api} de dados}
+    \import{chapters/}{06_protecao_api.tex}
 
-	% CHAPTER - Solution -----------------------------
-	\chapter{Solução}
-    \import{chapters/}{07_solucao.tex}
+    \chapter{Autenticação através de \glsentryshort{cmd}}
+    \import{chapters/}{07_autenticacao_cmd.tex}
 
-	% CHAPTER - Contribution -------------------------
-	\chapter{Implementação}
-    \import{chapters/}{08_implementacao.tex}
+    \chapter{Documentação da \glsentryshort{api} da \glsentryshort{clav}}
+    \import{chapters/}{08_documentacao_api.tex}
+
+	\chapter{Exportação de dados}
+    \import{chapters/}{09_exportacao_dados.tex}
+
+    \chapter{Migração de \glsentryshort{http} para \glsentryshort{https}}
+    \import{chapters/}{10_migracao_http_https.tex}
+
+    \chapter{\glsentryshort{api} Gateway}
+    \import{chapters/}{11_api_gateway.tex}
 
 	\chapter{Deployment}
-    \import{chapters/}{09_deployment.tex}
+    \import{chapters/}{12_deployment.tex}
 		
 	% CHAPTER - Conclusion/Future Work --------------
 	\chapter{Conclusões e Trabalho Futuro}
-    \import{chapters/}{10_conclusao.tex}
+    \import{chapters/}{13_conclusao.tex}
 			
 	\bookmarksetup{startatroot} % Ends last part.
 	\addtocontents{toc}{\bigskip} % Making the table of contents look good.

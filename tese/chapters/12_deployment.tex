@@ -234,7 +234,7 @@ Até ao momento nesta instalação a \acrshort{bd} \textit{MongoDB} continua vaz
     \vspace{-0.5cm}
 \end{description}
 
-\subsubsection{Melhorias de segurança do \acrshort{https}}\label{sec:inst-melhorias}
+\subsubsection{Melhorias de segurança do \glsentryshort{https}}\label{sec:inst-melhorias}
 Após concluir a instalação recomenda-se duas melhorias de segurança do \acrshort{https} onde uma delas apenas se pode realizar agora. Nesta secção quando se refere o domínio ou domínios pretende-se fazer referência aos presentes nos \texttt{DOMAINS} dos ficheiros de configuração \textit{.env} da \acrshort{api} de dados e da interface.
 
 A melhoria apenas agora possível é a adição dos domínios à \textit{\acrshort{hsts} preload list}. Para isso deve aceder a \url{https://hstspreload.org/}, começar por inserir um dos domínios e seguir os passos indicados. Repita para os restantes domínios. O \textit{\acrshort{hsts} preloading} permite que os \textit{browsers} saibam à partida que dominíos devem ser acedidos apenas por \acrshort{https}.\footnote{Ver \url{https://scotthelme.co.uk/hsts-preloading/} para perceber esta melhoria de segurança} 
@@ -500,7 +500,7 @@ e para iniciar os \textit{containers} deve correr:
 \normalsize
 \vspace{-0.5cm}
 
-\subsubsection{Melhorias de segurança do \acrshort{https}}
+\subsubsection{Melhorias de segurança do \glsentryshort{https}}
 
 Quanto às melhorias de segurança são iguais e são aplicadas de igual forma como na versão sem \textit{Kong} (ver~\ref{sec:inst-melhorias}).
 
@@ -576,7 +576,7 @@ Em termos de facilidade de instalação, as duas são bastante semelhantes pelo 
 
 Quanto à proteção da \acrshort{api} apesar das várias alterações (componente externo à \acrshort{api} de dados), são semelhantes tendo como principal diferença o não uso do \texttt{passport} na versão com \textit{Kong} o que não afeta a forma como é realizada a proteção. De certa forma, o uso do \texttt{passport} na versão sem \textit{Kong} é atualmente desnecessária desde que se coloque em \texttt{req.user} a informação presente no \textit{token} do utilizador. A essência da proteção da \acrshort{api} de dados manteve-se basicamente igual.
 
-\subsection{Configuração do \acrshort{https}}
+\subsection{Configuração do \glsentryshort{https}}
 
 A plataforma \textit{SSL Labs} possui uma ferramenta \textit{online} que permite-nos auferir a qualidade da configuração do \acrshort{https} num domínio.\footnote{Ver \url{https://www.ssllabs.com/ssltest/}} Para perceber melhor a classificação realizada pelo \textit{SSL Labs} recomenda-se a leitura de \url{https://github.com/ssllabs/research/wiki/SSL-Server-Rating-Guide}.
 
