@@ -1,5 +1,16 @@
-Neste capítulo é descrito como é alcançado o objetivo de proteger a \acrshort{api} de dados da \acrshort{clav} com múltiplos niveis de acesso.
-Para tal, descreve-se a tecnologia usada, \acrshort{jwt}, passando pela descrição da solução e sua implementação onde se descreve a proteção da interface e como esta melhora o desempenho da \acrshort{api} de dados e da própria interface.
+A proteção da \acrshort{api} de dados é bastante importante já que impede que pessoal não autorizado por esta
+não efetue alterações nos dados fornecidos por esta \acrshort{api} mantendo esta informação correta e consistente.
+Assim apenas pessoal autorizado poderá ler, adicionar, editar ou eliminar dados da \acrshort{api} de dados entre os
+quais dados de utilizadores, de entidades, de tipologias, etc.
+
+Além disso a necessidade de múltiplos níveis de acesso deve-se ao facto de que os utilizadores da \acrshort{api}
+não devem poder efetuar as mesmas operações na \acrshort{api} de dados. Ou seja, os utilizadores devem ter diferentes permissões
+onde alguns só poderão ler, outros ler e adicionar, outros ler e adicionar alguns dados, etc.
+
+Na secção seguinte é aprofundado o \acrshort{jwt}, uma tecnologia que permite auxiliar no processo de proteção
+da \acrshort{api} de dados ao tornar possível que os pedidos autorizados (com um \acrshort{jwt} válido) pela 
+\acrshort{api} de dados não sejam bloqueados e que aqueles sem autorização nem permissão dada pela \acrshort{api}
+de dados sejam bloqueados.
 
 \section{Estado da Arte}
 
@@ -448,3 +459,8 @@ Para além da proteção na \acrshort{api} de dados é necessário a proteção 
 Ainda na interface foram feitas algumas melhorias de segurança e performance na realização dos pedidos à \acrshort{api} de dados. Por forma a evitar com antecedência pedidos que já se sabe que irão falhar por falta de autenticação o que se faz é verificar o \textit{token} antes de efetuar qualquer pedido à \acrshort{api} de dados. Isto é possível porque para gerar os \textit{tokens} são usados pares de chaves pública/privadas. Assim, para realizar esta verificação a interface apenas necessita de ter as chaves públicas. Em termos técnicos foi criado um \textit{plugin} \textit{Vue.js} que acrescenta o método \texttt{request} à \textit{framework} que deve ser usado para efetuar os pedidos à \acrshort{api} de dados, sendo que este método trata de tudo o que é necessário para realizar os pedidos, desde obter o \textit{token} do \textit{localStorage}, colocar o \textit{token} de forma apropriada no pedido a efetuar, bem como trata da verificação do \textit{token} antes de efetuar o pedido. No caso do \textit{token} de um utilizador expirar este é redirecionado para a página de autenticação enquanto que no caso da Chave \acrshort{api} da interface expirar pede de novo a Chave \acrshort{api} à \acrshort{api} pela rota anteriormente referida (GET \path{/chaves/clavToken}). Depois do pedido ser realizado, este método também faz \textit{parse} de parte dos erros, ou seja, quando a resposta do pedido tem \acrshort{http} \textit{status} 401 ou 403 este método redireciona o utilizador e devolve uma mensagem de erro de acordo com o \acrshort{http} \textit{status}. Portanto quando é 401 e o utilizador estava autenticado o utilizador é redirecionado para a página de autenticação com uma mensagem de falta de autenticação. Se for uma Chave \acrshort{api} é redirecionado para a página inicial com uma mensagem de erro para tentar de novo. Já quando é 403, este caso apenas acontece com utilizadores autenticados, o utilizador é redirecionado para a página inicial com uma mensagem de erro de falta de permissões, mantendo o utilizador autenticado. No caso de o \acrshort{http} \textit{status} não ser um destes o erro é devolvido à função que chamou este método. Assim quem desenvolve a interface não precisa de se preocupar com estas situações nem de acrescentar sempre manualmente o \textit{token} ao pedido. Necessitam apenas de enviar os dados referentes ao pedido a efetuar (verbo, caminho, \textit{body}, \textit{query string}, etc) pelo que diminui a ocorrência de erros e facilita a manutenção do código.
 
 Por fim, uma pequena nota, um utilizador estar ou não autenticado na interface depende apenas se o \textit{token} do utilizador ainda se encontra ou não em \textit{localStorage}. Em casos de \acrshort{http} \textit{status} 401 este \textit{token} é eliminado de \textit{localStorage} necessitando o utilizador de voltar a se autenticar para voltar a obter um \textit{token} e colocá-lo em \textit{localStorage}.
+
+\section{Resumo}
+
+Neste capítulo é descrito como é alcançado o objetivo de proteger a \acrshort{api} de dados da \acrshort{clav} com múltiplos niveis de acesso.
+Para tal, descreveu-se a tecnologia usada, \acrshort{jwt}, passando pela descrição da solução e sua implementação onde se descreveu a proteção da interface e como esta melhora o desempenho da \acrshort{api} de dados e da própria interface.

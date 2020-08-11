@@ -1,10 +1,10 @@
-Adicionalmente aos objetivos desta dissertação foi realizada a migração de \acrshort{http} para \acrshort{https} da plataforma da \acrshort{clav}.
+O \acrfull{http} possui várias vulnerabilidades de segurança entre as quais \textit{man-in-the-middle attack}\footnote{Ver \url{https://owasp.org/www-community/attacks/Man-in-the-middle_attack}} bem como a possibilidade de \textit{eavesdropping}\footnote{Ato de ouvir de forma secreta ou furtiva conversas ou comunicações particulares de outras pessoas sem o consentimento destas} e \textit{tampering}\footnote{Alteração deliberada ou adulteração dos dados enviados entre cliente e servidor} da comunicação entre cliente e servidor.
 
-Para tal, foi inicialmente investigado o \acrfull{ca} gratuito \textit{Let's Encrypt} por forma a usá-lo para obter certificados para ativar o \acrshort{https} nos websites (\acrshort{api} e interface) da plataforma \acrshort{clav}.
+Com o intuito principal de superar estas vulnerabilidades foi criada a extensão ao \acrshort{http} o \acrfull{https}. Este protocolo de comunicação é encriptado através do uso de \acrfull{tls} ou através do uso do já \textit{deprecated}, por razões de segurança, \acrfull{ssl}. O \acrshort{https} oferece autenticação dos \textit{websites} acedidos bem como privacidade e integridade dos dados trocados.
 
-Na secção da solução apresenta-se os requisitos para esta migração bem como a arquitetura a desenvolver para obter uma plataforma com \acrshort{https}. 
+É assim de extrema importância a migração do atual \acrshort{http} para \acrshort{https} tanto na \acrshort{api} da \acrshort{clav} bem como na interface da \acrshort{clav}.
 
-Por fim, na secção da implementação descreve-se os passos realizados, aprofundando a configuração do \textit{Nginx} com várias recomendações de segurança para atingir a arquitetura apresentada na solução cumprindo os requisitos enunciados.
+Na próxima secção é aprofundado o principal \acrfull{ca} gratuito para a obtenção de certificados por forma a ativar o \acrshort{https} na plataforma \acrshort{clav}.
 
 \section{Estado da Arte}
 
@@ -80,13 +80,7 @@ Neste último comando, o ficheiro de configuração do \textit{Nginx} tem de est
 
 \section{Solução}
 
-O \acrfull{http} possui várias vulnerabilidades de segurança entre as quais \textit{man-in-the-middle attack}\footnote{Ver \url{https://owasp.org/www-community/attacks/Man-in-the-middle_attack}} bem como a possibilidade de \textit{eavesdropping}\footnote{Ato de ouvir de forma secreta ou furtiva conversas ou comunicações particulares de outras pessoas sem o consentimento destas} e \textit{tampering}\footnote{Alteração deliberada ou adulteração dos dados enviados entre cliente e servidor} da comunicação entre cliente e servidor.
-
-Com o intuito principal de superar estas vulnerabilidades foi criada a extensão ao \acrshort{http} o \acrfull{https}. Este protocolo de comunicação é encriptado através do uso de \acrfull{tls} ou através do uso do já \textit{deprecated}, por razões de segurança, \acrfull{ssl}. O \acrshort{https} oferece autenticação dos \textit{websites} acedidos bem como privacidade e integridade dos dados trocados.
-
-É assim de extrema importância a migração do atual \acrshort{http} para \acrshort{https} tanto na \acrshort{api} da \acrshort{clav} bem como na interface da \acrshort{clav}.
-
-Por forma a realizar esta migração há um conjunto de requisitos a cumprir:\label{sec:sol_httpsReq}
+Por forma a realizar a migração de \acrshort{http} para \acrshort{https} há um conjunto de requisitos a cumprir:\label{sec:sol_httpsReq}
 \begin{itemize}
     \item Usar um \acrshort{ca} gratuito
     \item Os certificados devem ser renovados automaticamente
@@ -214,3 +208,13 @@ Por fim, na configuração do \textit{Nginx} é também adicionado fora dos \tex
 ssl_prefer_server_ciphers on;
 \end{verbatim}
 com o objetivo de indicar a preferência de uso dos \textit{ciphers} \acrshort{ssl} do servidor definida na configuração (diretiva \texttt{ssl\_ciphers}) em vez dos \textit{ciphers} do cliente. Ficam assim cumpridas todas as recomendações de segurança e os requisitos apresentados em~\ref{sec:sol_httpsReq}, sendo usado para o \textit{deployment} o \textit{docker} e o \textit{docker-compose}. O \textit{deployment} é explicado mais à frente na secção~\ref{sec:deployNoKong}.
+
+\section{Resumo}
+
+Adicionalmente aos objetivos desta dissertação foi realizada a migração de \acrshort{http} para \acrshort{https} da plataforma da \acrshort{clav}.
+
+Para tal, foi inicialmente investigado o \acrfull{ca} gratuito \textit{Let's Encrypt} por forma a usá-lo para obter certificados para ativar o \acrshort{https} nos websites (\acrshort{api} e interface) da plataforma \acrshort{clav}.
+
+Na secção da solução apresentou-se os requisitos para esta migração bem como a arquitetura a desenvolver para obter uma plataforma com \acrshort{https}. 
+
+Por fim, na secção da implementação descreveu-se os passos realizados, aprofundando a configuração do \textit{Nginx} com várias recomendações de segurança para atingir a arquitetura apresentada na solução cumprindo os requisitos enunciados.
