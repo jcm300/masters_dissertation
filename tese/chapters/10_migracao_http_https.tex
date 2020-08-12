@@ -55,7 +55,7 @@ Como o desafio teve sucesso e o \textit{nonce} assinado pelo cliente \acrshort{a
 Apesar do cliente recomendado pelo \textit{Let's Encrypt} ser o \textit{Certbot} este necessita de ter permissões \textit{root} bem como tem várias dependências para ser executado. Já o cliente \textit{acme.sh}\footnote{Ver \url{https://github.com/acmesh-official/acme.sh}} é uma \textit{script} \textit{bash} que para a sua instalação basta efetuar \textit{download} da \textit{script} deste. Além disso, não necessita de quaisquer dependências nem de acesso \textit{root} (apenas necessita em casos especiais). A sua utilização, tal como o \textit{Certbot}, é feita através da execução de comandos \textit{bash}.
 
 Para instalar basta:
-\begin{lstlisting}
+\begin{lstlisting}[language=bash]
 curl https://get.acme.sh | sh
 #ou
 wget -O -  https://get.acme.sh | sh
@@ -64,12 +64,12 @@ wget -O -  https://get.acme.sh | sh
 Esta instalação irá ativar desde logo a auto renovação dos certificados através da criação de um \textit{cron job}\footnote{Mais informação em \url{https://www.ostechnix.com/a-beginners-guide-to-cron-jobs/}} pelo que o cliente \textit{acme.sh} irá correr periodicamente para verificar e renovar os certificados se necessário.
 
 Para obter um certificado executa-se:
-\begin{lstlisting}
+\begin{lstlisting}[language=bash]
 acme.sh --issue -d <dominio> -w <pasta web root>
 \end{lstlisting}
 
 Após obter o certificado, este pode ser instalado no \textit{Nginx} com:
-\begin{lstlisting}
+\begin{lstlisting}[language=bash]
 acme.sh --install-cert -d example.com \
     --key-file /path/to/keyfile/in/nginx/key.pem  \
     --fullchain-file /path/to/fullchain/nginx/fullchain.pem \

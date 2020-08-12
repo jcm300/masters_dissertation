@@ -114,7 +114,7 @@ As imagens usadas na instalação podem ser geradas com antecedência, fora da m
 
 Pode associar uma \textit{tag} a cada imagem a criar, no ficheiro \textit{.env} da \acrshort{api} de dados, nas variáveis ambiente \texttt{GRAPHDB\_IMG} (imagem \texttt{graphdb}) e \texttt{SERVER\_IMG} (imagem \texttt{server}) onde deve inserir o nome do repositório do \textit{DockerHub} e a \textit{tag} a usar (\verb|<repositório>:<tag>|). Já no ficheiro \textit{.env} da interface está presente a variável ambiente \texttt{INTERFACE\_IMG} com o mesmo intuito mas para a imagem da interface. Para criar estas imagens basta correr na pasta \texttt{deploy} da \acrshort{api} de dados (para criar as imagens da \acrshort{api} de dados) ou da interface (para criar a imagem da interface):
 
-\begin{lstlisting}
+\begin{lstlisting}[language=bash]
     docker-compose -f docker-compose-build.yml build
 \end{lstlisting}
 
@@ -172,7 +172,7 @@ Tanto na \acrshort{api} de dados como na interface, caso sejam alteradas estas v
 
 Após realizar as alterações necessárias pode correr o seguinte comando na pasta \texttt{deploy} da \acrshort{api} de dados (para iniciar a \acrshort{api} de dados) ou da interface (para iniciar a interface):
 
-\begin{lstlisting}
+\begin{lstlisting}[language=bash]
     docker-compose up
 \end{lstlisting}
 
@@ -180,7 +180,7 @@ Este comando também funciona mesmo que as imagens não estejam criadas desde qu
 
 Caso as imagens (\texttt{server} e \texttt{graphdb} ou \texttt{interface}) ainda não estejam criadas (nem presentes no \textit{DockerHub}) pode criá-las e de seguida iniciá-las através do comando:
 
-\begin{lstlisting}
+\begin{lstlisting}[language=bash]
     docker-compose -f docker-compose-build.yml up
 \end{lstlisting}
 
@@ -195,7 +195,7 @@ Até ao momento nesta instalação a \acrshort{bd} \textit{MongoDB} continua vaz
     \item \textbf{Backup}
 
     De forma a realizar a migração é necessário primeiro fazer o backup da \acrshort{bd} já povoada. Para realizar o backup executa-se o comando seguinte:
-    \begin{lstlisting}
+    \begin{lstlisting}[language=bash]
     mongodump --db <nome da BD> --out <caminho a guardar o backup>
     \end{lstlisting}
     No destino final será criada uma pasta com o nome da \acrshort{bd} que irá possuir o backup da \acrshort{bd}.
@@ -203,19 +203,19 @@ Até ao momento nesta instalação a \acrshort{bd} \textit{MongoDB} continua vaz
     \item \textbf{Importação da informação}
 
     Primeiro, é necessário parar \textit{containers}:
-    \begin{lstlisting}
+    \begin{lstlisting}[language=bash]
     docker stop clav_nginx
     docker stop clav_server
     docker stop clav_mongo clav_graphdb
     \end{lstlisting}
     Para importar os dados nesta instalação basta executar o seguinte comando:
-    \begin{lstlisting}
+    \begin{lstlisting}[language=bash]
     docker run --rm -v clav-mongodb-data:/data/db \
         -v <caminho absoluto onde foi guardado o backup>/<nome da BD>:/backup mongo \
         bash -c "(mongod &) && mongorestore --db <nome da BD> --drop /backup"
     \end{lstlisting}
     No fim, é necessário voltar a iniciar os \textit{containers}:
-    \begin{lstlisting}
+    \begin{lstlisting}[language=bash]
     docker start clav_mongo clav_graphdb
     docker start clav_server
     docker start clav_nginx
@@ -239,7 +239,7 @@ Para tal, deve-se primeiro parar os \textit{containers}:
 \begin{center}
 \begin{minipage}[t]{0.4\textwidth}
 \acrshort{api} de dados:
-\begin{lstlisting}
+\begin{lstlisting}[language=bash]
 docker stop clav_nginx
 docker stop clav_server
 docker stop clav_mongo clav_graphdb
@@ -248,7 +248,7 @@ docker stop clav_mongo clav_graphdb
 \hspace{0.5cm}
 \begin{minipage}[t]{0.4\textwidth}
 Interface:
-\begin{lstlisting}
+\begin{lstlisting}[language=bash]
 docker stop interface
 \end{lstlisting}
 \end{minipage}
@@ -260,21 +260,21 @@ Antes de recriar as imagens se pretender colocá-las no \textit{DockerHub} deve 
 De seguida recria-se os \textit{containers} necessários:
 \begin{itemize}
     \item Caso tenha mudado a ontologia ou pretenda atualizar a distribuição do \textit{GraphDB} recria-se a imagem do \texttt{clav\_graphdb} após as devidas alterações no ficheiro \textit{.env} da pasta \textit{deploy}:
-    \begin{lstlisting}
+    \begin{lstlisting}[language=bash]
     docker-compose -f docker-compose-build.yml build graphdb
     \end{lstlisting}
     No caso do ficheiro da ontologia ter sido alterado é necessário correr também:
-    \begin{lstlisting}
+    \begin{lstlisting}[language=bash]
     docker rm clav_graphdb
     docker volume rm clav-graphdb-data
     \end{lstlisting}
     \item Caso tenha sido alterado código na \acrshort{api} de dados (\verb|git pull|) recria-se a imagem do \texttt{clav\_server}:
-    \begin{lstlisting}
+    \begin{lstlisting}[language=bash]
     git pull #obter novos commits
     docker-compose -f docker-compose-build.yml build server
     \end{lstlisting}
     \item Caso tenha sido alterado código da interface (\verb|git pull|) ou uma das variáveis ambientes \texttt{API\_URL} e/ou \texttt{API\_VERSION} tenham sido alteradas recria-se a imagem da \texttt{interface}:
-    \begin{lstlisting}
+    \begin{lstlisting}[language=bash]
     git pull #obter novos commits
     docker-compose -f docker-compose-build.yml build interface
     \end{lstlisting}
@@ -282,7 +282,7 @@ De seguida recria-se os \textit{containers} necessários:
 Caso o \textit{build} use a \textit{cache} para construir as imagens adicione a \textit{flag} \verb|--no-cache| no comando de \textit{build} (a seguir à palavra \textit{build}).
 
 Por fim, inicia-se os \textit{containers} da \acrshort{api} de dados ou da interface dependendo em que pasta \texttt{deploy} está através do comando:
-\begin{lstlisting}
+\begin{lstlisting}[language=bash]
     docker-compose up -d
 \end{lstlisting}
 
@@ -291,7 +291,7 @@ Note que, a opção \texttt{-d} é necessária para o comando libertar novamente
 \subsection{Backup}\label{sec:inst-backup}
 
 Em termos de backup, os volumes de maior importância são o do \textit{MongoDB} e o do \textit{GraphDB} visto possuírem toda a informação da \acrshort{clav}. Note que este backup apenas implica a \acrshort{api} de dados. Por forma a realizar o backup deve:
-\begin{lstlisting}[caption=Backup dos volumes do \textit{docker}]
+\begin{lstlisting}[language=bash, caption=Backup dos volumes do \textit{docker}]
     #parar containers
     docker stop clav_nginx
     docker stop clav_server
@@ -325,7 +325,7 @@ Para realizar a migração para outra máquina é necessário primeiro realizar 
 Os passos seguintes serão a realização da primeira instalação na nova máquina, bastando para isso seguir descrição dada na secção~\ref{sec:inst-prim} mas sem realizar o povoamento do \textit{MongoDB}.
 
 O passo final é restaurar os volumes através dos backups (ficheiros comprimidos). Para tal siga os seguintes passos para restaurar os volumes:
-\begin{lstlisting}[caption=Restauro dos volumes do \textit{docker}]
+\begin{lstlisting}[language=bash, caption=Restauro dos volumes do \textit{docker}]
     #assumindo que se encontra na raiz onde se encontram os ficheiros TAR
 
     #parar containers
@@ -361,7 +361,7 @@ Os dois primeiros passos são exatamente iguais aos já descritos na primeira in
 
 De seguida realiza-se a clonagem do repositório \texttt{git}, muda-se de raiz e de \textit{branch}:
 
-\begin{lstlisting}
+\begin{lstlisting}[language=bash]
     git clone https://github.com/jcm300/docker-clav.git
     cd docker-clav
     git checkout kong
@@ -369,7 +369,7 @@ De seguida realiza-se a clonagem do repositório \texttt{git}, muda-se de raiz e
 
 Além disso, obtém-se o conteúdo dos submódulos do repositório ao correr:
 
-\begin{lstlisting}
+\begin{lstlisting}[language=bash]
     git submodule update --init
 \end{lstlisting}
 
@@ -379,7 +379,7 @@ Tal como na versão sem \textit{Kong}, numa versão de produção é necessário
 \begin{center}
 \begin{minipage}[t]{0.49\textwidth}
 Gerar dois pares de chaves pública/privada:
-\begin{lstlisting}
+\begin{lstlisting}[language=bash]
 #assume-se que se encontra na pasta docker-clav 
 openssl genrsa -out CLAV-auth/config/keys/apiKey 2048
 openssl rsa -in CLAV-auth/config/keys/apiKey -pubout \
@@ -392,7 +392,7 @@ openssl rsa -in CLAV-auth/config/keys/userKey -pubout \
 \hspace{0.4cm}
 \begin{minipage}[t]{0.48\textwidth}
 Na interface copiar para esta as chaves públicas geradas (este comando apenas funciona se a \acrshort{api} e a interface estão na mesma máquina):
-\begin{lstlisting}
+\begin{lstlisting}[language=bash]
 #assume-se que se encontra na pasta docker-clav 
 cp CLAV-auth/config/keys/apiKey.pub \
     CLAV-auth/config/keys/userKey.pub \
@@ -432,13 +432,13 @@ Caso sejam alteradas estas variáveis ambiente (tirando \texttt{SERVER\_AUTH\_IM
 
 Após realizar as alterações necessárias, para criar as imagens e iniciar a \acrshort{api} de dados basta correr:
 
-\begin{lstlisting}
+\begin{lstlisting}[language=bash]
     docker-compose -f docker-compose-build.yml up
 \end{lstlisting}
 
 Caso as imagens já estejam criadas ou estejam presentes no \textit{DockerHub} pode correr:
 
-\begin{lstlisting}
+\begin{lstlisting}[language=bash]
     docker-compose up
 \end{lstlisting}
 
@@ -448,7 +448,7 @@ De igual forma como na versão sem \textit{Kong} não deve eliminar os volumes \
 
 O povoamento do \textit{MongoDB} pode ser efetuado de igual forma como na primeira instalação sem \textit{Kong} (ver~\ref{sec:inst-povMDB}). As únicas diferenças é que para parar os \textit{containers} deve executar:
 
-\begin{lstlisting}
+\begin{lstlisting}[language=bash]
     docker stop clav_kong
     docker stop clav_redis clav_auth clav_server
     docker stop clav_mongo clav_graphdb
@@ -456,7 +456,7 @@ O povoamento do \textit{MongoDB} pode ser efetuado de igual forma como na primei
 
 e para iniciar os \textit{containers} deve correr:
 
-\begin{lstlisting}
+\begin{lstlisting}[language=bash]
 docker start clav_mongo clav_graphdb
 docker start clav_redis clav_auth clav_server
 docker start clav_kong
@@ -469,14 +469,14 @@ Quanto às melhorias de segurança são iguais e são aplicadas de igual forma c
 \subsection{Atualizações}
 
 Numa atualização com \textit{Kong} um dos primeiros passos é verificar se há atualizações:
-\begin{lstlisting}
+\begin{lstlisting}[language=bash]
     #assumindo que se encontra na pasta docker-clav
     git pull #obter novos commits
 \end{lstlisting}
 
 De resto as únicas diferenças em relação à versão sem \textit{Kong} (ver~\ref{sec:inst-update}) são o código a executar para parar os \textit{containers}. Além disso, tal como a imagem do \texttt{clav\_server}, quando o código do serviço de autenticação muda é necessário recriar a imagem do \texttt{clav-auth}:
 
-\begin{lstlisting}
+\begin{lstlisting}[language=bash]
     #assumindo que se encontra na pasta docker-clav
     cd CLAV-auth
     git pull origin master #obter novos commits
@@ -486,7 +486,7 @@ De resto as únicas diferenças em relação à versão sem \textit{Kong} (ver~\
 
 Por fim, outra diferença é que para recriar a imagem do \texttt{clav\_server} deve executar:
 
-\begin{lstlisting}
+\begin{lstlisting}[language=bash]
     #assumindo que se encontra na pasta docker-clav
     cd CLAV2018
     git pull origin kong #obter novos commits

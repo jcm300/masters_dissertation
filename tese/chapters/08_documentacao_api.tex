@@ -264,6 +264,8 @@ content:
           value: '<html><body><ul><li>item 1</li><li>item 2</li></ul></body></html>'
 \end{lstlisting}
 
+\vspace{-0.7cm}
+
 \subsubsection{Modelos}
 A secção \texttt{schemas} presente na secção \texttt{components} permite definir estruturas de dados 
 (modelo) a serem usados na \acrshort{api}. 
@@ -308,7 +310,7 @@ Comparemos as três hipóteses:~\cite{specsComp}
     \hline
     Especificação & Vantagens & Desvantagens \\ \hline
     \textit{OpenAPI} &
-        \begin{itemize}[leftmargin=0.3cm]
+        \begin{itemize}[leftmargin=0.3cm, topsep=0cm]
             \setlength\itemsep{0em}
             \item Grande adoção
             \item Grande comunidade de utilizadores
@@ -316,13 +318,13 @@ Comparemos as três hipóteses:~\cite{specsComp}
             \item Suporte para várias linguagens
         \end{itemize}
         &
-        \begin{itemize}[leftmargin=0.3cm]
+        \begin{itemize}[leftmargin=0.3cm, topsep=0cm]
             \setlength\itemsep{0em}
             \item Falta de construtores avançados para metadados
         \end{itemize}
         \\ \hline
     \acrshort{raml} &
-        \begin{itemize}[leftmargin=0.3cm]
+        \begin{itemize}[leftmargin=0.3cm, topsep=0cm]
             \setlength\itemsep{0em}
             \item Suporta construções avançadas
             \item Adoção decente
@@ -330,20 +332,20 @@ Comparemos as três hipóteses:~\cite{specsComp}
             \item Grande apoio da indústria 
         \end{itemize}
         &
-        \begin{itemize}[leftmargin=0.3cm]
+        \begin{itemize}[leftmargin=0.3cm, topsep=0cm]
             \setlength\itemsep{0em}
             \item Falta de ferramentas ao nível do código
             \item Ainda não comprovado a longo prazo
         \end{itemize}
         \\ \hline
     \textit{\acrshort{api} Blueprint} &
-        \begin{itemize}[leftmargin=0.3cm]
+        \begin{itemize}[leftmargin=0.3cm, topsep=0cm]
             \setlength\itemsep{0em}
             \item Fácil de entender
             \item Simples de escrever
         \end{itemize}
         &
-        \begin{itemize}[leftmargin=0.3cm]
+        \begin{itemize}[leftmargin=0.3cm, topsep=0cm]
             \setlength\itemsep{0em}
             \item Pouca adoção
             \item Falta de construtores avançados
@@ -382,75 +384,75 @@ Existem várias alternativas ao \textit{Swagger \acrshort{ui}}:
     \hline
     Ferramenta & Vantagens & Desvantagens \\ \hline
         \textit{Swagger \acrshort{ui}} &
-        \begin{itemize}[leftmargin=0.3cm]
+        \begin{itemize}[leftmargin=0.3cm, topsep=0cm]
             \setlength\itemsep{0em}
             \item Suporta a especificação \textit{OpenAPI}
             \item \textit{Open-source}
             \item Amplamente usado
         \end{itemize}
         &
-        %\begin{itemize}[leftmargin=0.3cm]
+        %\begin{itemize}[leftmargin=0.3cm, topsep=0cm]
         %    \setlength\itemsep{0em}
         %    \item
         %\end{itemize}
         \\ \hline
     \textit{Apiary}\footnote{Ver \url{https://apiary.io/}} &
-        \begin{itemize}[leftmargin=0.3cm]
+        \begin{itemize}[leftmargin=0.3cm, topsep=0cm]
             \setlength\itemsep{0em}
             \item Suporta a especificação \textit{\acrshort{api} Blueprint} e a especificação \textit{OpenAPI}
         \end{itemize}
         &
-        \begin{itemize}[leftmargin=0.3cm]
+        \begin{itemize}[leftmargin=0.3cm, topsep=0cm]
             \setlength\itemsep{0em}
             \item Necessário pagar de forma a puder integrar a documentação da \acrshort{api} num domínio próprio
             \item \textit{Closed-source}
         \end{itemize}
         \\ \hline
     \textit{\acrshort{api} Console}\footnote{Ver \url{https://github.com/mulesoft/api-console}} &
-        \begin{itemize}[leftmargin=0.3cm]
+        \begin{itemize}[leftmargin=0.3cm, topsep=0cm]
             \setlength\itemsep{0em}
             \item Suporta a especificação \acrshort{raml} e a especificação \textit{OpenAPI}
             \item \textit{Open-source}
         \end{itemize}
         &
-        %\begin{itemize}[leftmargin=0.3cm]
+        %\begin{itemize}[leftmargin=0.3cm, topsep=0cm]
         %    \setlength\itemsep{0em}
         %    \item
         %\end{itemize}
         \\ \hline
     \textit{Slate}\footnote{Ver \url{https://github.com/slatedocs/slate}} &
-        \begin{itemize}[leftmargin=0.3cm]
+        \begin{itemize}[leftmargin=0.3cm, topsep=0cm]
             \setlength\itemsep{0em}
             \item \textit{Open-source}
             \item \acrshort{api} definida em \textit{Markdown}
         \end{itemize}
         &
-        \begin{itemize}[leftmargin=0.3cm]
+        \begin{itemize}[leftmargin=0.3cm, topsep=0cm]
             \setlength\itemsep{0em}
             \item Não suporta nenhuma especificação
         \end{itemize}
         \\ \hline
     \textit{apiDoc}\footnote{Ver \url{https://apidocjs.com/}} &
-        \begin{itemize}[leftmargin=0.3cm]
+        \begin{itemize}[leftmargin=0.3cm, topsep=0cm]
             \setlength\itemsep{0em}
             \item Documentação criada a partir das anotações nos comentários do código
             \item \textit{Open-source} 
         \end{itemize}
         &
-        \begin{itemize}[leftmargin=0.3cm]
+        \begin{itemize}[leftmargin=0.3cm, topsep=0cm]
             \setlength\itemsep{0em}
             \item Não suporta nenhuma especificação
         \end{itemize}
         \\ \hline
     \textit{ReDoc}\footnote{Ver \url{https://github.com/Redocly/redoc}} &
-        \begin{itemize}[leftmargin=0.3cm]
+        \begin{itemize}[leftmargin=0.3cm, topsep=0cm]
             \setlength\itemsep{0em}
             \item Suporta a especificação \textit{OpenAPI}
             \item \textit{Open-source} 
             \item Fácil de integrar
         \end{itemize}
         &
-        %\begin{itemize}[leftmargin=0.3cm]
+        %\begin{itemize}[leftmargin=0.3cm, topsep=0cm]
         %    \setlength\itemsep{0em}
         %    \item
         %\end{itemize}
@@ -558,7 +560,7 @@ components:
 O ficheiro \textit{index.yaml} será a raiz do documento de especificação \textit{OpenAPI} a ser gerado com 
 a \textit{package} \texttt{yaml-include}. A seguinte estrutura dos ficheiros exemplifica como se pode dividir a 
 documentação por vários ficheiros com esta \textit{package} para gerar o documento de especificação \textit{OpenAPI}:
-\begin{lstlisting}[language=pseudocode, caption=Exemplo de estrutura dos ficheiros para gerar o documento de especificação \textit{OpenAPI}, label=exem:faf]
+\begin{lstlisting}[caption=Exemplo de estrutura dos ficheiros para gerar o documento de especificação \textit{OpenAPI}, label=exem:faf]
 * index.yaml
 * paths/
     * classes/
