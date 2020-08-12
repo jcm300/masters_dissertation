@@ -190,7 +190,7 @@ Apresentam-se de seguida os requisitos que a \textit{\acrshort{api} Gateway} dev
     \item Suportar \textit{rate limit} e \textit{cache};
     \item Suportar versionamento da \acrshort{api};
     \item Balancear carga e servir de \textit{reverse proxy};
-    \item Gerar \textit{Logs} e métricas;
+    \item Gerar \textit{logs} e métricas;
     \item Ser capaz de integrar a documentação desenvolvida na especificação \textit{OpenAPI}.
 \end{itemize}
 
@@ -209,13 +209,13 @@ esta \textit{\acrshort{api} Gateway} na próxima tabela.
         Ser gratuita e \textit{open-source} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} \\ \hline
         Suportar \acrshort{https}, \acrshort{cors} e \acrshort{jwt} & \acrshort{jwt} apenas na versão paga. Necessário usar \textit{plugin} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} \\ \hline
         Suportar Autenticação e Autorização personalizada (Criação de \textit{plugin}/middleware) & {\color{green}\ding{52}} (em \textit{Lua}) & {\color{green}\ding{52}} (em \textit{Lua} ou \textit{Go}) & {\color{green}\ding{52}} (em \textit{Python}, \textit{Lua} ou \textit{Javascript}) & {\color{green}\ding{52}} (em \textit{Javascript}) \\ \hline
-        Possível automatização do \textit{deployment} ao definir apenas ficheiros de configuração sem qualquer uso de \acrshort{cli}s, \acrshort{gui}s ou \acrshort{api}s & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{red}\ding{54}} & {\color{green}\ding{52}} \\ \hline
+        Ser possível de automatizar ao definir apenas ficheiros de configuração sem qualquer uso de \acrshort{cli}s, \acrshort{gui}s ou \acrshort{api}s & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{red}\ding{54}} & {\color{green}\ding{52}} \\ \hline
         Suportar deployment em \textit{Docker} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} \\ \hline
         Suportar \textit{rate limit} e \textit{cache} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & Não possui \textit{cache} \\ \hline
         Suportar versionamento da \acrshort{api} & {\color{red}\ding{54}} & {\color{red}\ding{54}} & {\color{green}\ding{52}} & {\color{red}\ding{54}} \\ \hline
-        Balanceamento de carga e servir de \textit{reverse proxy} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} \\ \hline
-        \textit{Logs} e métricas & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} \\ \hline
-        Integração da documentação desenvolvida na especificação \textit{OpenAPI} & {\color{red}\ding{54}} & {\color{red}\ding{54}} & {\color{green}\ding{52}} & {\color{red}\ding{54}} \\ \hline
+        Balancear carga e servir de \textit{reverse proxy} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} \\ \hline
+        Gerar \textit{logs} e métricas & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} & {\color{green}\ding{52}} \\ \hline
+        Ser capaz de integrar a documentação desenvolvida na especificação \textit{OpenAPI} & {\color{red}\ding{54}} & {\color{red}\ding{54}} & {\color{green}\ding{52}} & {\color{red}\ding{54}} \\ \hline
     \end{tabular}
     \caption{Comparação entre \textit{\acrshort{api} Gateway}s~\cite{compAPIGat,kong,tyk}}
     \label{table:APIGateway}
@@ -281,22 +281,28 @@ Nesta secção irá ser abordada a configuração do \textit{Kong} além do dese
 \subsection{Serviço de \textit{Auth}}
 Este serviço, desenvolvido em \textit{Node.js}, tem como principal papel a autenticação e autorização dos pedidos recebidos na plataforma CLAV. Além disso, este serviço irá tratar de verificar e gerar \textit{tokens} (\acrshort{jwt}s). 
 
-Com esse objetivo, este serviço disponibiliza cinco rotas:
+Para saber quem pode aceder determinada rota, o Serviço de \textit{Auth} possui um dicionário em que cada chave é um verbo \acrshort{http} e em cada verbo existe um dicionário com os vários caminhos desse verbo. A cada caminho é associado um valor que indica quem pode aceder a rota. Este valor é:
+\begin{itemize}
+    \item \textbf{-1:} Todos podem aceder
+    \item \textbf{0:} Só podem aceder Chaves API autenticadas ou utilizadores autenticados
+    \item \textbf{Um número maior que 0:} Só podem aceder utilizadores autenticados com nível igual ou superior ao número
+    \item \textbf{Lista de números maiores que 0:} Só podem aceder utilizadores autenticados com nível presente nesta lista
+\end{itemize}
+A ordem dos caminhos em cada verbo é importante visto que as rotas são testadas por ordem e, quando há um \textit{match}, é assumido que é essa a rota do pedido não sendo testado o resto dos caminhos.
+
+Consoante o valor obtido do dicionário é feita a autenticação e autorização necessária para a rota. Caso não seja obtido um valor, assume-se que a rota não existe na \acrshort{api} de dados.
+
+Sempre que for acrescentada uma nova rota na \acrshort{api} de dados é necessário adicionar essa neste dicionário com as devidas permissões.
+
+Este serviço de autenticação e autorização disponibiliza cinco rotas:
 \begin{description}
-    \item[POST /auth] Autenticar e Autorizar um pedido. Recebe no \textit{body} o verbo, o caminho, a \textit{query string} e os cabeçalhos do pedido a efetuar para a \acrshort{api} de dados. Como resposta devolve respostas com \textit{\acrshort{http} status} 200 (O pedido pode ser efetuado à \acrshort{api}. Devolve no \textit{body}  a informação contida no \textit{token} se este for enviado no pedido.), 401 (\textit{token} inválido ou pedido sem autenticação para aceder a rota), 403 (Pedido sem autorização para aceder a rota) ou 404 (A rota não existe).
-
-        Para saber quem pode aceder determinada rota, o Serviço de \textit{Auth} possui um dicionário em que cada chave é um verbo \acrshort{http} e em cada verbo existe um dicionário com os vários caminhos desse verbo. A cada caminho é associado um valor que indica quem pode aceder a rota. Este valor é:
-        \begin{itemize}
-            \item \textbf{-1:} Todos podem aceder
-            \item \textbf{0:} Só podem aceder Chaves API autenticadas ou utilizadores autenticados
-            \item \textbf{Um número maior que 0:} Só podem aceder utilizadores autenticados com nível igual ou superior ao número
-            \item \textbf{Lista de números maiores que 0:} Só podem aceder utilizadores autenticados com nível presente nesta lista
-        \end{itemize}
-        A ordem dos caminhos em cada verbo é importante visto que as rotas são testadas por ordem e, quando há um \textit{match}, é assumido que é essa a rota do pedido não sendo testado o resto dos caminhos.
-
-        Consoante o valor obtido do dicionário é feita a autenticação e autorização necessária para a rota. Caso não seja obtido um valor, assume-se que a rota não existe na \acrshort{api} de dados.
-
-        Sempre que for acrescentada uma nova rota na \acrshort{api} de dados é necessário adicionar essa neste dicionário com as devidas permissões.
+    \item[POST /auth] Autenticar e Autorizar um pedido. Recebe no \textit{body} o verbo, o caminho, a \textit{query string} e os cabeçalhos do pedido a efetuar para a \acrshort{api} de dados. Como resposta devolve respostas com \textit{\acrshort{http} status}:
+    \begin{itemize}
+        \item 200: o pedido pode ser efetuado à \acrshort{api} de dados. Esta resposta possui no \textit{body} a informação contida no \textit{token} se este for enviado no pedido;
+        \item 401: \textit{token} inválido ou pedido sem autenticação para aceder a rota;
+        \item 403: pedido sem autorização para aceder a rota;
+        \item 404: a rota não existe.
+    \end{itemize}
     \item[POST /user/sign] Gerar um \textit{token} para um utilizador. Recebe no \textit{body} do pedido a informação do utilizador e o tempo de expiração a usar para o \textit{token}. Como resposta devolve o \textit{token} gerado;
     \item[POST /user/verify] Verificar um \textit{token} de um utilizador. Recebe no \textit{body} o \textit{token} do utilizador. Como resposta, caso o \textit{token} seja válido, devolve a informação contida no \textit{token};
     \item[POST /apikey/sign] Gerar um \textit{token} para uma Chave API. Recebe no \textit{body} do pedido a informação da Chave API e o tempo de expiração a usar para o \textit{token}. Como resposta devolve o \textit{token} gerado;
@@ -305,16 +311,16 @@ Com esse objetivo, este serviço disponibiliza cinco rotas:
 
 Nenhuma destas rotas está disponível externamente, ou seja, é apenas acessível pelo \textit{Kong} e pela \acrshort{api} de dados.
 
-A necessidade de rotas diferentes para utilizadores e Chaves API deve-se ao facto de serem usados pares de chave pública/privada diferentes para gerar e verificar os \textit{tokens}. Para esta geração e verificação é usada a mesma biblioteca usada até agora, \textit{jsonwebtoken}. Continua-se também a usar os extratores da biblioteca \textit{passport-jwt} para obter os \textit{tokens} dos pedidos, mas já não se recorre ao \textit{passport} para proceder à autenticação visto não ser necessário.
+A necessidade de rotas diferentes para utilizadores e Chaves API deve-se ao facto de serem usados pares de chave pública/privada diferentes para gerar e verificar os \textit{tokens}. Para esta geração e verificação é usada a mesma biblioteca usada até agora, \texttt{jsonwebtoken}. Continua-se também a usar os extratores da biblioteca \textit{passport-jwt} para obter os \textit{tokens} dos pedidos, mas já não se recorre ao \textit{passport} para proceder à autenticação visto não ser necessário.
 
-Com a existência deste serviço, a \acrshort{api} de dados sem \textit{Kong} deixou de estar protegida e nos casos em que necessita, de forma excecional, de verificar ou a gerar  \textit{tokens} recorre à \acrshort{api} do Serviço de \textit{Auth}. Apesar disso continua a ser essencial que a \acrshort{api} de dados saiba quem realizou o pedido. Essa informação será enviada num cabeçalho pelo \textit{Kong} algo que será explicado na próxima secção. Ou seja, o serviço de \textit{Auth} não é apenas um middleware na pipeline do Kong mas um serviço na rede de microserviços da plataforma CLAV.
+Com a existência deste serviço, a \acrshort{api} de dados sem \textit{Kong} deixou de estar protegida e nos casos em que necessita, de forma excecional, de verificar ou a gerar  \textit{tokens} recorre à \acrshort{api} do Serviço de \textit{Auth}. Apesar disso continua a ser essencial que a \acrshort{api} de dados saiba quem realizou o pedido. Essa informação será enviada num cabeçalho pelo \textit{Kong} algo que será explicado na próxima secção. Ou seja, o serviço de \textit{Auth} não é apenas um \textit{middleware} na \textit{pipeline} do \textit{Kong} mas um serviço na rede de microserviços da plataforma \acrshort{clav}.
 
 \subsection{\textit{Plugin} \texttt{external-auth}}
 Como já referido anteriormente não é possível, usando os \textit{plugins} disponíveis do \textit{Kong}, obter uma proteção semelhante à presente na \acrshort{api} de dados. Para resolver esta situação havia duas hipóteses, criar um \textit{plugin} que tratasse da autenticação e da autorização ou criar um \textit{plugin} que intercetasse os pedidos, realizasse um pedido a um serviço externo para tratar da autenticação e da autorização, e consoante a resposta deixasse ou não o pedido ser realizado. A segunda hipótese foi a escolhida visto que implica a criação de um \textit{plugin} de menores dimensões, que tem de ser desenvolvido em \textit{Lua}, e permite por outro lado aproveitar parte do código de autenticação e autorização presente na \acrshort{api} de dados e usá-lo no serviço externo. Ou seja, é uma abordagem mais rápida e simples para além de que este \textit{plugin} de menores dimensões encontrava-se já em parte desenvolvido\footnote{Ver \url{https://github.com/aunkenlabs/kong-external-auth}} onde foi apenas necessário realizar algumas melhorias como a possibilidade de devolver respostas 403 e 404 entre outras alterações\footnote{Ver \url{https://github.com/jcm300/kong-external-auth}}.
 
 De uma forma mais pormenorizada, quando um pedido é recebido pelo \textit{Kong}, este pedido poderá passar por vários \textit{plugins} de acordo com a configuração usada antes e após ser efetuado o pedido à \acrshort{api} de dados. O \textit{plugin} \texttt{external-auth} se adicionado na configuração é executado antes do pedido ser efetuado à \acrshort{api} de dados. Este \textit{plugin} obtém do pedido o caminho, o verbo, a \textit{query string} e os cabeçalhos e envia-os no \textit{body} dum pedido que faz ao serviço externo. Quando o \textit{plugin} recebe a resposta do serviço externo, consoante o \textit{\acrshort{http} status} da resposta, irá ter a seguinte reação:
 \begin{itemize}
-    \item 200: Insere no pedido a efetuar à \acrshort{api} de dados o cabeçalho \textit{CLAV-Auth} onde é enviada em formato \textit{string} a resposta do serviço externo;
+    \item 200: Insere no pedido a efetuar à \acrshort{api} de dados o cabeçalho \texttt{CLAV-Auth} onde é enviada em formato \textit{string} a resposta do serviço externo;
     \item 401: Devolve uma resposta de erro para o utilizador com \textit{\acrshort{http} status} 401;
     \item 403: Devolve uma resposta de erro para o utilizador com \textit{\acrshort{http} status} 403;
     \item 404: Devolve uma resposta de erro para o utilizador com \textit{\acrshort{http} status} 404;
@@ -322,7 +328,7 @@ De uma forma mais pormenorizada, quando um pedido é recebido pelo \textit{Kong}
 
 \end{itemize}
 
-Portanto quando um pedido possui autenticação e autorização pelo serviço externo, este pedido inclui também um cabeçalho \textit{CLAV-Auth} onde estará presente a informação presente no \textit{token}, seja de um utilizador ou de uma Chave API. Este cabeçalho será interpretado pela \acrshort{api} de dados por forma a esta saber quem realizou o pedido. No caso do cabeçalho não ser enviado, for vazio ou num formato incorreto, a \acrshort{api} de dados irá considerar que o pedido foi efetuado por alguém ``Desconhecido''.
+Portanto quando um pedido possui autenticação e autorização pelo serviço externo, este pedido inclui também um cabeçalho \texttt{CLAV-Auth} onde estará presente a informação presente no \textit{token}, seja de um utilizador ou de uma Chave API. Este cabeçalho será interpretado pela \acrshort{api} de dados por forma a esta saber quem realizou o pedido. No caso do cabeçalho não ser enviado, for vazio ou num formato incorreto, a \acrshort{api} de dados irá considerar que o pedido foi efetuado por alguém ``Desconhecido''.
 
 Este \textit{plugin} está disponível em \url{https://luarocks.org/modules/jcm300/external-auth}.
 
@@ -474,7 +480,7 @@ plugins:
     config:
       account_email: $EMAIL
       domains: $DOMAINS_LIST
-      renew_threshold_days: 15
+      renew_threshold_days: 30
       storage: redis
       storage_config:
         redis:
@@ -531,7 +537,7 @@ routes:
     ...
 \end{lstlisting}
 
-A propriedade \texttt{protocols} indica que protocolos deverão estar disponíveis na rota e a propriedade \texttt{https\_redirect\_status\_code} indica o \textit{status code} nos casos em que os pedidos são efetuados para o \acrshort{http}. Como este \textit{status code} é 301 os cliente serão redirecionados para o \acrshort{https}.
+A propriedade \texttt{protocols} indica que protocolos deverão estar disponíveis na rota e a propriedade \texttt{https\_redirect\_status\_code} indica o \textit{status code} nos casos em que os pedidos são efetuados para o \acrshort{http}. Como este \textit{status code} é 301 os clientes serão redirecionados para o \acrshort{https}.
 
 Por fim, por forma a melhorar a segurança do \acrshort{https} e cumprir as recomendações de seguranção são adicionadas no ficheiro de configuração \texttt{.conf} algumas diretivas de configuração do \textit{Nginx}:
 
