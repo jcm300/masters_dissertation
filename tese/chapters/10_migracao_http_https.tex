@@ -55,26 +55,26 @@ Como o desafio teve sucesso e o \textit{nonce} assinado pelo cliente \acrshort{a
 Apesar do cliente recomendado pelo \textit{Let's Encrypt} ser o \textit{Certbot} este necessita de ter permissões \textit{root} bem como tem várias dependências para ser executado. Já o cliente \textit{acme.sh}\footnote{Ver \url{https://github.com/acmesh-official/acme.sh}} é uma \textit{script} \textit{bash} que para a sua instalação basta efetuar \textit{download} da \textit{script} deste. Além disso, não necessita de quaisquer dependências nem de acesso \textit{root} (apenas necessita em casos especiais). A sua utilização, tal como o \textit{Certbot}, é feita através da execução de comandos \textit{bash}.
 
 Para instalar basta:
-\begin{verbatim}
+\begin{lstlisting}
 curl https://get.acme.sh | sh
 #ou
 wget -O -  https://get.acme.sh | sh
-\end{verbatim}
+\end{lstlisting}
 
 Esta instalação irá ativar desde logo a auto renovação dos certificados através da criação de um \textit{cron job}\footnote{Mais informação em \url{https://www.ostechnix.com/a-beginners-guide-to-cron-jobs/}} pelo que o cliente \textit{acme.sh} irá correr periodicamente para verificar e renovar os certificados se necessário.
 
 Para obter um certificado executa-se:
-\begin{verbatim}
+\begin{lstlisting}
 acme.sh --issue -d <dominio> -w <pasta web root>
-\end{verbatim}
+\end{lstlisting}
 
 Após obter o certificado, este pode ser instalado no \textit{Nginx} com:
-\begin{verbatim}
+\begin{lstlisting}
 acme.sh --install-cert -d example.com \
     --key-file /path/to/keyfile/in/nginx/key.pem  \
     --fullchain-file /path/to/fullchain/nginx/fullchain.pem \
     --reloadcmd "nginx -s reload"
-\end{verbatim}
+\end{lstlisting}
 
 Neste último comando, o ficheiro de configuração do \textit{Nginx} tem de estar à espera que os ficheiros do certificado estejam em \path{/path/to/keyfile/in/nginx/key.pem} e em \path{/path/to/fullchain/nginx/fullchain.pem}.
 
@@ -229,9 +229,9 @@ Depois são adicionadas várias configurações recomendadas~\cite{helmet,letEnA
 O valor do cabeçalho \texttt{Content-Security-Policy} varia de acordo se for para a \acrshort{api} de dados ou para a interface. A adição dos cabeçalhos que melhoram a segurança na \acrshort{api} de dados é feita pelo \texttt{helmet} (Ver~\cite{helmet}) no servidor \textit{Node.js} em vez de ser no \textit{Nginx} mas o resultado final é igual ao uso desta configuração.
 
 Por fim, na configuração do \textit{Nginx} é também adicionado fora dos \texttt{servers} a diretiva 
-\begin{verbatim}
+\begin{lstlisting}
 ssl_prefer_server_ciphers on;
-\end{verbatim}
+\end{lstlisting}
 com o objetivo de indicar a preferência de uso dos \textit{ciphers} \acrshort{ssl} do servidor definida na configuração (diretiva \texttt{ssl\_ciphers}) em vez dos \textit{ciphers} do cliente. Ficam assim cumpridas todas as recomendações de segurança e os requisitos apresentados em~\ref{sec:sol_httpsReq}, sendo usado para o \textit{deployment} o \textit{docker} e o \textit{docker-compose}. O \textit{deployment} é explicado mais à frente na secção~\ref{sec:deployNoKong}.
 
 \section{Resumo}

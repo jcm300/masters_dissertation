@@ -507,9 +507,9 @@ services:
 
 Para ativar também o uso do \textit{plugin} \texttt{acme} é necessário no ficheiro \texttt{.conf} indicar onde estão os certificados confiáveis por forma a ser possível o \textit{Kong} iniciar para depois puder obter os certificados do \textit{Let's Encrypt}. Para tal, é indicado na diretiva \texttt{nginx\_proxy\_lua\_ssl\_trusted\_certificate} o valor \texttt{/etc/ssl/certs/ca-certificates.crt} (esta é a localização no caso de uma distribuição Ubuntu, poderá ser diferente noutras distribuições e \acrshort{os}'s). Quando o \textit{Kong} iniciar para acionar a criação do certificado é necessário fazer um pedido ao \textit{Kong} correndo o seguinte comando:
 
-\begin{verbatim}
+\begin{lstlisting}
 curl https://<domain> -k
-\end{verbatim}
+\end{lstlisting}
 
 substituindo \verb|<domain>| pelo domínio da \acrshort{api} de dados.
 
