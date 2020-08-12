@@ -130,60 +130,68 @@ Para além disso, esta \textit{\acrshort{api} Gateway} pode ser usada como \text
 
 \subsubsection{Tyk \glsentryshort{api} Gateway}
 
-O \textit{Tyk} é uma \textit{\acrshort{api} Gateway} \textit{open-source} com componentes gratuitos e outros pagos. Esta plataforma é escrita em \textit{Go} e consiste numa \textit{\acrshort{api} Gateway} e num \textit{Dashboard}. Enquanto que o \textit{core} da \textit{\acrshort{api} Gateway} é gratuito e \textit{open-source}, o \textit{dashboard} requer a compra de licenças. A versão gratuita permite o uso de uma instância \textit{\acrshort{api} Gateway}. Para duas ou mais instâncias é necessário pagar. O \textit{Tyk} também possui uma versão \textit{cloud} (\textit{Tyk Cloud}) em que a versão gratuita permite até 50000 pedidos à \acrshort{api} diariamente. Tudo acima disso é também necessário pagar.
+O \textit{Tyk} é uma \textit{\acrshort{api} Gateway} \textit{open-source} com componentes gratuitos e outros pagos. Esta plataforma é escrita em \textit{Go} e é constituída por uma \textit{\acrshort{api} Gateway} e por um \textit{Dashboard}. Enquanto que o \textit{core} da \textit{\acrshort{api} Gateway} é gratuito e \textit{open-source}, o \textit{dashboard} requer a compra de licenças. A versão gratuita permite o uso de uma instância \textit{\acrshort{api} Gateway}. Para duas ou mais instâncias é necessário pagar. O \textit{Tyk} também possui uma versão \textit{cloud} (\textit{Tyk Cloud}) em que a versão gratuita permite até 50000 pedidos à \acrshort{api} diariamente. Acima deste limite é também necessário pagar.
 
-Em termos de funcionalidades, o \textit{Tyk} possui:~\cite{tyk}
+Em termos de funcionalidades, o \textit{Tyk} possui~\cite{tyk}:
 \begin{itemize}
-    \item \acrshort{api} \acrshort{rest}ful
-    \item Múltiplos protocolos de acesso
-    \item \textit{Rate limiting} e cotas
-    \item Controlo de acesso granular
-    \item Expiração de chaves
-    \item Versionamento da \acrshort{api}
-    \item \textit{Logs}
-    \item \textit{Restarts} sem tempo de inatividade
-    \item Suporte para \acrshort{https}, \acrshort{cors}, \acrshort{jwt} entre outros
+    \item \acrshort{api} \acrshort{rest}ful;
+    \item Múltiplos protocolos de acesso;
+    \item \textit{Rate limiting} e cotas;
+    \item Controlo de acesso granular;
+    \item Expiração de chaves;
+    \item Versionamento da \acrshort{api};
+    \item \textit{Logs};
+    \item \textit{Restarts} sem tempo de inatividade;
+    \item Suporte para \acrshort{https}, \acrshort{cors}, \acrshort{jwt} entre outros.
 \end{itemize}
 
-O \textit{core} da \textit{\acrshort{api} Gateway} apenas necessita do \textit{Redis} contudo o produto todo (incluindo o \textit{dashboard}) necessita também como dependências \textit{MongoDB} e \textit{Tyk Pump}. Isto coloca uma maior carga na máquina do servidor que se pode evitar tornando também mais difícil de instalar e de gerir numa máquina local.
+O \textit{core} da \textit{\acrshort{api} Gateway} apenas necessita do \textit{Redis} contudo o produto todo (incluindo o \textit{dashboard}) necessita também, como dependências, do \textit{MongoDB} e do \textit{Tyk Pump}. 
+Isto coloca uma maior carga na máquina do servidor que se pode evitar tornando também mais difícil de instalar e de gerir numa máquina local.
 
 Em termos de administração, o \textit{Tyk} possui duas hipóteses, a gestão através da \textit{web} \acrshort{gui} ou através de \acrshort{rest} \acrshort{api}s. A configuração do \textit{Tyk} é armazenada no \textit{Redis}. O \textit{Tyk} é melhor que os seus concorrentes (\textit{Kong} e \textit{Nginx}) para projetos que pretendem ter a maioria das funcionalidades a funcionar desde o dia um (apenas na versão paga) visto não ser necessário explorar as várias opções disponíveis o que pode demorar algum tempo.~\cite{compAPIGat}
 
 \subsubsection{Nginx Plus}
 
-O \textit{Nginx Controller} disponível permite gerir o \textit{Nginx Plus} por forma a servir de \textit{load balancer}, \textit{proxy} ou ainda de \textit{\acrshort{api} Gateway}. Com o módulo \textit{\acrshort{api} Management} do \textit{Nginx Controller} é possível definir, publicar, proteger, monitorizar e analisar \acrshort{api}s. Para tal o \textit{Nginx Controller} gera configuração para o \textit{Nginx Plus}.
+O \textit{Nginx Controller} disponível permite gerir o \textit{Nginx Plus} por forma a servir de \textit{load balancer}, \textit{proxy} ou ainda de \textit{\acrshort{api} Gateway}. Com o módulo \textit{\acrshort{api} Management} do \textit{Nginx Controller} é possível definir, publicar, proteger, monitorizar e analisar \acrshort{api}s. 
+Para tal o \textit{Nginx Controller} gera a configuração para o \textit{Nginx Plus}.
 
-Numa comparação de performance com o Kong verifica-se que o \textit{Nginx Plus} escala melhor do que o \textit{Kong}.~\cite{nginxPvsKong} Nos testes realizados chegou-se à conclusão que o módulo \textit{\acrshort{api} Management} do \textit{Nginx Plus} adiciona 20\% a 30\% menos latência aos pedidos dos utilizadores se compararmos com o \textit{Kong}. Além disso, usa menos 40\% de \acrshort{cpu} se compararmos com o \textit{Kong} com a mesma carga de trabalho.
+Numa comparação de performance com o Kong verifica-se que o \textit{Nginx Plus} escala melhor do que o \textit{Kong}.~\cite{nginxPvsKong} Nos testes realizados chegou-se à conclusão que o módulo \textit{\acrshort{api} Management} do \textit{Nginx Plus} adiciona 20\% a 30\% menos latência aos pedidos dos utilizadores se compararmos com o \textit{Kong}. 
+Além disso, usa menos 40\% de \acrshort{cpu} se compararmos com o \textit{Kong} para a mesma carga de trabalho.
 
-Em termos de funcionalidades o \textit{\acrshort{api} Management} do \textit{Nginx Controller} possui:~\cite{nginxP}
+Em termos de funcionalidades o \textit{\acrshort{api} Management} do \textit{Nginx Controller} possui~\cite{nginxP}:
 \begin{itemize}
-    \item Definição e publicação da \acrshort{api}: Permite criar múltiplas definições de \acrshort{api} e os seus recursos de componentes, gerenciar servidores \textit{backend}, direcionar recursos e publicar a configuração resultante nas instâncias \textit{Nginx Plus}.
-    \item \textit{Rate limiting}: Permite mitigar ataques de \acrshort{ddos} e protege as aplicações de serem inundadas de pedidos ao definir limites de \textit{bandwith} e de pedidos.
-    \item \textit{Autenticação}: Permite autenticar pedidos usando \textit{\acrshort{api} keys} e \acrshort{jwt}s.
-    \item Monitorização e alerta: Permite analisar a performance e as métricas das instâncias \textit{Nginx Plus}. Permite também definir alertas quando alguma métrica passa certo valor.
+    \item Definição e publicação da \acrshort{api}: Permite criar múltiplas definições de \acrshort{api} e os seus recursos de componentes, gerir servidores \textit{backend}, direcionar recursos e publicar a configuração resultante nas instâncias \textit{Nginx Plus};
+    \item \textit{Rate limiting}: Permite mitigar ataques de \acrshort{ddos} e protege as aplicações de serem inundadas de pedidos ao definir limites de \textit{bandwith} e de pedidos;
+    \item \textit{Autenticação}: Permite autenticar pedidos usando \textit{\acrshort{api} keys} e \acrshort{jwt}s;
+    \item Monitorização e alerta: Permite analisar a performance e as métricas das 
+    instâncias \textit{Nginx Plus}. Permite também definir alertas quando alguma métrica ultrapassa certo valor.
 \end{itemize}
 
-Além destas funcionalidades é possível também usar o \textit{Nginx Controller} para criar/gerir \textit{load balancers}. O \textit{Nginx Plus} é uma versão paga e a versão gratuita do \textit{Nginx} não possui o \textit{Nginx Controller} mas é possível usar a versão gratuita através do uso de \textit{plugins} por forma a produzir uma \textit{\acrshort{api} Gateway}~\cite{compAPIGat}. O uso da versão gratuita obriga claro a um maior trabalho e \textit{try and error} por forma a atingir o objetivo final.
+Além destas funcionalidades é possível também usar o \textit{Nginx Controller} para criar/gerir \textit{load balancers}. 
 
-A principal dificuldade de usar o \textit{Nginx} é que a configuração pode ser um pouco complicada de usar e de perceber na sua totalidade possuindo uma acentuada curva de aprendizagem.
+O \textit{Nginx Plus} é uma versão paga e a versão gratuita do \textit{Nginx} não possui o \textit{Nginx Controller} mas é possível usar a versão gratuita através do uso de \textit{plugins} por forma a produzir uma \textit{\acrshort{api} Gateway}~\cite{compAPIGat}. 
+
+O uso da versão gratuita obriga claro a um maior trabalho e a uma metodologia \textit{try and error} por forma a atingir o objetivo final.
+
+A principal dificuldade na utilização do \textit{Nginx} é que a configuração pode ser um pouco complicada de usar e de perceber na sua totalidade possuindo uma acentuada curva de aprendizagem.
 
 \section{Solução}
 
 Nesta secção é escolhida a tecnologia \textit{\acrshort{api} Gateway} a usar de acordo com os requisitos necessários.
 
-Apresenta-se de seguida os requisitos que a \textit{\acrshort{api} Gateway} deve possuir:
+Apresentam-se de seguida os requisitos que a \textit{\acrshort{api} Gateway} deve possuir:
 \begin{itemize}
     \item Ser gratuita e \textit{open-source};
     \item Suportar \acrshort{https}, \acrshort{cors} e \acrshort{jwt};
     \item Suportar Autenticação e Autorização personalizada (Criação de \textit{plugin}/middleware);
-    \item Possível automatização ao definir apenas ficheiros de configuração sem qualquer uso de \acrshort{cli}s, 
+    \item Ser possível de automatizar ao definir apenas ficheiros de configuração sem qualquer uso de \acrshort{cli}s, 
     \acrshort{gui}s ou \acrshort{api}s;
     \item Suportar \textit{deployment} em \textit{Docker};
     \item Suportar \textit{rate limit} e \textit{cache};
     \item Suportar versionamento da \acrshort{api};
-    \item Balanceamento de carga e servir de \textit{reverse proxy};
-    \item \textit{Logs} e métricas;
-    \item Integração da documentação desenvolvida na especificação \textit{OpenAPI}.
+    \item Balancear carga e servir de \textit{reverse proxy};
+    \item Gerar \textit{Logs} e métricas;
+    \item Ser capaz de integrar a documentação desenvolvida na especificação \textit{OpenAPI}.
 \end{itemize}
 
 Antes de fazer uma comparação entre as várias \textit{\acrshort{api} Gateway}s exploradas no estado de arte 
@@ -225,8 +233,7 @@ Entre o \textit{Nginx} e o \textit{Kong} a escolha irá prender-se com a facilid
 que os requisitos presentes em cada tecnologia são muito semelhantes. O \textit{Kong} é construído a partir do 
 \textit{Nginx} (daí as suas parecenças em termos de requisitos presentes) e é possível configurar o 
 \textit{Nginx} a partir do \textit{Kong}. Para além disso, o \textit{Kong} possui vários \textit{plugins} por 
-forma a permitir certas funcionalidades que no \textit{Nginx} seria necessário configurar manualmente para 
-obter as mesmas funcionalidades. Portanto a escolha tecnológica para a \textit{\acrshort{api} Gateway} recai 
+forma a permitir certas funcionalidades que no \textit{Nginx} seria necessário configurar manualmente. Portanto a escolha tecnológica para a \textit{\acrshort{api} Gateway} recai 
 sobre o \textit{Kong}.
 
 \subsection{Arquitetura}
@@ -243,17 +250,17 @@ uma arquitetura base a desenvolver. Esta arquitetura apresenta-se de seguida, na
 Apesar das várias vantagens do \textit{Kong} não é possível, através dos \textit{plugins} fornecidos por este, 
 realizar uma proteção das rotas semelhante à presente na \acrshort{api} de dados da \acrshort{clav}. 
 Portanto, com o intuito de simplificar a \acrshort{api} de dados, a ideia passa por retirar da \acrshort{api} de 
-dados da \acrshort{clav} tudo que envolva proteção desta, tais como a verificação de \textit{tokens} (autenticação), 
+dados da \acrshort{clav} tudo que envolva a proteção desta, tais como a verificação de \textit{tokens} (autenticação), 
 a geração de \textit{tokens} bem como a verificação da autorização de um utilizador (verificar se o nível do 
 utilizador é suficiente para aceder determinada rota), e colocar estas funcionalidades noutro servidor 
 independente da \acrshort{api} de dados. Este servidor está representado na arquitetura como Serviço de 
-\textit{Auth} que procederá então à autenticação e autorização dos pedidos realizados pelos clientes.
+\textit{Auth} e procederá então à autenticação e autorização dos pedidos realizados pelos clientes.
 
 Com esta separação a \acrshort{api} de dados precisará de realizar pedidos ao Serviço de \textit{Auth} para a 
 verificação e geração de \textit{tokens} em casos particulares como o \textit{login} de um utilizador ou a 
 \textit{criação} de uma Chave \acrshort{api}.
 
-Todos os pedidos realizados pelos clientes e pela interface da \acrshort{clav} tem como ponto de entrada o 
+Todos os pedidos realizados pelos clientes e pela interface da \acrshort{clav} têm como ponto de entrada o 
 \textit{Kong}. Este, através de um \textit{plugin}, para cada pedido recebido irá realizar um pedido ao Serviço 
 de \textit{Auth} onde:
 
@@ -264,15 +271,17 @@ de \textit{Auth} onde:
 \end{enumerate}
 
 Caso a resposta do Serviço de \textit{Auth} seja positiva então o \textit{Kong} procederá à realização do pedido 
-à \acrshort{api} de dados. Caso contrário, o pedido à \acrshort{api} de dados não é efetuado e é devolvido ao 
-utilizador a resposta de erro correspondente (erro de autenticação ou de autorização).
+à \acrshort{api} de dados. Caso contrário, o pedido à \acrshort{api} de dados não é efetuado e é devolvida à máquina cliente 
+uma resposta com o erro correspondente (erro de autenticação ou de autorização).
 
 \section{Implementação}
 
 Nesta secção irá ser abordada a configuração do \textit{Kong} além do desenvolvimento do Serviço de Auth adicional para a proteção da \acrshort{api} de dados.
 
 \subsection{Serviço de \textit{Auth}}
-Este serviço desenvolvido em \textit{Node.js} tem como principal papel a autenticação e autorização dos pedidos efetuados. Além disso, este serviço irá tratar de verificar e gerar \textit{tokens} (\acrshort{jwt}s). Assim, este serviço disponibiliza cinco rotas:
+Este serviço, desenvolvido em \textit{Node.js}, tem como principal papel a autenticação e autorização dos pedidos recebidos na plataforma CLAV. Além disso, este serviço irá tratar de verificar e gerar \textit{tokens} (\acrshort{jwt}s). 
+
+Com esse objetivo, este serviço disponibiliza cinco rotas:
 \begin{description}
     \item[POST /auth] Autenticar e Autorizar um pedido. Recebe no \textit{body} o verbo, o caminho, a \textit{query string} e os cabeçalhos do pedido a efetuar para a \acrshort{api} de dados. Como resposta devolve respostas com \textit{\acrshort{http} status} 200 (O pedido pode ser efetuado à \acrshort{api}. Devolve no \textit{body}  a informação contida no \textit{token} se este for enviado no pedido.), 401 (\textit{token} inválido ou pedido sem autenticação para aceder a rota), 403 (Pedido sem autorização para aceder a rota) ou 404 (A rota não existe).
 
@@ -288,28 +297,28 @@ Este serviço desenvolvido em \textit{Node.js} tem como principal papel a autent
         Consoante o valor obtido do dicionário é feita a autenticação e autorização necessária para a rota. Caso não seja obtido um valor, assume-se que a rota não existe na \acrshort{api} de dados.
 
         Sempre que for acrescentada uma nova rota na \acrshort{api} de dados é necessário adicionar essa neste dicionário com as devidas permissões.
-    \item[POST /user/sign] Gerar um \textit{token} para um utilizador. Recebe no \textit{body} do pedido a informação do utilizador e o tempo de expiração a usar para o \textit{token}. Como resposta devolve o \textit{token} gerado.
-    \item[POST /user/verify] Verificar um \textit{token} de um utilizador. Recebe no \textit{body} o \textit{token} do utilizador. Como resposta, caso o \textit{token} seja válido, devolve a informação contida no \textit{token}.
-    \item[POST /apikey/sign] Gerar um \textit{token} para uma Chave API. Recebe no \textit{body} do pedido a informação da Chave API e o tempo de expiração a usar para o \textit{token}. Como resposta devolve o \textit{token} gerado.
+    \item[POST /user/sign] Gerar um \textit{token} para um utilizador. Recebe no \textit{body} do pedido a informação do utilizador e o tempo de expiração a usar para o \textit{token}. Como resposta devolve o \textit{token} gerado;
+    \item[POST /user/verify] Verificar um \textit{token} de um utilizador. Recebe no \textit{body} o \textit{token} do utilizador. Como resposta, caso o \textit{token} seja válido, devolve a informação contida no \textit{token};
+    \item[POST /apikey/sign] Gerar um \textit{token} para uma Chave API. Recebe no \textit{body} do pedido a informação da Chave API e o tempo de expiração a usar para o \textit{token}. Como resposta devolve o \textit{token} gerado;
     \item[POST /apikey/verify] Verificar um \textit{token} de uma Chave API. Recebe no \textit{body} o \textit{token} da Chave API. Como resposta, caso o \textit{token} seja válido, devolve a informação contida no \textit{token}.
 \end{description}
 
 Nenhuma destas rotas está disponível externamente, ou seja, é apenas acessível pelo \textit{Kong} e pela \acrshort{api} de dados.
 
-A necessidade de rotas diferentes para utilizadores e Chaves API deve-se ao facto de serem usadas pares de chave pública/privada diferentes para gerar e verificar os \textit{tokens}. Para esta geração e verificação é usada a mesma biblioteca usada até agora, \textit{jsonwebtoken}. Continua-se também a usar os extratores da biblioteca \textit{passport-jwt} para obter os \textit{tokens} dos pedidos, mas já não se recorre ao \textit{passport} para proceder à autenticação visto não ser necessária.
+A necessidade de rotas diferentes para utilizadores e Chaves API deve-se ao facto de serem usados pares de chave pública/privada diferentes para gerar e verificar os \textit{tokens}. Para esta geração e verificação é usada a mesma biblioteca usada até agora, \textit{jsonwebtoken}. Continua-se também a usar os extratores da biblioteca \textit{passport-jwt} para obter os \textit{tokens} dos pedidos, mas já não se recorre ao \textit{passport} para proceder à autenticação visto não ser necessário.
 
-Com a existência deste serviço, a \acrshort{api} de dados sem \textit{Kong} deixou de estar protegida e em casos que necessita de forma excecional a verificação ou a geração de \textit{tokens} recorre à \acrshort{api} do Serviço de \textit{Auth}. Apesar disso continua a ser essencial que a \acrshort{api} de dados saiba quem realizou o pedido. Essa informação será enviada num cabeçalho pelo \textit{Kong} algo que será explicado na próxima secção.
+Com a existência deste serviço, a \acrshort{api} de dados sem \textit{Kong} deixou de estar protegida e nos casos em que necessita, de forma excecional, de verificar ou a gerar  \textit{tokens} recorre à \acrshort{api} do Serviço de \textit{Auth}. Apesar disso continua a ser essencial que a \acrshort{api} de dados saiba quem realizou o pedido. Essa informação será enviada num cabeçalho pelo \textit{Kong} algo que será explicado na próxima secção. Ou seja, o serviço de \textit{Auth} não é apenas um middleware na pipeline do Kong mas um serviço na rede de microserviços da plataforma CLAV.
 
 \subsection{\textit{Plugin} \texttt{external-auth}}
-Como já referido anteriormente não é possível, usando os \textit{plugins} disponíveis do \textit{Kong}, obter uma proteção semelhante à presente na \acrshort{api} de dados. Para resolver esta situação havia duas hipóteses, criar um \textit{plugin} que trata da autenticação e da autorização ou criar um \textit{plugin} que interceta os pedidos, realiza um pedido a um serviço externo para tratar da autenticação e da autorização, e consoante a resposta deixa ou não o pedido ser realizado. A segunda hipótese foi a escolhida visto que implica a criação de um \textit{plugin} de menores dimensões, que tem de ser desenvolvido em \textit{Lua}, e permite por outro lado aproveitar parte do código de autenticação e autorização presente na \acrshort{api} de dados e usá-lo no serviço externo. Ou seja, é uma abordagem mais rápida e simples para além de que este \textit{plugin} de menores dimensões encontrava-se já em parte desenvolvido\footnote{Ver \url{https://github.com/aunkenlabs/kong-external-auth}} onde foi apenas necessário realizar algumas melhorias como a possibilidade de devolver respostas 403 e 404 entre outras alterações\footnote{Ver \url{https://github.com/jcm300/kong-external-auth}}.
+Como já referido anteriormente não é possível, usando os \textit{plugins} disponíveis do \textit{Kong}, obter uma proteção semelhante à presente na \acrshort{api} de dados. Para resolver esta situação havia duas hipóteses, criar um \textit{plugin} que tratasse da autenticação e da autorização ou criar um \textit{plugin} que intercetasse os pedidos, realizasse um pedido a um serviço externo para tratar da autenticação e da autorização, e consoante a resposta deixasse ou não o pedido ser realizado. A segunda hipótese foi a escolhida visto que implica a criação de um \textit{plugin} de menores dimensões, que tem de ser desenvolvido em \textit{Lua}, e permite por outro lado aproveitar parte do código de autenticação e autorização presente na \acrshort{api} de dados e usá-lo no serviço externo. Ou seja, é uma abordagem mais rápida e simples para além de que este \textit{plugin} de menores dimensões encontrava-se já em parte desenvolvido\footnote{Ver \url{https://github.com/aunkenlabs/kong-external-auth}} onde foi apenas necessário realizar algumas melhorias como a possibilidade de devolver respostas 403 e 404 entre outras alterações\footnote{Ver \url{https://github.com/jcm300/kong-external-auth}}.
 
-De uma forma mais pormenorizada, quando um pedido é recebido pelo \textit{Kong}, este pedido poderá passar por vários \textit{plugins} de acordo com a configuração usada antes e após ser efetuado o pedido à \acrshort{api} de dados. O \textit{plugin} \texttt{external-auth} se adicionado na configuração é executado antes do pedido ser efetuado à \acrshort{api} de dados. Este \textit{plugin} obtém do pedido o caminho, verbo, \textit{query string} e cabeçalhos e envia-os no \textit{body} para o serviço externo. Quando o \textit{plugin} recebe a resposta do serviço externo, consoante o \textit{\acrshort{http} status}:
+De uma forma mais pormenorizada, quando um pedido é recebido pelo \textit{Kong}, este pedido poderá passar por vários \textit{plugins} de acordo com a configuração usada antes e após ser efetuado o pedido à \acrshort{api} de dados. O \textit{plugin} \texttt{external-auth} se adicionado na configuração é executado antes do pedido ser efetuado à \acrshort{api} de dados. Este \textit{plugin} obtém do pedido o caminho, o verbo, a \textit{query string} e os cabeçalhos e envia-os no \textit{body} dum pedido que faz ao serviço externo. Quando o \textit{plugin} recebe a resposta do serviço externo, consoante o \textit{\acrshort{http} status} da resposta, irá ter a seguinte reação:
 \begin{itemize}
-    \item 200: Insere no pedido a efetuar à \acrshort{api} de dados o cabeçalho \textit{CLAV-Auth} onde é enviado em formato \textit{string} a resposta do serviço externo
-    \item 401: Devolve uma resposta de erro para o utilizador com \textit{\acrshort{http} status} 401
-    \item 403: Devolve uma resposta de erro para o utilizador com \textit{\acrshort{http} status} 403
-    \item 404: Devolve uma resposta de erro para o utilizador com \textit{\acrshort{http} status} 404
-    \item Restantes: Devolve uma resposta de erro para o utilizador com \textit{\acrshort{http} status} 401
+    \item 200: Insere no pedido a efetuar à \acrshort{api} de dados o cabeçalho \textit{CLAV-Auth} onde é enviada em formato \textit{string} a resposta do serviço externo;
+    \item 401: Devolve uma resposta de erro para o utilizador com \textit{\acrshort{http} status} 401;
+    \item 403: Devolve uma resposta de erro para o utilizador com \textit{\acrshort{http} status} 403;
+    \item 404: Devolve uma resposta de erro para o utilizador com \textit{\acrshort{http} status} 404;
+    \item Restantes: Devolve uma resposta de erro para o utilizador com \textit{\acrshort{http} status} 401.
 
 \end{itemize}
 
@@ -318,11 +327,17 @@ Portanto quando um pedido possui autenticação e autorização pelo serviço ex
 Este \textit{plugin} está disponível em \url{https://luarocks.org/modules/jcm300/external-auth}.
 
 \subsection{Configuração \textit{Kong}}
-O \textit{Kong} pode ser configurado através de um ficheiro de configuração \texttt{.conf} onde é definido o modo em que executa, possíveis ligações a bases de dados, configurações do \textit{Nginx} entre outros. Contudo não é neste ficheiro que se define o comportamento que o \textit{Kong} efetua quando recebe determinado pedido, apesar de se puder alterar algum comportamento através de configurações do \textit{Nginx}. Para definir o comportamento do \textit{Kong} há três hipóteses. A que foi escolhida, configuração declarativa, permite que o \textit{Kong} execute sem necessitar de uma base de dados para armazenar as configurações visto que as configurações são definidas num ficheiro \acrshort{yaml} ou \acrshort{json} que é carregado para memória. Assim não se sobrecarrega desnecessariamente o servidor que executa o \textit{Kong}.
+O \textit{Kong} pode ser configurado através de um ficheiro de configuração \texttt{.conf} onde é definido o modo em que executa, possíveis ligações a bases de dados, configurações do \textit{Nginx}, entre outros. Contudo não é neste ficheiro que se define o comportamento que o \textit{Kong} efetua quando recebe determinado pedido, apesar de se poder alterar algum comportamento através de configurações do \textit{Nginx}. Para definir o comportamento do \textit{Kong} há três hipóteses. A que foi escolhida, configuração declarativa, permite que o \textit{Kong} execute sem necessitar de uma base de dados para armazenar as configurações visto que as configurações são definidas num ficheiro \acrshort{yaml} ou \acrshort{json} que é carregado para memória. Assim não se sobrecarrega desnecessariamente o servidor que executa o \textit{Kong}.
 
 Para usar esta configuração declarativa é necessário no ficheiro de configuração \texttt{.conf} colocar a diretiva \texttt{database} com o valor \texttt{off} e a diretiva \texttt{declarative\_config} com o caminho do ficheiro da configuração declarativa.
 
-Na configuração declarativa são usados vários \textit{plugins} a maioria desenvolvidos pelo \textit{Kong} exceto o \textit{external-auth}. Por predefinição os \textit{plugins} do \textit{Kong} estão disponíveis. Para se puder usar \textit{plugins} externos é necessário indicá-los no ficheiro \textit{.conf} na diretiva \texttt{plugins}. Assim o valor aqui colocado foi \texttt{blunded,external-auth} indicando que se pretende usar os plugins do \textit{Kong} (\texttt{blunded}) e o \textit{external-auth}. Antes de iniciar o \textit{Kong} será depois necessário instalar o \textit{plugin} \textit{external-auth}. No ficheiro \textit{.conf} é também indicado para onde os logs de erro e acesso são enviados sendo os de erro enviados para o \texttt{stderr} e os de acesso para o \texttt{stdout}. Além disso indicasse também em que portas (\acrshort{http} e \acrshort{https}) o \textit{Kong} irá receber os pedidos bem como em que portas está acessível a \acrshort{api} de administrador (como é usada uma configuração declarativa esta \acrshort{api} será apenas de leitura).
+Na configuração declarativa são usados vários \textit{plugins} a maioria desenvolvidos pelo \textit{Kong} exceto o \textit{external-auth}. 
+
+Por predefinição os \textit{plugins} do \textit{Kong} estão disponíveis. Para se puder usar \textit{plugins} externos é necessário indicá-los no ficheiro \textit{.conf} na diretiva \texttt{plugins}. Assim o valor aqui colocado foi \texttt{blunded,external-auth} indicando que se pretende usar os plugins do \textit{Kong} (\texttt{blunded}) e o \textit{external-auth}. 
+
+Antes de iniciar o \textit{Kong} será depois necessário instalar o \textit{plugin} \textit{external-auth}. 
+
+No ficheiro \textit{.conf} é também indicado para onde os logs de erro e acesso são enviados sendo os de erro enviados para o \texttt{stderr} e os de acesso para o \texttt{stdout}. Além disso indica-se também em que portas (\acrshort{http} e \acrshort{https}) o \textit{Kong} irá receber os pedidos bem como em que portas está acessível a \acrshort{api} de administrador (como é usada uma configuração declarativa esta \acrshort{api} será apenas de leitura).
 
 O primeiro passo na configuração declarativa foi adicionar o serviço da \acrshort{api} de dados e associar desde logo o \textit{plugin} necessário para a proteção da \acrshort{api} de dados:
 \begin{lstlisting}[language=yaml, caption=Configuração declarativa do \textit{Kong}: \acrshort{api} de dados]
@@ -362,7 +377,10 @@ services:
             ...
           credentials: true
 \end{lstlisting}
-Além deste foram adicionados mais 3 \textit{plugins} do \textit{Kong} a este serviço, cada um com objetivos diferentes. O \textit{plugin} \texttt{rate-limiting} por forma a limitar o número de pedidos efetuados a 10 pedidos por segundo por endereço \acrshort{ip}\cite{kongRateLimiting}:
+
+Além deste foram adicionados mais 3 \textit{plugins} do \textit{Kong} a este serviço, cada um com objetivos diferentes. 
+
+O \textit{plugin} \texttt{rate-limiting} por forma a limitar o número de pedidos efetuados a 10 pedidos por segundo por endereço \acrshort{ip}\cite{kongRateLimiting}:
 \begin{lstlisting}[language=yaml, caption=Configuração declarativa do \textit{Kong}: \textit{plugin} \texttt{rate-limiting}]
 services:
   - name: API
@@ -374,9 +392,11 @@ services:
           second: 10
           policy: local
 \end{lstlisting}
+
 É possível também aplicar este \textit{plugin} a rotas especificas da \acrshort{api} de dados.
 
 Por outro lado, o \textit{plugin} \texttt{proxy-cache} é usado para realizar a \textit{cache} de respostas de pedidos \texttt{text/plain} (texto) ou \texttt{application/json} (\acrshort{json}) com verbos \texttt{GET} e \texttt{HEAD} e \textit{\acrshort{http} status} 200, 301 e 404 por uma hora\cite{kongProxyCache}:
+
 \begin{lstlisting}[language=yaml, caption=Configuração declarativa do \textit{Kong}: \textit{plugin} \texttt{proxy-cache}]
 services:
   - name: API
@@ -388,9 +408,11 @@ services:
           cache_ttl: 3600 #segundos (1h) em cache
           strategy: memory
 \end{lstlisting}
+
 Com este \textit{plugin} é possível evitar pedidos recentes à \acrshort{api} de dados iguais bem como acelerar o tempo de resposta dos pedidos que foram recentemente efetuados.
 
-É ainda usado o \textit{plugin} \texttt{response-transformer} por forma a adicionar cabeçalhos na resposta devolvida pela \acrshort{api} de dados. Estes cabeçalhos tem como objetivo melhorar a segurança da \acrshort{api} e cumprir algumas das recomendações de segurança \acrshort{https} já referidas em~\ref{sec:sol_httpsReq}~\cite{kongResponseTransformer}:
+É ainda usado o \textit{plugin} \texttt{response-transformer} por forma a adicionar cabeçalhos na resposta devolvida pela \acrshort{api} de dados. Estes cabeçalhos têm como objetivo melhorar a segurança da \acrshort{api} e cumprir algumas das recomendações de segurança \acrshort{https} já referidas em~\ref{sec:sol_httpsReq}~\cite{kongResponseTransformer}:
+
 \begin{lstlisting}[language=yaml, caption=Configuração declarativa do \textit{Kong}: \textit{plugin} \texttt{response-transformer}]
 services:
   - name: API
@@ -418,6 +440,7 @@ A adição dos \textit{plugins} (\texttt{cors} e \texttt{response-transformer}) 
 A adição do cabeçalho \texttt{Content-Security-Policy} com o valor \texttt{default-src 'none'} no \textit{plugin} \texttt{response-transformer} impede qualquer conteúdo que não a resposta em si. Contudo a \acrshort{api} de dados possui uma página de documentação na rota \texttt{/<Versão da API>/docs} que irá necessitar de um \texttt{Content-Security-Policy} diferente. 
 
 Para tal, definiu-se uma rota na configuração declarativa associando-a ao serviço da \acrshort{api} de dados mas no qual o \textit{plugin} \texttt{response-tranformer} possui um valor diferente para o cabeçalho \texttt{Content-Security-Policy}. Os outros \textit{plugins} associados ao serviço da \acrshort{api} de dados continuam a ser executados para esta rota mas o \textit{plugin} \texttt{response-tranformer} desse serviço é substituído por este definido na rota:
+
 \begin{lstlisting}[language=yaml, caption=Configuração declarativa do \textit{Kong}: Rota da documentação]
 routes:
   - name: docs
@@ -443,8 +466,8 @@ routes:
 \end{lstlisting}
 
 A propriedade \texttt{strip\_path} com valor falso impede que o \textit{Kong} associe (parecido com um \textit{bind}) o caminho \texttt{/<Versão API>/docs} do \textit{Kong} ao caminho \texttt{/} da \acrshort{api} de dados. Assim, quando se faz o pedido a esta rota o pedido que é feito na \acrshort{api} de dados é no caminho \texttt{/<Versão API>/docs} desta. 
+Por fim, procedeu-se à configuração do \acrshort{https} no \textit{Kong}. Como se usam os certificados do \textit{Let's Encrpyt} pode-se usar o \textit{plugin} \texttt{acme} do \textit{Kong}\cite{kongACME}:
 
-Por fim, procedeu-se à configuração do \acrshort{https} no \textit{Kong}. Como se usa os certificados do \textit{Let's Encrpyt} pode-se usar o \textit{plugin} \texttt{acme} do \textit{Kong}\cite{kongACME}:
 \begin{lstlisting}[language=yaml, caption=Configuração declarativa do \textit{Kong}: \textit{plugin} \texttt{acme}]
 plugins:
   - name: acme
@@ -461,7 +484,9 @@ plugins:
           host: $REDIS_HOST
       tos_accepted: true
 \end{lstlisting}
-Para manter a configuração e os certificados do \textit{plugin} após reunícios do \textit{Kong} usa-se o \textit{Redis} para guardar a configuração bem como os certificados. Convém referir que este \textit{plugin} tem de ser global na configuração declarativa e não associado a um único serviço. Além disso, para permitir a geração dos certificados pelo \textit{Let's Encrypt} é necessário permitir o acesso à rota que começa em \texttt{/.well-known/acme-challenge} para permitir a validação do controlo do domínio. Assim foi adicionado o seguinte serviço à configuração declarativa:
+
+Para manter a configuração e os certificados do \textit{plugin} após reinícios do \textit{Kong} usa-se o \textit{Redis} para guardar a configuração bem como os certificados. Convém referir que este \textit{plugin} tem de ser global na configuração declarativa e não associado a um único serviço. Além disso, para permitir a geração dos certificados pelo \textit{Let's Encrypt} é necessário permitir o acesso à rota que começa em \texttt{/.well-known/acme-challenge} para permitir a validação do controlo do domínio. Assim foi adicionado o seguinte serviço à configuração declarativa:
+
 \begin{lstlisting}[language=yaml, caption=Configuração declarativa do \textit{Kong}: Serviço para a geração de certificados \acrshort{tls}]
 services:
   - name: acme-dummy
@@ -473,13 +498,17 @@ services:
   - name: API
     ...
 \end{lstlisting}
-Para ativar também o uso do \textit{plugin} \texttt{acme} é necessário no ficheiro \texttt{.conf} indicar onde estão os certificados confiáveis por forma a ser possível o \textit{Kong} iniciar para depois puder obter os certificados do \textit{Let's Encrypt}. Para tal, é indicado na diretiva \texttt{nginx\_proxy\_lua\_ssl\_trusted\_certificate} o valor \texttt{/etc/ssl/certs/ca-certificates.crt} (esta é a localização no caso de uma distribuição Ubuntu, poderá ser diferente noutras distribuições e \acrshort{os}'s). Quando o \textit{Kong} iniciar para acionar a criação do certificado é necessário fazer um pedido ao \textit{Kong} correndo o seguinte comando
+
+Para ativar também o uso do \textit{plugin} \texttt{acme} é necessário no ficheiro \texttt{.conf} indicar onde estão os certificados confiáveis por forma a ser possível o \textit{Kong} iniciar para depois puder obter os certificados do \textit{Let's Encrypt}. Para tal, é indicado na diretiva \texttt{nginx\_proxy\_lua\_ssl\_trusted\_certificate} o valor \texttt{/etc/ssl/certs/ca-certificates.crt} (esta é a localização no caso de uma distribuição Ubuntu, poderá ser diferente noutras distribuições e \acrshort{os}'s). Quando o \textit{Kong} iniciar para acionar a criação do certificado é necessário fazer um pedido ao \textit{Kong} correndo o seguinte comando:
+
 \begin{verbatim}
 curl https://<domain> -k
 \end{verbatim}
+
 substituindo \verb|<domain>| pelo domínio da \acrshort{api} de dados.
 
-Além disso, por forma a que quando alguém tente aceder às rotas através de \acrshort{http} seja redirecionado para o \acrshort{https} foi adicionado as seguintes propriedades nas rotas:
+Além disso, por forma a que quando alguém tente aceder às rotas através de \acrshort{http} seja redirecionado para o \acrshort{https} foram adicionadas as seguintes propriedades nas rotas:
+
 \begin{lstlisting}[language=yaml, caption=Configuração declarativa do \textit{Kong}: Serviço para a geração de certificados \acrshort{tls}]
 services:
   ...
@@ -501,9 +530,11 @@ routes:
     https_redirect_status_code: 301
     ...
 \end{lstlisting}
+
 A propriedade \texttt{protocols} indica que protocolos deverão estar disponíveis na rota e a propriedade \texttt{https\_redirect\_status\_code} indica o \textit{status code} nos casos em que os pedidos são efetuados para o \acrshort{http}. Como este \textit{status code} é 301 os cliente serão redirecionados para o \acrshort{https}.
 
 Por fim, por forma a melhorar a segurança do \acrshort{https} e cumprir as recomendações de seguranção são adicionadas no ficheiro de configuração \texttt{.conf} algumas diretivas de configuração do \textit{Nginx}:
+
 \begin{lstlisting}[caption=Configurações do \textit{Nginx} no ficheiro de configuração \texttt{.conf}]
 #Indicar que se pretende usar ciphers personalizados
 ssl_cipher_suite = custom
@@ -538,10 +569,10 @@ nginx_upstream_keepalive_timeout = 65
 
 Uma pequena nota. As variáveis ambiente (\verb|${var}| ou \verb|$var|) serão substituidas antes de serem usadas pelo \textit{Kong} ao aplicar o comando \texttt{envsubst} ao ficheiro da configuração declarativa.
 
-Convém também referir que, esta versão da \acrshort{api} de dados com \textit{Kong} respeita todos os requisitos enunciados na migração de \acrshort{http} para \acrshort{https} (\ref{sec:sol_httpsReq}) com o objetivo primordial de melhorar a segurança. Para o \textit{deployment} foi também usado o \textit{docker} e o \textit{docker-compose} e é descrito na secção~\ref{sec:deployKong}
+Convém também referir que, esta versão da \acrshort{api} de dados com \textit{Kong} respeita todos os requisitos enunciados na migração de \acrshort{http} para \acrshort{https} (\ref{sec:sol_httpsReq}) com o objetivo primordial de melhorar a segurança. Para o \textit{deployment} foi também usado o \textit{docker} e o \textit{docker-compose} o que é descrito na secção~\ref{sec:deployKong}.
 
 \subsection{Arquitetura}
-Na figura~\ref{fig:apiGatewayArch} apresentou-se uma visão inicial da arquitetura. Já na figura~\ref{fig:apiGatewayArchFinal} apresenta-se a arquitetura final com \textit{Kong} sem incluir a interface da \acrshort{clav}: 
+Na figura~\ref{fig:apiGatewayArch} apresentou-se uma visão inicial da arquitetura. Já na figura~\ref{fig:apiGatewayArchFinal} apresenta-se a arquitetura final com o \textit{Kong} e sem incluir a interface da \acrshort{clav}: 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{img/apiGatewayArchFinal.png}
@@ -550,10 +581,10 @@ Na figura~\ref{fig:apiGatewayArch} apresentou-se uma visão inicial da arquitetu
 
 \section{Resumo}
 
-De forma resumida, na secção do estado da arte foi descrito o que é uma \textit{\acrshort{api} Gateway} e seus objetivos bem como várias alternativas existentes no mercado.
+De forma resumida, na secção do estado da arte foi descrito o que é uma \textit{\acrshort{api} Gateway} e seus objetivos bem como várias alternativas para a sua implementação existentes no mercado.
 
 Já na secção da solução são descritos os requisitos necessários na plataforma \acrshort{clav}, escolhendo a alternativa que melhor se adequa.
-A criação de uma \textit{\acrshort{api} Gateway} na \acrshort{clav} tem como principal intuito a simplificação da autenticação/proteção da \acrshort{api} de dados pelo que é tido em conta os requisitos mais apropriados para este caso.
-Ainda nesta secção é apresentada uma arquitetura inicial a desenvolver.
 
-Finalmente, na secção da implementação, descreveu-se os passos realizados (desenvolvimento e configuração) para alcançar a \textit{\acrshort{api} Gateway} bem como apresentou-se a arquitetura final desenvolvida.
+A criação de uma \textit{\acrshort{api} Gateway} na \acrshort{clav} tem como principal intuito a simplificação da autenticação/proteção da \acrshort{api} de dados pelo que são considerados os requisitos mais apropriados a esta situação.
+
+Finalmente, na secção da implementação, descrevem-se os passos realizados (desenvolvimento e configuração) para implementar a \textit{\acrshort{api} Gateway} e apresenta-se a arquitetura final desenvolvida.
