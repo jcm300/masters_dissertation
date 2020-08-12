@@ -197,7 +197,7 @@ De igual forma como a biblioteca \texttt{xml-js}, esta biblioteca consegue conve
 </root>
 \end{lstlisting}
 
-Se se pretende que um determinado elemento possua atributos é necessário que o objeto para esse elemento seja um objeto (\verb|{$: {unidade: 'cm'}, _: '160'}|) onde `\_' é o texto anotado e os vários atributos devem estar no objeto da propriedade `\$' em que o nome da propriedade é o nome do atributo e o valor da propriedade e o valor do atributo.
+Se se pretende que um determinado elemento possua atributos é necessário que o objeto para esse elemento seja um objeto (\verb|{$: {unidade: 'cm'}, _: '160'}|) onde `\_' é o texto anotado e os vários atributos devem estar no objeto da propriedade `\$' em que o nome da propriedade é o nome do atributo e o valor da propriedade é o valor do atributo.
 
 \subsection{\glsentryshort{csv}}
 
@@ -266,10 +266,10 @@ Por exemplo, se pretendermos converter o seguinte documento \acrshort{json}:
         "filhos": [
           {
             "nome": "António",
-            "idade": "24",
+            "idade": "2",
             "morada": {
                 "pais": "Portugal",
-                "cidade": "Aveiro"
+                "cidade": "Braga"
             }
           }
         ]
@@ -297,7 +297,7 @@ Quando o resultado pretendido seria por exemplo:
 \begin{lstlisting}[caption=Resultado pretendido da conversão do exemplo~\ref{exem:jsonBib2}]
 "nome","idade","morada.pais","morada.cidade"
 "Maria","22","Portugal","Braga",
-"António","24","Portugal","Aveiro"
+"António","2","Portugal","Braga"
 "João","24","Portugal","Vila Real"
 \end{lstlisting}
 
@@ -605,10 +605,10 @@ mais fácil criar um conversor próprio de \acrshort{json} para \acrshort{csv}.
 
 Por fim quanto à exportação da ontologia, das três é a mais simples visto que o \textit{GraphDB} como já se referiu 
 no estado da arte, possui funcionalidades de exportação dos triplos de uma \acrshort{bd}. 
-Assim, apenas é necessário realizar um pedido à \acrshort{api} de dados indicando no cabeçalho \textit{Accept} 
+Assim, apenas é necessário realizar um pedido ao \textit{GraphDB} da \acrshort{api} de dados indicando no cabeçalho \textit{Accept} 
 do pedido o formato de saída.
 
-Esta rota da \acrshort{api} possui vários formatos de exportação pelo que se decidiu suportar na \acrshort{api} 
+Esta rota da \acrshort{api} do \textit{GraphDB} possui vários formatos de exportação pelo que se decidiu suportar na \acrshort{api} 
 da \acrshort{clav} apenas os mais populares.
 
 Portanto, dos vários formatos de serialização \acrshort{rdf} serão apenas suportados (acessíveis) na 
@@ -685,12 +685,12 @@ cada rota bem como os valores a usar de forma a obter uma exportação nesse for
 Portanto, por exemplo para obter as Classes em \acrshort{csv} basta realizar o seguinte pedido à \acrshort{api}:
 \footnotesize
 \begin{verbatim}
-    GET /<versãoAPI>/classes?fs=application/json
+    GET /<versãoAPI>/classes?fs=text/csv
 \end{verbatim}
 \normalsize
 
 Já em termos de fluxo dos dados durante esta exportação, para as 8 primeiras rotas da tabela~\ref{table:rotasExp} 
-inicialmente os dados são obtidos da \acrshort{bd} ou da \textit{cache} da \acrshort{api}. 
+inicialmente os dados são obtidos da \acrshort{bd} (\textit{GraphDB}) ou da \textit{cache} da \acrshort{api}. 
 Caso o formato de saída seja \acrshort{json} é devolvido ao utilizador sem qualquer conversão. 
 Caso contrário os dados são convertidos através de um dos conversores já descritos para o formato de saída apropriado. Na última rota, a da exportação da ontologia, a informação é devolvida no formato apropriado pela própria \acrshort{bd} (\textit{GraphDB}) ou da \textit{cache} referida em~\ref{sec:expOntCache} de acordo com o pedido.
 
@@ -793,7 +793,7 @@ De seguida apresenta-se um exemplo de uma conversão, onde o ficheiro \acrshort{
 
 \subsection{Exportação na \glsentryshort{api} de dados}
 
-As conversões de \acrshort{json} para \acrshort{xml} ou \acrshort{csv} são realizadas por um \textit{middleware} após a obtenção dos dados em \acrshort{json}. Ou seja, apenas após se obter os dados pretendidos é que é feita a conversão para o formato de saída pretendido permitindo assim uma maior facilidade de desenvolvimento.
+As conversões de \acrshort{json} para \acrshort{xml} ou \acrshort{csv} são realizadas por um \textit{middleware} após a obtenção dos dados em \acrshort{json}. Ou seja, apenas após se obter os dados pretendidos é que é feita a conversão para o formato de saída pretendido permitindo assim uma maior facilidade de desenvolvimento. Além disso, apenas nas rotas onde for usado este \textit{middleware} é que há a possibilidade de exportação nestes formatos, não sendo garantida para o caso do \acrshort{csv} já que não suporta qualquer objeto \acrshort{json}. Caso o conversor do \acrshort{csv} não suporte deve ser adicionado o suporte ao conversor através da edição do dicionário já referido sendo que o objeto a converter deve ser armazenado em \texttt{res.locals.dados} e o tipo deste objeto (por exemplo ``entidade'') ser definido em \texttt{res.locals.tipo} por forma aos conversores, mais especificamente o conversor de \acrshort{json} para \acrshort{csv}, saber que objeto se pretende converter.
 
 \subsection{Interface de Exportação}
 

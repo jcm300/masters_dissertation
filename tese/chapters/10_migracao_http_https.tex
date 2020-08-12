@@ -101,7 +101,7 @@ Por forma a realizar a migração de \acrshort{http} para \acrshort{https} há u
 Para realizar esta migração a primeira decisão a tomar é o \acrfull{ca} de onde iremos comprar/obter os 
 certificados. Existem vários \acrshort{ca}s mas visto termos a restrição de que este deve ser gratuito 
 apenas nos sobra uma alternativa bastante popular, o \textit{Let's Encrypt}. 
-O único revês de usar o \textit{Let's Encrypt} é o facto de que os certificados terem uma validade de apenas 90 dias.
+O único revês de usar o \textit{Let's Encrypt} é o facto de os certificados terem uma validade de apenas 90 dias.
 
 Após tomada a decisão de utilizar o \acrshort{ca} \textit{Let's Encrypt} é necessário decidir que cliente 
 \textit{Let's Encrypt} usar. Este cliente permite a obtenção e renovação de certificados. 
@@ -226,7 +226,7 @@ Depois são adicionadas várias configurações recomendadas~\cite{helmet,letEnA
     add_header Content-Security-Policy <Cabeçalho CSP>;
   }
 \end{lstlisting}
-O valor do cabeçalho \texttt{Content-Security-Policy} varia de acordo se for para a \acrshort{api} de dados ou para a interface. A adição dos cabeçalhos na \acrshort{api} de dados é feita pelo \texttt{helmet} (Ver~\cite{helmet}) no servidor \textit{Node.js} em vez de ser no \textit{Nginx} mas o resultado final é igual ao uso desta configuração.
+O valor do cabeçalho \texttt{Content-Security-Policy} varia de acordo se for para a \acrshort{api} de dados ou para a interface. A adição dos cabeçalhos que melhoram a segurança na \acrshort{api} de dados é feita pelo \texttt{helmet} (Ver~\cite{helmet}) no servidor \textit{Node.js} em vez de ser no \textit{Nginx} mas o resultado final é igual ao uso desta configuração.
 
 Por fim, na configuração do \textit{Nginx} é também adicionado fora dos \texttt{servers} a diretiva 
 \begin{verbatim}
