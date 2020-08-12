@@ -82,35 +82,59 @@ Neste último comando, o ficheiro de configuração do \textit{Nginx} tem de est
 
 Por forma a realizar a migração de \acrshort{http} para \acrshort{https} há um conjunto de requisitos a cumprir:\label{sec:sol_httpsReq}
 \begin{itemize}
-    \item Usar um \acrshort{ca} gratuito
-    \item Os certificados devem ser renovados automaticamente
-    \item Permitir criar uma \textit{script} de automatização para o \textit{deployment}
+    \item Usar um \acrshort{ca} gratuito;
+    \item Os certificados devem ser renovados automaticamente;
+    \item Permitir criar uma \textit{script} de automatização para o \textit{deployment};
     \item Possuir as seguintes recomendações de segurança:
     \begin{itemize}
-        \item Redirecionar os pedidos \acrshort{http} para \acrshort{https} por forma a impedir que os utilizadores usem uma conexão insegura bem como evitar que alguém se faça passar pela \acrshort{clav} em \acrshort{http}
-        \item Adicionar o cabeçalho \acrshort{hsts} recomendado~\cite{hsts,hsts2}
-        \item Adicionar vários cabeçalhos e configurar o \textit{reverse proxy} por forma a tornar o \acrshort{https} mais forte e a \acrshort{api}/interface mais segura. Ver~\cite{helmet,letEnA+,dhparams,secExpress,strongSSL}
-        \item Adicionar o cabeçalho \acrfull{csp}~\cite{helmetCSP,csp}
+        \item Redirecionar os pedidos \acrshort{http} para \acrshort{https} por forma a impedir que os 
+        utilizadores usem uma conexão insegura bem como evitar que alguém se faça passar pela \acrshort{clav} 
+        em \acrshort{http};
+        \item Adicionar o cabeçalho \acrshort{hsts} recomendado~\cite{hsts,hsts2};
+        \item Adicionar vários cabeçalhos e configurar o \textit{reverse proxy} por forma a tornar o 
+        \acrshort{https} mais forte e a \acrshort{api}/interface mais segura. 
+        Ver~\cite{helmet,letEnA+,dhparams,secExpress,strongSSL};
+        \item Adicionar o cabeçalho \acrfull{csp}~\cite{helmetCSP,csp}.
     \end{itemize}
 \end{itemize}
 
+Para realizar esta migração a primeira decisão a tomar é o \acrfull{ca} de onde iremos comprar/obter os 
+certificados. Existem vários \acrshort{ca}s mas visto termos a restrição de que este deve ser gratuito 
+apenas nos sobra uma alternativa bastante popular, o \textit{Let's Encrypt}. 
+O único revês de usar o \textit{Let's Encrypt} é o facto de que os certificados terem uma validade de apenas 90 dias.
 
-Para realizar esta migração a primeira decisão a tomar é o \acrfull{ca} de onde iremos comprar/obter os certificados. Existem vários \acrshort{ca}s mas visto termos a restrição de que este deve ser gratuito apenas nos sobra uma alternativa bastante popular, o \textit{Let's Encrypt}. O único revês de usar o \textit{Let's Encrypt} é o facto de que os certificados tem uma validade de apenas 90 dias.
+Após tomada a decisão de utilizar o \acrshort{ca} \textit{Let's Encrypt} é necessário decidir que cliente 
+\textit{Let's Encrypt} usar. Este cliente permite a obtenção e renovação de certificados. 
+Existem vários clientes\footnote{Ver \url{https://letsencrypt.org/docs/client-options/}} dos quais o 
+\textit{Let's Encrypt} recomenda o \textit{Certbot}\footnote{Ver \url{https://certbot.eff.org/}}. 
+Contudo para usar \textit{Certbot} é necessário ter permissões \texttt{root} (\texttt{sudo}) no servidor bem 
+como é necessário instalar algumas dependências. 
+Por tais razões foi usado o \texttt{acme.sh} (Ver~\ref{sec:soaACMEsh}). 
+O \texttt{acme.sh} é quem irá tratar de toda a gestão dos certificados, renovando-os quando necessário 
+(a renovação é feita a cada 60 dias).
 
-Após se decidir que será usado o \acrshort{ca} \textit{Let's Encrypt} é necessário decidir que cliente \textit{Let's Encrypt} usar. Este cliente permite a obtenção e renovação de certificados. Existem vários clientes\footnote{Ver \url{https://letsencrypt.org/docs/client-options/}} dos quais o \textit{Let's Encrypt} recomenda o \textit{Certbot}\footnote{Ver \url{https://certbot.eff.org/}}. Contudo para usar \textit{Certbot} é necessário ter permissões \texttt{root} (\texttt{sudo}) no servidor bem como é necessário instalar algumas dependências. Por tais razões foi usado o \texttt{acme.sh} (Ver~\ref{sec:soaACMEsh}). O \texttt{acme.sh} é quem irá tratar de toda a gestão dos certificados, renovando-os quando necessário (a renovação é feita a cada 60 dias).
-
-Tendo em conta os requisitos a solução passa por colocar um \textit{reverse proxy} em \textit{Nginx} à frente da \acrshort{api} de dados, algo que já não é necessário na interface visto este (\textit{Nginx}) já estar presente. Após isso, a solução passará por configurar o \textit{Nginx}, tanto na \acrshort{api} de dados como na interface, com as várias recomendações de segurança. Passa também por automatizar o \textit{deployment} através de \textit{Docker} e \textit{Docker-Compose} bem como a criação de algumas pequenas \textit{scripts} para:
+Tendo em conta os requisitos a solução passa por colocar um \textit{reverse proxy} em \textit{Nginx} à frente da 
+\acrshort{api} de dados, algo que já não é necessário na interface visto este (\textit{Nginx}) já estar presente. 
+Após isso, a solução passará por configurar o \textit{Nginx}, tanto na \acrshort{api} de dados como na interface, 
+com as várias recomendações de segurança. 
+Passa também por automatizar o \textit{deployment} através de \textit{Docker} e \textit{Docker-Compose} bem como 
+a criação de algumas pequenas \textit{scripts} para:
 \begin{itemize}
-    \item gerar certificado local autoassinado com o único objetivo de permitir o primeiro inicio do \textit{Nginx} (ainda não foram gerados os certificados dos domínios) para ser possível o \texttt{Let's Encrypt} validar o controlo sobre o domínio (ver~\ref{sec:valDom}) permitindo a geração dos certificados necessários
-    \item automatizar a instalação do cliente \acrshort{acme} \texttt{acme.sh} (\textit{download} e instalação)
-    \item gerar o primeiro certificado para os domínio(s) pretendido(s) com o \texttt{acme.sh}
-    \item instalar o primeiro certificado no caminho apropriado com o \texttt{acme.sh} de onde o \textit{reverse proxy} o irá obter
-    \item gerar \textit{\acrshort{dh} parameters} mais fortes para a troca de chaves com recurso ao \textit{OpenSSL}
+    \item gerar certificado local autoassinado com o único objetivo de permitir o primeiro inicio do \textit{Nginx} 
+    (ainda não foram gerados os certificados dos domínios) para ser possível o \texttt{Let's Encrypt} validar o 
+    controlo sobre o domínio (ver~\ref{sec:valDom}) permitindo a geração dos certificados necessários;
+    \item automatizar a instalação do cliente \acrshort{acme} \texttt{acme.sh} (\textit{download} e instalação);
+    \item gerar o primeiro certificado para os domínio(s) pretendido(s) com o \texttt{acme.sh};
+    \item instalar o primeiro certificado no caminho apropriado com o \texttt{acme.sh} de onde o 
+    \textit{reverse proxy} o irá obter;
+    \item gerar \textit{\acrshort{dh} parameters} mais fortes para a troca de chaves com recurso ao \textit{OpenSSL};
     \item instalar dependências no \textit{container} onde se encontra o \textit{Nginx}:
     \begin{itemize}
-        \item \texttt{openssl} para a geração de um certificado local autoassinado e dos \acrshort{dh} \textit{paremeters}
-        \item \texttt{cron} para o \texttt{acme.sh} criar um \textit{cron job} diário para a verificação/renovação do certificado
-        \item \texttt{curl} para fazer \textit{download} do \texttt{acme.sh}
+        \item \texttt{openssl} para a geração de um certificado local autoassinado e dos \acrshort{dh} 
+        \textit{paremeters};
+        \item \texttt{cron} para o \texttt{acme.sh} criar um \textit{cron job} diário para a verificação/renovação 
+        do certificado;
+        \item \texttt{curl} para fazer \textit{download} do \texttt{acme.sh}.
     \end{itemize}
 \end{itemize}
 
@@ -121,7 +145,8 @@ A arquitetura a desenvolver com \acrshort{https}, presente na figura~\ref{fig:ap
     \caption{Arquitetura a desenvolver com \acrshort{https}\label{fig:apiHttpsArch}}
 \end{figure}
 
-A ligação a tracejado entre os dois \textit{Nginx}'s pode ou não existir, irá depender se se pretende ou não que o servidor da interface reencaminhe pedidos para o servidor da \acrshort{api} de dados.
+A ligação a tracejado entre os dois \textit{Nginx}'s pode ou não existir, irá depender se se pretende ou não que 
+o servidor da interface reencaminhe pedidos para o servidor da \acrshort{api} de dados.
 
 \section{Implementação}
 

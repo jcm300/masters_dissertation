@@ -626,16 +626,23 @@ então ser usado para alimentar a documentação dinâmica \textit{Swagger \acrs
 
 \section{Solução}
 
-No estado da arte foram abordadas várias alternativas ao \textit{Swagger UI}. A partir da tabela~\ref{table:swaggerUI} e tendo em conta que:
+No estado da arte foram abordadas várias alternativas ao \textit{Swagger UI}. 
+A partir da tabela~\ref{table:swaggerUI} e tendo em conta que:
 \begin{itemize}
-    \item Não há financiamento
-    \item Já existe uma \acrshort{api} desenvolvida
-    \item A documentação deve estar acessível de um domínio próprio
-    \item A documentação deve ser fácil de criar, de editar e de manter
-    \item Será usada a especificação \textit{OpenAPI}
+    \item Não há financiamento;
+    \item Já existe uma \acrshort{api} desenvolvida;
+    \item A documentação deve estar acessível de um domínio próprio;
+    \item A documentação deve ser fácil de criar, de editar e de manter;
+    \item Será usada a especificação \textit{OpenAPI}.
 \end{itemize}
 
-as várias alternativas ficam reduzidas ao \textit{Swagger \acrshort{ui}} e ao \textit{ReDoc}. Optou-se por escolher o \textit{Swagger \acrshort{ui}} visto ser a ferramenta mais amplamente usada para além de que é possível obter também uma fácil integração no \textit{Swagger \acrshort{ui}} com recurso à \textit{package} \texttt{swagger-ui-express} já aprofundada no estado da arte (ver~\ref{sec:soaDocAPI}). Além disso, escolheu-se a \textit{package} \texttt{yaml-include} por forma a auxiliar a produção da documentação na criação do ficheiro com a especificação \textit{OpenAPI}, permitindo que esta documentação seja modular.
+As várias alternativas ficam reduzidas ao \textit{Swagger \acrshort{ui}} e ao \textit{ReDoc}. 
+Optou-se por escolher o \textit{Swagger \acrshort{ui}} visto ser a ferramenta mais amplamente usada para além de 
+que é possível obter também uma fácil integração no \textit{Swagger \acrshort{ui}} com recurso 
+à \textit{package} \texttt{swagger-ui-express} já aprofundada no estado da arte (ver~\ref{sec:soaDocAPI}). 
+Além disso, escolheu-se a \textit{package} \texttt{yaml-include} por forma a auxiliar a produção da 
+documentação na criação do ficheiro com a especificação \textit{OpenAPI}, permitindo que esta documentação 
+seja modular.
 
 A documentação modular será estruturada da seguinte forma:
 
@@ -667,13 +674,41 @@ A documentação modular será estruturada da seguinte forma:
     ...
 \end{lstlisting}
 
-Portanto nesta estrutura na pasta \texttt{paths} é seguida a estrutura do \texttt{yaml-include} já descrita no estado da arte em~\ref{exem:faf} em que as pastas indicam o caminho e o nome dos ficheiros o verbo \acrshort{http} da rota. Em cada um destes ficheiros é colocada a descrição, os parâmetros, etc, da rota. Nestes ficheiros serão feitas referências aos \texttt{schemas} e \texttt{examples} necessários, estando estes nas pastas \texttt{schemas} e \texttt{examples} respetivamente. Isto permite que os modelos e os exemplos sejam reutilizados para além de que permite tornar os ficheiros onde são referenciados mais fáceis de perceber, principalmente em casos em que os modelos e os exemplos são extensos.
+Portanto nesta estrutura na pasta \texttt{paths} é seguida a estrutura do \texttt{yaml-include} já descrita no 
+estado da arte em~\ref{exem:faf} em que as pastas indicam o caminho e o nome dos ficheiros o verbo \acrshort{http} 
+da rota. Em cada um destes ficheiros é colocada a descrição, os parâmetros, etc, da rota. 
+Nestes ficheiros serão feitas referências aos \texttt{schemas} e \texttt{examples} necessários, estando estes nas 
+pastas \texttt{schemas} e \texttt{examples} respetivamente. Isto permite que os modelos e os exemplos sejam 
+reutilizados para além de que permite tornar os ficheiros onde são referenciados mais fáceis de perceber, 
+principalmente nos casos em que os modelos e os exemplos são extensos.
 
-Em termos de organização das pastas \texttt{schemas} e \texttt{examples}, estas no primeiro ``nível'' possuem pastas de cada grupo de rotas (classes, entidades, \textit{users}, chaves, etc) e em cada uma destas pastas estão os modelos/exemplos correspondentes a esse grupo de rotas. Na pasta \texttt{schemas} existe contudo uma pasta especial chamada \texttt{definicoes} que possui os vários tipos de dados, como por exemplo o código de uma classe, o id de uma entidade, etc. Assim, estes modelos são usados nos outros modelos e nas rotas permitindo uniformizar estes dados. Ou seja, caso haja por exemplo alguma alteração no formato do código, será apenas necessário alterar no modelo presente na pasta \texttt{definicoes} que a alteração será ``propagada'' já que todos que precisam deste modelo fazem-lhe referência. Portanto, sempre que é criado um novo modelo ou uma nova rota, convém verificar nesta pasta \texttt{definicoes} se já existe o tipo de dados necessário a usar bastando assim fazer-lhe referência.
+Em termos de organização das pastas \texttt{schemas} e \texttt{examples}, estas no primeiro ``nível'' possuem 
+pastas de cada grupo de rotas (classes, entidades, \textit{users}, chaves, etc) e em cada uma destas pastas estão 
+os modelos/exemplos correspondentes a esse grupo de rotas. Na pasta \texttt{schemas} existe contudo uma pasta 
+especial chamada \texttt{definicoes} que possui os vários tipos de dados, como por exemplo o código de uma classe, 
+o id de uma entidade, etc. Assim, estes modelos são usados nos outros modelos e nas rotas permitindo uniformizar 
+estes dados. Ou seja, caso haja por exemplo alguma alteração no formato do código, será apenas necessário alterar 
+no modelo presente na pasta \texttt{definicoes} que a alteração será ``propagada'' já que todos que precisam deste 
+modelo incluem-no por referência. 
 
-Por fim, no ficheiro \texttt{index.yaml} é definido os grupos de rotas (\textit{tags}) bem como várias informações gerais sobre a \acrshort{api} de dados, como descrição, métodos de autenticação, etc. Além disso, é aqui também definido, apenas no caso da pasta \texttt{examples}, que ficheiros deve o \texttt{yaml-include} ignorar ao incluir a pasta \texttt{examples} sobre a \textit{tag} \texttt{examples} dos \texttt{components}. Isto é efetuado por forma a evitar erros de sintaxe da especificação \textit{OpenAPI}. Estes erros acontecem porque há vários ficheiros de exemplos a serem incluídos nos ficheiros das rotas diretamente pelo \texttt{yaml-include} em vez de se usar o \verb|$ref| da especificação \textit{OpenAPI} em casos que o \verb|$ref| não permite efetuar o pretendido. Assim, estes ficheiros têm de ser ignorados.
+Portanto, sempre que é criado um novo modelo ou uma nova rota, convém verificar nesta pasta \texttt{definicoes} 
+se já existe o tipo de dados necessário a usar bastando assim fazer-lhe referência.
 
-Com o \texttt{yaml-include}, sempre que a \acrshort{api} de dados inicia é criado o ficheiro de especificação \textit{OpenAPI} final que incluirá os dados destes ficheiros nos seus locais apropriados. Este ficheiro final ficará disponível na pasta pública do servidor com o nome \texttt{clav.yaml} ou seja acessível a partir de \url{https://clav-api.dglab.gov.pt/clav.yaml}. É este o ficheiro que alimenta o \textit{SwaggerUI} construído com o \textit{swagger-ui-express} e disponível em \url{https://clav-api.dglab.gov.pt/v2/docs}.
+Por fim, no ficheiro \texttt{index.yaml} são definidos os grupos de rotas (\textit{tags}) bem como várias 
+informações gerais sobre a \acrshort{api} de dados, como descrição, métodos de autenticação, etc. 
+Além disso, é aqui também definido, apenas no caso da pasta \texttt{examples}, que ficheiros deve o 
+\texttt{yaml-include} ignorar ao incluir a pasta \texttt{examples} sobre a \textit{tag} \texttt{examples} 
+dos \texttt{components}. Isto é efetuado por forma a evitar erros de sintaxe da especificação \textit{OpenAPI}. 
+Estes erros acontecem porque há vários ficheiros de exemplos a serem incluídos nos ficheiros das rotas diretamente 
+pelo \texttt{yaml-include} em vez de se usar o \verb|$ref| da especificação \textit{OpenAPI} em casos que o 
+\verb|$ref| não permite efetuar o pretendido. Assim, estes ficheiros têm de ser ignorados.
+
+Com o \texttt{yaml-include}, sempre que a \acrshort{api} de dados inicia é criado o ficheiro de especificação 
+\textit{OpenAPI} final que incluirá os dados destes ficheiros nos seus locais apropriados. 
+Este ficheiro final ficará disponível na pasta pública do servidor com o nome \texttt{clav.yaml} 
+ou seja acessível a partir de \url{https://clav-api.dglab.gov.pt/clav.yaml}. É este o ficheiro que alimenta o 
+\textit{SwaggerUI} construído com o \textit{swagger-ui-express} e disponível em 
+\url{https://clav-api.dglab.gov.pt/v2/docs}.
 
 \section{Implementação}
 

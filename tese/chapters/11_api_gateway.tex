@@ -172,19 +172,24 @@ Nesta secção é escolhida a tecnologia \textit{\acrshort{api} Gateway} a usar 
 
 Apresenta-se de seguida os requisitos que a \textit{\acrshort{api} Gateway} deve possuir:
 \begin{itemize}
-    \item Ser gratuita e \textit{open-source}
-    \item Suportar \acrshort{https}, \acrshort{cors} e \acrshort{jwt}
-    \item Suportar Autenticação e Autorização personalizada (Criação de \textit{plugin}/middleware)
-    \item Possível automatização ao definir apenas ficheiros de configuração sem qualquer uso de \acrshort{cli}s, \acrshort{gui}s ou \acrshort{api}s
-    \item Suportar \textit{deployment} em \textit{Docker}
-    \item Suportar \textit{rate limit} e \textit{cache}
-    \item Suportar versionamento da \acrshort{api}
-    \item Balanceamento de carga e servir de \textit{reverse proxy}
-    \item \textit{Logs} e métricas
-    \item Integração da documentação desenvolvida na especificação \textit{OpenAPI}
+    \item Ser gratuita e \textit{open-source};
+    \item Suportar \acrshort{https}, \acrshort{cors} e \acrshort{jwt};
+    \item Suportar Autenticação e Autorização personalizada (Criação de \textit{plugin}/middleware);
+    \item Possível automatização ao definir apenas ficheiros de configuração sem qualquer uso de \acrshort{cli}s, 
+    \acrshort{gui}s ou \acrshort{api}s;
+    \item Suportar \textit{deployment} em \textit{Docker};
+    \item Suportar \textit{rate limit} e \textit{cache};
+    \item Suportar versionamento da \acrshort{api};
+    \item Balanceamento de carga e servir de \textit{reverse proxy};
+    \item \textit{Logs} e métricas;
+    \item Integração da documentação desenvolvida na especificação \textit{OpenAPI}.
 \end{itemize}
 
-Antes de fazer uma comparação entre as várias \textit{\acrshort{api} Gateway}s exploradas no estado de arte (~\ref{sec:api_gateway}) há uma que é imediatamente descartada, a \textit{Moleculer \acrshort{api} Gateway}. Esta \textit{\acrshort{api} Gateway} tem um melhor caso de uso quando a(s) \acrshort{api}(s) desenvolvida(s) usam a \textit{framework} \textit{Moleculer}. Como este não é o caso da \acrshort{clav} não teremos em consideração esta \textit{\acrshort{api} Gateway} na próxima tabela.
+Antes de fazer uma comparação entre as várias \textit{\acrshort{api} Gateway}s exploradas no estado de arte 
+(~\ref{sec:api_gateway}) há uma que é imediatamente descartada, a \textit{Moleculer \acrshort{api} Gateway}. 
+Esta \textit{\acrshort{api} Gateway} tem um melhor caso de uso quando a(s) \acrshort{api}(s) desenvolvida(s) 
+usam a \textit{framework} \textit{Moleculer}. Como este não é o caso da \acrshort{clav} não teremos em consideração 
+esta \textit{\acrshort{api} Gateway} na próxima tabela.
 
 \begin{table}[H]
     \footnotesize
@@ -207,34 +212,59 @@ Antes de fazer uma comparação entre as várias \textit{\acrshort{api} Gateway}
     \label{table:APIGateway}
 \end{table}
 
-Infelizmente nenhuma das tecnologias suporta todos os requisitos. Assim a partir da tabela~\ref{table:APIGateway} irá ser escolhida a tecnologia a usar tendo em conta a importância de cada requisito.
+Infelizmente nenhuma das tecnologias suporta todos os requisitos. 
+Assim a partir da tabela~\ref{table:APIGateway} irá ser escolhida a tecnologia a usar tendo em conta a importância 
+de cada requisito.
 
-Das quatro tecnologias presentes na tabela, podemos desde já descartar o \textit{Tyk} visto não permitir automatizar o \textit{deployment}. Sobram, assim, o \textit{Nginx}, o \textit{Kong} e o \textit{Express Gateway}. Destas três, verifica-se que a última possui menos funcionalidades e portanto não será a tecnologia escolhida.
+Das quatro tecnologias presentes na tabela, podemos desde já descartar o \textit{Tyk} visto não permitir 
+automatizar o \textit{deployment}. Sobram, assim, o \textit{Nginx}, o \textit{Kong} e o \textit{Express Gateway}. 
+Destas três, verifica-se que a última possui menos funcionalidades e portanto não será a tecnologia escolhida.
 
-Entre o \textit{Nginx} e o \textit{Kong} a escolha irá prender-se com a facilidade e poder de configuração visto que os requisitos presentes em cada tecnologia são muito semelhantes. O \textit{Kong} é construído a partir do \textit{Nginx} (daí as suas parecenças em termos de requisitos presentes) e é possível configurar o \textit{Nginx} a partir do \textit{Kong}. Para além disso, o \textit{Kong} possui vários \textit{plugins} por forma a permitir certas funcionalidades que no \textit{Nginx} seria necessário configurar manualmente para atingir essas funcionalidades. Portanto a escolha tecnológica para a \textit{\acrshort{api} Gateway} recai sobre o \textit{Kong}.
+Entre o \textit{Nginx} e o \textit{Kong} a escolha irá prender-se com a facilidade e poder de configuração visto 
+que os requisitos presentes em cada tecnologia são muito semelhantes. O \textit{Kong} é construído a partir do 
+\textit{Nginx} (daí as suas parecenças em termos de requisitos presentes) e é possível configurar o 
+\textit{Nginx} a partir do \textit{Kong}. Para além disso, o \textit{Kong} possui vários \textit{plugins} por 
+forma a permitir certas funcionalidades que no \textit{Nginx} seria necessário configurar manualmente para 
+obter as mesmas funcionalidades. Portanto a escolha tecnológica para a \textit{\acrshort{api} Gateway} recai 
+sobre o \textit{Kong}.
 
 \subsection{Arquitetura}
 
-Após a escolha da \textit{\acrshort{api} Gateway} a usar (\textit{Kong}) é necessário proceder ao esboço de uma arquitetura base a desenvolver. Esta arquitetura apresenta-se de seguida, na figura~\ref{fig:apiGatewayArch}, onde apenas se inclui a \acrshort{api} visto a interface não sofrer qualquer alteração:
+Após a escolha da \textit{\acrshort{api} Gateway} a usar (\textit{Kong}) é necessário proceder ao esboço de 
+uma arquitetura base a desenvolver. Esta arquitetura apresenta-se de seguida, na figura~\ref{fig:apiGatewayArch}, onde apenas se inclui a 
+\acrshort{api} visto a interface não sofrer qualquer alteração:
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{img/apiGatewayArch.png}
     \caption{Arquitetura a desenvolver com \textit{\acrshort{api} Gateway}}\label{fig:apiGatewayArch}
 \end{figure}
 
-Apesar das várias vantagens do \textit{Kong} não é possível, através dos \textit{plugins} fornecidos por este, realizar uma proteção das rotas semelhante à presente na \acrshort{api} de dados da \acrshort{clav}. Portanto, com o intuito de simplificar a \acrshort{api} de dados, a ideia passa por retirar da \acrshort{api} de dados da \acrshort{clav} tudo que envolva proteção desta, tais como a verificação de \textit{tokens} (autenticação), a geração de \textit{tokens} bem como a verificação da autorização de um utilizador (verificar se o nível do utilizador é suficiente para aceder determinada rota), e colocar estas funcionalidades noutro servidor independente da \acrshort{api} de dados. Este servidor está representado na arquitetura como Serviço de \textit{Auth} que procederá então à autenticação e autorização dos pedidos realizados pelos clientes.
+Apesar das várias vantagens do \textit{Kong} não é possível, através dos \textit{plugins} fornecidos por este, 
+realizar uma proteção das rotas semelhante à presente na \acrshort{api} de dados da \acrshort{clav}. 
+Portanto, com o intuito de simplificar a \acrshort{api} de dados, a ideia passa por retirar da \acrshort{api} de 
+dados da \acrshort{clav} tudo que envolva proteção desta, tais como a verificação de \textit{tokens} (autenticação), 
+a geração de \textit{tokens} bem como a verificação da autorização de um utilizador (verificar se o nível do 
+utilizador é suficiente para aceder determinada rota), e colocar estas funcionalidades noutro servidor 
+independente da \acrshort{api} de dados. Este servidor está representado na arquitetura como Serviço de 
+\textit{Auth} que procederá então à autenticação e autorização dos pedidos realizados pelos clientes.
 
-Com esta separação a \acrshort{api} de dados precisará de realizar pedidos ao Serviço de \textit{Auth} para a verificação e geração de \textit{tokens} em casos particulares como o \textit{login} de um utilizador ou a \textit{criação} de uma Chave \acrshort{api}.
+Com esta separação a \acrshort{api} de dados precisará de realizar pedidos ao Serviço de \textit{Auth} para a 
+verificação e geração de \textit{tokens} em casos particulares como o \textit{login} de um utilizador ou a 
+\textit{criação} de uma Chave \acrshort{api}.
 
-Todos os pedidos realizados pelos clientes e pela interface da \acrshort{clav} tem como ponto de entrada o \textit{Kong}. Este, através de um \textit{plugin}, para cada pedido recebido irá realizar um pedido ao Serviço de \textit{Auth} onde:
+Todos os pedidos realizados pelos clientes e pela interface da \acrshort{clav} tem como ponto de entrada o 
+\textit{Kong}. Este, através de um \textit{plugin}, para cada pedido recebido irá realizar um pedido ao Serviço 
+de \textit{Auth} onde:
 
 \begin{enumerate}
-    \item Verifica-se quem pode aceder (que tipo de clientes) à rota do pedido
-    \item Procede-se à autenticação do pedido (se necessário)
-    \item Procede-se à autorização do pedido (se necessário)
+    \item Verifica quem pode aceder (que tipo de clientes) à rota do pedido;
+    \item Procede à autenticação do pedido (se necessário);
+    \item Procede à autorização do pedido (se necessário).
 \end{enumerate}
 
-Caso a resposta do Serviço de \textit{Auth} seja positiva então o \textit{Kong} procederá à realização do pedido à \acrshort{api} de dados. Caso contrário, o pedido à \acrshort{api} de dados não é efetuado e é devolvido ao utilizador a resposta de erro correspondente (erro de autenticação ou de autorização).
+Caso a resposta do Serviço de \textit{Auth} seja positiva então o \textit{Kong} procederá à realização do pedido 
+à \acrshort{api} de dados. Caso contrário, o pedido à \acrshort{api} de dados não é efetuado e é devolvido ao 
+utilizador a resposta de erro correspondente (erro de autenticação ou de autorização).
 
 \section{Implementação}
 

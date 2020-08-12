@@ -187,28 +187,66 @@ dissertação~\cite{otavioTese} (``CLAV: Autenticação e integração na plataf
 
 \section{Solução}
 
-A autenticação com \acrshort{cmd} é bastante semelhante à autenticação com o \acrshort{cc}. O que muda é o modo de autenticação perante o Autenticação.gov que em vez de ser efetuado com \acrshort{cc} (\acrlong{cc}, Leitor de Cartões, \textit{software} local do Autenticação.gov e \acrshort{pin} de autenticação do \acrshort{cc}) será realizado através de \acrshort{cmd} (Número de telemóvel, \acrshort{pin} definido durante a ativação da \acrshort{cmd} e \acrshort{pin} temporário enviado para o número de telemóvel).
+A autenticação com \acrshort{cmd} é bastante semelhante à autenticação com o \acrshort{cc}. 
+O que muda é o modo de autenticação perante o Autenticação.gov que em vez de ser efetuado com \acrshort{cc} 
+(\acrlong{cc}, Leitor de Cartões, \textit{software} local do Autenticação.gov e \acrshort{pin} de autenticação 
+do \acrshort{cc}) será realizado através de \acrshort{cmd} (Número de telemóvel, \acrshort{pin} definido durante 
+a ativação da \acrshort{cmd} e \acrshort{pin} temporário enviado para o número de telemóvel).
 
-Os atributos pedidos ao Autenticação.gov são os mesmos que são pedidos com a autenticação com o \acrshort{cc} (\acrshort{nic} e Nome Completo) permitindo identificar unicamente o utilizador a partir do \acrshort{nic}. Para além disso, permite aproveitar todo o back-end e código já desenvolvido para a autenticação do utilizador perante a \acrshort{clav} através de \acrshort{cc} visto que os atributos usados são os mesmos. Além disso, permite uma melhor normalização da identificação dos utilizadores (não existindo assim vários ids para o mesmo utilizador) bem como evita ser necessário o utilizador partilhar atributos adicionais (como o número de telemóvel) com a \acrshort{clav} (o número de telemóvel é apenas partilhado com o Autenticação.gov sendo que a \acrshort{clav} não tem acesso a esta informação se apenas pediu para saber os atributos \acrshort{nic} e Nome Completo). Assim, a única implicação que pode ser gerada daqui é que o utilizador, quer queira usar a autenticação por \acrshort{cc} quer queira usar por \acrshort{cmd}, necessita de estar registado na \acrshort{clav} com o \acrshort{cc} sendo que, neste momento é obrigatório o registo dos utilizadores através de \acrshort{cc}. Voltasse a frisar que o \acrshort{nic} será usado por forma a identificar o utilizador, pelo que serve de id do utilizador tal como na autenticação com o \acrshort{cc}.
+Os atributos pedidos ao Autenticação.gov são os mesmos que são pedidos com a autenticação com o \acrshort{cc} 
+(\acrshort{nic} e Nome Completo) permitindo identificar unicamente o utilizador a partir do \acrshort{nic}. 
+Para além disso, permite aproveitar todo o back-end e código já desenvolvido para a autenticação do utilizador 
+perante a \acrshort{clav} através de \acrshort{cc} visto que os atributos usados são os mesmos. 
+Além disso, permite uma melhor normalização da identificação dos utilizadores (não existindo assim vários ids 
+para o mesmo utilizador) bem como evita ser necessário o utilizador partilhar atributos adicionais (como o 
+número de telemóvel) com a \acrshort{clav} (o número de telemóvel é apenas partilhado com o Autenticação.gov 
+sendo que a \acrshort{clav} não tem acesso a esta informação se apenas pediu para saber os atributos 
+\acrshort{nic} e Nome Completo). Assim, a única implicação que pode ser retirada daqui é que o utilizador, 
+quer queira usar a autenticação por \acrshort{cc} quer queira usar por \acrshort{cmd}, necessita de estar 
+registado na \acrshort{clav} com o \acrshort{cc} sendo que, neste momento é obrigatório o registo dos utilizadores 
+através de \acrshort{cc}. 
 
-Portanto, de igual forma como na autenticação com o \acrshort{cc}, quando é selecionado este método de autenticação, a \acrshort{clav} redireciona o utilizador para o Autenticação.gov que se encarrega de autenticar o utilizador com \acrshort{cmd}, comunicando, no fim, os atributos pedidos ao Autenticação.gov (\acrshort{nic} e Nome Completo). A \acrshort{clav} com o \acrshort{nic} verifica se o utilizador já se encontra registado, obtendo mais alguma informação adicional, como o nível de utilizador. Semelhantemente à autenticação local e à autenticação com o \acrshort{cc}, é agora gerado um \textit{token} (\acrshort{jwt}) que irá assinar a partir daqui todos os pedidos do utilizador. O \textit{token} tem a validade de 8 horas, ao fim das quais o utilizador necessita de realizar uma nova autenticação.
+Volta-se a frisar que o \acrshort{nic} será usado por forma a identificar o utilizador, 
+pelo que serve de id do utilizador tal como na autenticação com o \acrshort{cc}.
 
-Em termos técnicos, é apenas necessário aproveitar o pedido POST que já é enviado ao Autenticação.gov para a autenticação com \acrshort{cc} e adicionar as extensões nível de confiança e a política de apresentação como é possível constatar em~\ref{sec:soaAuthCMDReq}.
+Portanto, de igual forma como na autenticação com o \acrshort{cc}, quando é selecionado este método de autenticação,
+ a \acrshort{clav} redireciona o utilizador para o Autenticação.gov que se encarrega de autenticar o utilizador 
+ com \acrshort{cmd}, comunicando, no fim, os atributos pedidos ao Autenticação.gov (\acrshort{nic} e Nome Completo).
+  A \acrshort{clav} com o \acrshort{nic} verifica se o utilizador já se encontra registado, obtendo mais alguma 
+  informação adicional, como o nível de utilizador. 
+  
+  Semelhantemente à autenticação local e à autenticação com o \acrshort{cc}, é agora gerado um \textit{token} 
+  (\acrshort{jwt}) que irá assinar a partir daqui todos os pedidos do utilizador. O \textit{token} tem a validade 
+  de 8 horas, ao fim das quais o utilizador necessita de realizar uma nova autenticação.
 
-A primeira extensão permite indicar o nível mínimo necessário que pretendemos que seja usado pelo Autenticação.gov. Como tal, dado um nível selecionado permite a autenticação através do método desse nível mas também permite os métodos de autenticação dos níveis superiores. Além disso, quanto menor o nível mais fraca é a autenticação, visto que quanto menor o nível mais fraca é a autenticidade das credenciais fornecidas pelo utilizador.
+Em termos técnicos, é apenas necessário aproveitar o pedido POST que já é enviado ao Autenticação.gov para a 
+autenticação com \acrshort{cc} e adicionar as extensões nível de confiança e a política de apresentação como 
+é possível constatar em~\ref{sec:soaAuthCMDReq}.
 
-Quando este nível de confiança não está presente (como no caso do pedido enviado para a autenticação com \acrshort{cc}) o nível de confiança mínimo assumido é o nível máximo (4). Assim para o caso da \acrshort{cmd} será adicionada a seguinte extensão ao pedido em XML~\cite{agov2}:
+A primeira extensão permite indicar o nível mínimo necessário que pretendemos que seja usado pelo Autenticação.gov. 
+Como tal, dado um nível selecionado permite a autenticação através do método desse nível mas também permite os 
+métodos de autenticação dos níveis superiores. Além disso, quanto menor o nível mais fraca é a autenticação, 
+visto que quanto menor o nível mais fraca é a autenticidade das credenciais fornecidas pelo utilizador.
+
+Quando este nível de confiança não está presente (como no caso do pedido enviado para a autenticação 
+com \acrshort{cc}) o nível de confiança mínimo assumido é o nível máximo (4). Assim para o caso da \acrshort{cmd} 
+será adicionada a seguinte extensão ao pedido em XML~\cite{agov2}:
 %Ref: Manual de Integração do Fornecedor de Autenticação v1.5.3 cap 7.2
 \begin{lstlisting}[language=xml, caption=Extensão Nível de Confiança no pedido enviado ao Autenticação.gov]
 <fa:FAAALevel xmlns:fa="http://autenticacao.cartaodecidadao.pt/atributos">
     3
 </fa:FAAALevel>
 \end{lstlisting}
-Esta extensão indica então que o nível de confiança mínimo necessário é o nível 3, ou seja, permite a autenticação através de \acrshort{cmd} mas também através de \acrshort{cc}.
 
-Como tal, por forma a apenas aparecer no Autenticação.gov a hipótese de autenticação através de \acrshort{cmd} é necessário definir a Política de Apresentação do Autenticação.gov.
+Esta extensão indica então que o nível de confiança mínimo necessário é o nível 3, ou seja, permite a autenticação 
+através de \acrshort{cmd} mas também através de \acrshort{cc}.
 
-Ou seja, é necessário esconder a aba do \acrfull{cc} e se futuramente se pretender apresentar ambas as abas é também necessário tornar o mecanismo de \acrfull{cmd} a aba predefinida. Para tal, foi adicionada a seguinte extensão ao pedido em XML~\cite{agov2}:
+Como tal, por forma a apenas aparecer no Autenticação.gov a hipótese de autenticação através de \acrshort{cmd} é 
+necessário definir a Política de Apresentação do Autenticação.gov.
+
+Ou seja, é necessário esconder a aba do \acrfull{cc} e se futuramente se pretender apresentar ambas as abas é 
+também necessário tornar o mecanismo de \acrfull{cmd} a aba predefinida. Para tal, foi adicionada a seguinte 
+extensão ao pedido em XML~\cite{agov2}:
 %Ref: Manual de Integração do Fornecedor de Autenticação v1.5.3 cap 8.2
 \begin{lstlisting}[language=xml, caption=Extensão Política de Apresentação no pedido enviado ao Autenticação.gov]
 <fa:AuthTabPresentationPolicies xmlns:fa="http://autenticacao.cartaodecidadao.pt/presentationpolicy">
@@ -218,9 +256,11 @@ Ou seja, é necessário esconder a aba do \acrfull{cc} e se futuramente se prete
     <fa:hideAuthTab TabId="CC"/> 
 </fa:AuthTabPresentationPolicies>
 \end{lstlisting}
-em que torna a aba do mecanismo de \acrshort{cmd} o predefinido e esconde a aba do mecanismo de \acrshort{cc}.
 
-Portanto, se for enviado um pedido ao Autenticação.gov igual ao da autenticação com \acrshort{cc} mas com estas extensões, o Autenticação.gov pedirá ao utilizador para se autenticar com \acrshort{cmd}.
+Que torna a aba do mecanismo de \acrshort{cmd} o predefinido e esconde a aba do mecanismo de \acrshort{cc}.
+
+Portanto, se for enviado um pedido ao Autenticação.gov igual ao da autenticação com \acrshort{cc} mas com estas 
+extensões, o Autenticação.gov pedirá ao utilizador para se autenticar com \acrshort{cmd}.
 
 \section{Implementação}
 

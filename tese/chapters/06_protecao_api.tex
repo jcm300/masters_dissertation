@@ -267,22 +267,30 @@ Contudo, o \textit{Branca} ainda não é muito conhecido nem um \textit{standard
 
 \section{Solução}
 
-A proteção da \acrshort{api} de dados é bastante importante visto que impede o uso indevido de pessoal não autorizado, isto é não registado. Para que um utilizador possa aceder à \acrshort{api} de dados necessita de criar uma Chave \acrshort{api} ou de pedir o registo de uma conta. A proteção da \acrshort{api} de dados da \acrshort{clav} possui os seguintes requisitos:
+A proteção da \acrshort{api} de dados é bastante importante visto que impede o uso indevido de pessoal não 
+autorizado, isto é, não registado. Para que um utilizador possa aceder à \acrshort{api} de dados necessita de 
+criar uma Chave \acrshort{api} ou de pedir o registo de uma conta. 
+
+A proteção da \acrshort{api} de dados da \acrshort{clav} possui os seguintes requisitos:
 \begin{itemize}
-    \item Todos os utilizadores devem conseguir aceder às rotas que as Chaves \acrshort{api} tem permissão de acesso
-    \item Deve ser possível definir para cada rota quem pode aceder, Chaves \acrshort{api} e/ou utilizadores
-    \item Se numa rota apenas podem aceder utilizadores deve ser possível definir que níveis de utilizadores podem aceder essa rota
-    \item A verificação da autorização e autenticação de um pedido a uma rota é realizada a partir de um \textit{token} (\acrshort{jwt})
-    \item Tanto uma Chave \acrshort{api} como um \textit{token} de utilizador são um \acrshort{jwt}
-    \item Uma Chave \acrshort{api} para além de ainda ser válida (não ter expirado) deve estar ainda ativa
-    \item Um utilizador desativado não pode gerar um \textit{token} de utilizador (não pode realizar \textit{login})
-    \item Uma Chave \acrshort{api} deve ter a validade de 30 dias
-    \item Um \textit{token} de um utilizador deve ter a validade de 8 horas
-    \item A \acrshort{api} deve conseguir distinguir uma Chave \acrshort{api} de um \textit{token} de utilizador
-    \item Não deve ser possível um utilizador fazer-se passar por uma Chave \acrshort{api} e vice-versa
+    \item Todos os utilizadores devem conseguir aceder às rotas a que as Chaves \acrshort{api} dão acesso;
+    \item Deve ser possível definir para cada rota quem pode aceder, Chaves \acrshort{api} e/ou utilizadores;
+    \item Se numa rota apenas podem aceder utilizadores deve ser possível definir que níveis de utilizadores 
+    podem aceder a essa rota;
+    \item A verificação da autorização e autenticação de um pedido a uma rota é realizada a partir de um 
+    \textit{token} (\acrshort{jwt});
+    \item Tanto uma Chave \acrshort{api} como um \textit{token} de utilizador são um \acrshort{jwt};
+    \item Uma Chave \acrshort{api} para além de ainda ser válida (não ter expirado) deve estar ainda ativa;
+    \item Um utilizador desativado não pode gerar um \textit{token} de utilizador (não pode realizar 
+    \textit{login});
+    \item Uma Chave \acrshort{api} deve ter a validade de 30 dias;
+    \item Um \textit{token} de um utilizador deve ter a validade de 8 horas;
+    \item A \acrshort{api} deve conseguir distinguir uma Chave \acrshort{api} de um \textit{token} de utilizador;
+    \item Não deve ser possível um utilizador fazer-se passar por uma Chave \acrshort{api} e vice-versa.
 \end{itemize}
 
-Os pedidos a efetuar à \acrshort{api} devem possuir o \acrshort{jwt} na \textit{header} \acrshort{http} \textit{Authorization} ou na \textit{query string} do pedido em um dos seguintes campos:
+Os pedidos a efetuar à \acrshort{api} devem possuir o \acrshort{jwt} na \textit{header} 
+\acrshort{http} \textit{Authorization} ou na \textit{query string} do pedido num dos seguintes campos:
 \begin{itemize}[leftmargin=3cm]
     \item[\textbf{\texttt{token}}] caso seja o \texttt{token} de um utilizador:\newline
         \verb|http://example.com/path/page?token=<token>|
@@ -290,32 +298,61 @@ Os pedidos a efetuar à \acrshort{api} devem possuir o \acrshort{jwt} na \textit
         \verb|http://example.com/path/page?apikey=<Chave API>|
 \end{itemize}
 
-Na \textit{header} \textit{Authorization} é usado o esquema de autenticação \textit{Bearer}\footnote{Mais informação em \url{https://tools.ietf.org/html/rfc6750}} com umas pequenas alterações. Portanto o conteúdo da \textit{header} \textit{Authorization}:
+Na \textit{header} \textit{Authorization} é usado o esquema de autenticação 
+\textit{Bearer}\footnote{Mais informação em \url{https://tools.ietf.org/html/rfc6750}} 
+com umas pequenas alterações. 
+
+Portanto o conteúdo da \textit{header} \textit{Authorization}:
 \begin{itemize}[leftmargin=2cm]
     \item Caso seja o \texttt{token} de um utilizador é:\newline
         \verb|token <token>|
     \item Caso seja uma Chave \acrshort{api} é:\newline
         \verb|apikey <Chave API>|
 \end{itemize}
+
 ao invés do esquema de autenticação predefinido do \textit{Bearer}: \verb|Bearer <token/Chave API>|.
 
-Caso não seja respeitado um destes formatos, o pedido será recusado visto que a \acrshort{api} de dados não consegue identificar o \textit{token}.
-Com estas duas formas de enviar o \acrshort{jwt} é possível distinguir os utilizadores das Chaves \acrshort{api} e cumprir assim um dos requisitos. Além disso, esta divisão entre utilizadores e chaves \acrshort{api} permite uma mais fácil gestão dos \textit{tokens} recebidos pela \acrshort{api} bem como permite usar duas formas diferentes de os gerar/verificar com o possível benefício de melhorar a segurança da \acrshort{api} já que também permite usar dois pares de chaves pública/privada, uma para as Chaves \acrshort{api}'s e outra para os \textit{token}'s de utilizadores impedindo assim que um utilizador se faça passar por uma chave \acrshort{api} e vice-versa. Cada par de chaves permite gerar \textit{token}'s (chave privada) e validá-los (chave pública).
+Caso não seja respeitado nenhum destes formatos, o pedido será recusado visto que a \acrshort{api} de dados não 
+consegue verificar o \textit{token}.
 
-Um dos requisitos é que os \textit{token}s gerados pela \acrshort{api} sejam \acrshort{jwt}s. Contudo poderiam ser outro tipo de \textit{tokens} (por exemplo uma \textit{string} aleatória e única) que o processo de envio dos \textit{tokens} para a \acrshort{api} manter-se-ia igual. Apenas seria alterada a forma de geração e verificação do \textit{token}, ou seja, uma alteração interna invisível para o utilizador.
+Com estas duas formas de enviar o \acrshort{jwt} é possível distinguir os utilizadores das Chaves \acrshort{api} 
+e cumprir assim um dos requisitos. Além disso, esta divisão entre utilizadores e chaves \acrshort{api} permite 
+uma mais fácil gestão dos \textit{tokens} recebidos pela \acrshort{api} bem como permite usar duas formas 
+diferentes de os gerar/verificar com o possível benefício de melhorar a segurança da \acrshort{api} já que também 
+permite usar dois pares de chaves pública/privada, uma para as Chaves \acrshort{api}'s e outra para os 
+\textit{token}'s de utilizadores impedindo assim que um utilizador se faça passar por uma chave \acrshort{api} e 
+vice-versa. Para cada par de chaves geram-se os \textit{token}s usando a chave privada e validam-se usando 
+a chave pública.
 
-De seguida é apresentado um diagrama com a estratégia de proteção que será implementada para cumprir os requisitos anteriormente anunciados:
+Um dos requisitos é que os \textit{token}s gerados pela \acrshort{api} sejam \acrshort{jwt}s. 
+Contudo poderiam ser de outro tipo, por exemplo, uma \textit{string} aleatória e única. Neste caso, o processo de envio 
+dos \textit{tokens} para a \acrshort{api} manter-se-ia igual. Apenas seria alterada a forma de geração e 
+verificação do \textit{token}, ou seja, uma alteração interna invisível para o utilizador.
+
+De seguida é apresentado um diagrama com a estratégia de proteção que será implementada para cumprir os requisitos 
+anteriormente enunciados:
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{img/protecaoStrag.png}
     \caption{Estratégia de proteção da \acrshort{api} de dados}\label{fig:protStrag}
 \end{figure}
 
-Como se pode observar na figura~\ref{fig:protStrag}, o \texttt{isLoggedInKey}, o \texttt{isLoggedInUser} e o \texttt{checkLevel} serão \textit{middlewares} que caso sejam usados numa rota definem desde logo quem pode aceder. Ou seja, se for usado o \texttt{isLoggedInUser} sabe-se desde logo que apenas os utilizadores podem aceder. Por outro lado, se for usado o \texttt{isLoggedInKey} significa que podem aceder a rota as Chaves \acrshort{api} e os utilizadores. Para além disso, quando o \texttt{checkLevel} é usado após o \texttt{isLoggedInUser}, sabe-se que apenas parte dos utilizadores pode aceder, sendo que este \textit{middleware} recebe como argumento os níveis de utilizadores que podem aceder a rota. A informação do nível do utilizador está presente no \acrshort{jwt} (\textit{token}) enviado.
+Como se pode observar na figura~\ref{fig:protStrag}, o \texttt{isLoggedInKey}, o \texttt{isLoggedInUser} e o \texttt{checkLevel} serão \textit{middlewares} que caso 
+sejam usados numa rota definem desde logo quem pode aceder. 
+Ou seja, se for usado o \texttt{isLoggedInUser} sabe-se desde logo que apenas os utilizadores podem aceder. 
+Por outro lado, se for usado o \texttt{isLoggedInKey} significa que podem aceder à rota as Chaves \acrshort{api} e 
+os utilizadores. Para além disso, quando o \texttt{checkLevel} é usado após o \texttt{isLoggedInUser}, sabe-se que 
+apenas parte dos utilizadores pode aceder, sendo que este \textit{middleware} recebe como argumento os níveis de 
+utilizadores que podem aceder à rota. A informação do nível do utilizador está presente no \acrshort{jwt} 
+(\textit{token}) enviado.
 
-Cumpre-se assim, quase todos os requisitos anunciados com a exceção dos da validade dos \textit{token}'s. Estes são atingidos na geração dos \acrshort{jwt}'s no qual o \textit{token} de um utilizador é gerado para ter apenas a validade de 8 horas e uma Chave \acrshort{api} é gerada para ter a validade de 30 dias.
+Cumprem-se assim, quase todos os requisitos com a exceção dos da validade dos \textit{token}s. 
+Estes são atingidos na geração dos \acrshort{jwt}'s no qual o \textit{token} de um utilizador é gerado para 
+ter apenas a validade de 8 horas e uma Chave \acrshort{api} é gerada para ter a validade de 30 dias.
 
-Após descrito como devem ser feitos os pedidos à \acrshort{api} e a estratégia de proteção a desenvolver, irá ser apresentado possíveis fluxos de interação entre utilizadores (\textit{browser}, \textit{app}, etc) e o servidor da \acrshort{api}.
+Após descrito como devem ser feitos os pedidos à \acrshort{api} e a estratégia de proteção a desenvolver, irão ser 
+apresentados possíveis fluxos de interação entre utilizadores (\textit{browser}, \textit{app}, etc) e o 
+servidor da \acrshort{api}.
 
 O fluxo de autenticação de um utilizador na \acrshort{api} a ser implementado pode observar-se na figura~\ref{fig:userAuth}:
 \begin{figure}[H]
@@ -325,18 +362,23 @@ O fluxo de autenticação de um utilizador na \acrshort{api} a ser implementado 
 \end{figure}
 
 \begin{enumerate}
-    \item Utilizador autentica-se ao providenciar o seu \textit{email} e a sua \textit{password}
-    \item Caso o utilizador se autentique com sucesso é devolvido um \textit{token} que deve ser usado nos restantes pedidos até expirar
-    \item Utilizador realiza um pedido para obter as classes, colocando o \textit{token} na \textit{header} \textit{Authorization}
-    \item Caso o \textit{token} enviado seja válido e não tenha expirado são devolvidas as classes
-    \item \textit{Token} expirou após o tempo definido
-    \item Utilizador realiza uma nova autenticação por forma a obter um novo \textit{token}
-    \item Caso o utilizador se autentique com sucesso é devolvido um \textit{token} que deve ser usado nos restantes pedidos até expirar
-    \item Utilizador realiza um pedido para obter as entidades, colocando o \textit{token} na \textit{header} \textit{Authorization}
-    \item Caso o \textit{token} enviado seja válido e não tenha expirado são devolvidas as entidades
+    \item Utilizador autentica-se ao providenciar o seu \textit{email} e a sua \textit{password};
+    \item Caso o utilizador se autentique com sucesso é devolvido um \textit{token} que deve ser usado nos 
+    restantes pedidos até expirar;
+    \item Utilizador realiza um pedido para obter as classes, colocando o \textit{token} na \textit{header} 
+    \textit{Authorization};
+    \item Caso o \textit{token} enviado seja válido e não tenha expirado são devolvidas as classes;
+    \item \textit{Token} expirou após o tempo definido;
+    \item Utilizador realiza uma nova autenticação por forma a obter um novo \textit{token};
+    \item Caso o utilizador se autentique com sucesso é devolvido um \textit{token} que deve ser usado nos 
+    restantes pedidos até expirar;
+    \item Utilizador realiza um pedido para obter as entidades, colocando o \textit{token} na 
+    \textit{header} \textit{Authorization};
+    \item Caso o \textit{token} enviado seja válido e não tenha expirado são devolvidas as entidades.
 \end{enumerate}
 
-O fluxo de autenticação e renovação de uma Chave \acrshort{api} na \acrshort{api} a ser implementado pode ser observado na figura~\ref{fig:chaveAuth}:
+O fluxo de autenticação e renovação de uma Chave \acrshort{api} na \acrshort{api} a ser implementado pode ser 
+observado na figura~\ref{fig:chaveAuth}:
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{img/chaveAuth.png}
@@ -344,16 +386,19 @@ O fluxo de autenticação e renovação de uma Chave \acrshort{api} na \acrshort
 \end{figure}
 
 \begin{enumerate}
-    \item Utilizador cria uma chave \acrshort{api} ao providenciar o nome, email e entidade
-    \item A Chave \acrshort{api} é enviada para o email fornecido pelo utilizador com o objetivo de ser usada nos próximos pedidos
-    \item O utilizador obtém a chave \acrshort{api} do email enviado
-    \item Utilizador realiza um pedido para obter as classes, colocando a chave \acrshort{api} na \textit{header} \textit{Authorization}
-    \item Caso a Chave \acrshort{api} enviada seja válida e não tenha expirado são devolvidas as classes
-    \item Chave \acrshort{api} expirou após o tempo definido
-    \item Utilizador renova a Chave \acrshort{api} ao providenciar o email usado para criar a Chave \acrshort{api}
-    \item A nova (renovada) Chave \acrshort{api} é devolvida para ser usada nos restantes pedidos
-    \item Utilizador realiza um pedido para obter as entidades, colocando a Chave \acrshort{api} na \textit{header} \textit{Authorization}
-    \item Caso a Chave \acrshort{api} enviada seja válida e não tenha expirado são devolvidas as entidades
+    \item Utilizador cria uma chave \acrshort{api} ao providenciar o nome, o email e a entidade a que pertence;
+    \item A Chave \acrshort{api} é enviada para o email fornecido pelo utilizador com o objetivo de ser usada nos 
+    próximos pedidos;
+    \item O utilizador obtém a chave \acrshort{api} no email enviado;
+    \item Utilizador realiza um pedido para obter as classes, colocando a chave \acrshort{api} na 
+    \textit{header} \textit{Authorization};
+    \item Caso a Chave \acrshort{api} enviada seja válida e não tenha expirado são devolvidas as classes;
+    \item Chave \acrshort{api} expirou após o tempo definido;
+    \item Utilizador renova a Chave \acrshort{api} ao providenciar o email usado para criar a Chave \acrshort{api};
+    \item A nova (renovada) Chave \acrshort{api} é devolvida para ser usada nos restantes pedidos;
+    \item Utilizador realiza um pedido para obter as entidades, colocando a Chave \acrshort{api} na 
+    \textit{header} \textit{Authorization};
+    \item Caso a Chave \acrshort{api} enviada seja válida e não tenha expirado são devolvidas as entidades.
 \end{enumerate}
 
 \section{Implementação}
