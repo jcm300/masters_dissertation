@@ -23,20 +23,20 @@ Uma \textit{\acrshort{api} Gateway} inclui normalmente~\cite{apiGatInfo,apiGatIn
 
 Além disso, a \textit{\acrshort{api} Gateway} tem como vantagens~\cite{apiGatInfo, apiGatInfo3}:
 \begin{itemize}
-    \item Simplifica o código da \acrshort{api}
-    \item Oferece uma vista única e central da \acrshort{api} e, portanto, é mais provável que permita uma política consistente
-    \item A agregação e transformação de dados simplifica a interação dos clientes com os microserviços distribuídos. A agregação de dados permite também reduzir o número de pedidos
-    \item Esconde a arquitetura interna e distribui as aplicações baseadas em microserviços reduzindo, geralmente a sobrecarga de configuração 
-    \item Código do cliente mais simples e limpo: quando os serviços cliente e \textit{backend} são separados, o cliente não necessita de saber os vários serviços individuais do \textit{backend} facilitando a manutenção do código bem como a refacturação dos serviços sem que estas tenham impacto na interação entre cliente e \textit{backend}. Além disso, com uma \textit{\acrshort{api} Gateway} não é necessário construir lógica no cliente por forma a acompanhar os \textit{endpoints}.
-    \item Menos latência é igual a uma melhor experiência do utilizador: uma operação do lado do cliente pode necessitar de realizar vários pedidos aos serviços de \textit{backend}, aumentando a latência da operação. Com a presença de uma \textit{\acrshort{api} Gateway} pode ser efetuado um único pedido a esta que irá realizar os pedidos internos necessários, agregar os resultados e devolver a resposta ao cliente.
+    \item Simplifica o código da \acrshort{api};
+    \item Oferece uma vista única e central da \acrshort{api} e, portanto, é mais provável que permita uma política consistente;
+    \item A agregação e transformação de dados simplifica a interação dos clientes com os microserviços distribuídos. A agregação de dados permite também reduzir o número de pedidos;
+    \item Esconde a arquitetura interna e distribui as aplicações baseadas em microserviços reduzindo, geralmente a sobrecarga de configuração;
+    \item Código do cliente mais simples e limpo: quando os serviços cliente e \textit{backend} são separados, o cliente não necessita de saber os vários serviços individuais do \textit{backend} facilitando a manutenção do código bem como a reestruturação dos serviços sem que estas tenham impacto na interação entre cliente e \textit{backend}. Além disso, com uma \textit{\acrshort{api} Gateway} não é necessário construir lógica no cliente por forma a acompanhar os \textit{endpoints};
+    \item Menos latência é igual a uma melhor experiência do utilizador: uma operação do lado do cliente pode necessitar de realizar vários pedidos aos serviços de \textit{backend}, aumentando a latência da operação. Com a presença de uma \textit{\acrshort{api} Gateway} pode ser efetuado um único pedido a esta que irá realizar os pedidos internos necessários, agregar os resultados e devolver a resposta ao cliente;
     \item Autenticação e Encriptação simplificada: Sem o uso de uma \textit{\acrshort{api} Gateway} cada serviço de \textit{backend} necessita de tomar as suas decisões de segurança o que aumenta a complexidade do código a desenvolver para um microserviço. Com o aumento da complexidade do código aumenta a possibilidade de erros bem como o aumento da superfície de ataque por utilizadores mal intencionados. Com o uso de uma \textit{\acrshort{api} Gateway} toda a segurança está centralizada num único serviço.
 \end{itemize}
 
 Contudo, tem como desvantagens~\cite{apiGatInfo}:
 \begin{itemize}
-    \item Possível ponto único de falha ou de \textit{bottleneck}
-    \item Risco de complexidade já que todas as regras da \acrshort{api} estão num único local
-    \item Risco de \textit{lock-in} e a migração pode não ser simples
+    \item Possível ponto único de falha ou de \textit{bottleneck};
+    \item Risco de complexidade já que todas as regras da \acrshort{api} estão num único local;
+    \item Risco de \textit{lock-in} e a migração pode não ser simples.
 \end{itemize}
 
 Olhando um pouco mais da perspetiva da segurança, o controlo de acesso é a principal vantagem de segurança de uma \textit{\acrshort{api} Gateway} permitindo a uma organização gerir quem pode aceder à \acrshort{api} e estabelecer regras de como os pedidos de dados são tratados. O controlo de acesso estende-se também a outras políticas como o \textit{rate limit} às rotas da \acrshort{api} ou até o pagamento para aceder a certos recursos da \acrshort{api}.
@@ -45,11 +45,12 @@ Como todo o tráfego das rotas da \acrshort{api} passa por um \textit{gateway}, 
 
 A \textit{\acrshort{api} Gateway} pode introduzir segurança nas mensagens enviadas entre os serviços internos através de encriptação tornando os serviços internos mais seguros. Além disso, é necessário um correto mecanismo de autenticação em conjunto com o uso de \acrshort{tls} por forma a evitar o acesso a rotas de pessoas não autorizadas. O uso de um mau mecanismo de autenticação (p.e. ser apenas necessário fornecer o número de telemóvel) pode levar a que qualquer pessoa consiga obter os dados de outra por exemplo.
 
-Outro ponto a ter em conta em relação à proteção de uma \acrshort{api} é a proteção contra ameaças. Sem esta, a \textit{\acrshort{api} Gateway}, a(s) \acrshort{api}(s) e outros serviços estão inseguros. Ou seja, potenciais hackers ou \textit{malware} podem facilmente tentar propagar ataques tais como \acrshort{ddos} ou injeções de \acrshort{sql}, \textit{RegExp}, \acrshort{xml} ou ainda no caso específico da \acrshort{clav} injeções de \acrshort{sparql}. É assim importante realizar validação de \textit{input} da \acrshort{api}. As validações de \textit{input} mais comuns são:
+Outro ponto a ter em conta em relação à proteção de uma \acrshort{api} é a proteção contra ameaças. Sem esta, a \textit{\acrshort{api} Gateway}, a(s) \acrshort{api}(s) e outros serviços estão inseguros. Ou seja, potenciais hackers ou \textit{malware} podem facilmente tentar propagar ataques tais como \acrshort{ddos} ou injeções de \acrshort{sql}, \textit{RegExp}, \acrshort{xml} ou ainda no caso específico da \acrshort{clav} injeções de \acrshort{sparql}. É assim importante realizar validação de \textit{input} da \acrshort{api}. 
+As validações de \textit{input} mais comuns são:
 \begin{itemize}
-    \item Tamanho da mensagem
-    \item Proteção contra injeções \acrshort{sql}
-    \item Proteção contra \textit{content-level attacks} do \acrshort{json}. Estes ataques são o uso de grandes ficheiros \acrshort{json} por forma a sobrecarregar o \acrshort{json} \textit{parser} e este eventualmente \textit{crashar}.
+    \item Tamanho da mensagem;
+    \item Proteção contra injeções \acrshort{sql};
+    \item Proteção contra \textit{content-level attacks} do \acrshort{json}. Estes ataques são o uso de grandes ficheiros \acrshort{json} por forma a sobrecarregar o \acrshort{json} \textit{parser} e este eventualmente \textit{crashar};
     \item Proteção contra ameaças em \acrshort{xml}. Estes ataques envolvem normalmente \textit{payloads} recursivos, injeções \acrshort{sql} ou \textit{XPath}/\acrshort{xslt} com o mesmo intuito de sobrecarregar o \acrshort{xml} \textit{parser} e este eventualmente \textit{crashar}.
 \end{itemize}
 
@@ -61,17 +62,17 @@ Existem várias \textit{\acrshort{api} Gateway}s das quais se destacam \textit{E
 
 \subsubsection{Express Gateway}
 
-\textit{Express Gateway} é uma \textit{\acrshort{api} Gateway} que pode ser colocada em qualquer arquitetura de microserviços, independentemente da linguagem ou plataforma que se use. O \textit{Express Gateway} protege e expõe os microserviços através de \acrshort{api}s usando \textit{Node.js}, \textit{ExpressJS} e \textit{middleware} \textit{Express}. Além disso é \textit{open-source} e possui as seguintes funcionalidades:~\cite{kong}
+\textit{Express Gateway} é uma \textit{\acrshort{api} Gateway} que pode ser colocada em qualquer arquitetura de microserviços, independentemente da linguagem ou plataforma que se use. O \textit{Express Gateway} protege e expõe os microserviços através de \acrshort{api}s usando \textit{Node.js}, \textit{ExpressJS} e \textit{middleware} \textit{Express}. Além disso é \textit{open-source} e possui as seguintes funcionalidades~\cite{kong}:
 \begin{itemize}
-    \item Politicas empresariais que são normalmente pagas noutras \textit{\acrshort{api} Gateway}s são aqui gratuitas
-    \item Configuração através de um ficheiro \acrshort{yaml}
-    \item Arquitetura de \textit{plugins}
-    \item Extensível com mais de 3000 módulos
-    \item Corre em qualquer lado (\textit{Docker}, etc)
-    \item Deteta automaticamente e recarrega quando há alterações na configuração
-    \item Suporta qualquer linguagem e \textit{framework}
-    \item Suporta todos os casos de uso de microserviços, padrões e arquiteturas
-    \item Suporte para \acrshort{https}, \acrshort{cors}, \acrshort{jwt} entre outros
+    \item Politicas empresariais que são normalmente pagas noutras \textit{\acrshort{api} Gateway}s são aqui gratuitas;
+    \item Configuração através de um ficheiro \acrshort{yaml};
+    \item Arquitetura de \textit{plugins};
+    \item Extensível com mais de 3000 módulos;
+    \item Corre em qualquer lado (\textit{Docker}, etc);
+    \item Deteta automaticamente e recarrega quando há alterações na configuração;
+    \item Suporta qualquer linguagem e \textit{framework};
+    \item Suporta todos os casos de uso de microserviços, padrões e arquiteturas;
+    \item Suporta \acrshort{https}, \acrshort{cors}, e \acrshort{jwt} entre outros.
 \end{itemize}
 
 Por definição, o \textit{Express Gateway} usa uma base de dados em memória para testes e para começar a experimentar. O \textit{Express Gateway} pode correr com ou sem \textit{backend} e se uma base de dados persistente for desejada é suportado o \textit{Redis}. A configuração do \textit{Express Gateway} é armazenada num ficheiro \acrshort{yaml} e como tal o \textit{Express Gateway} apenas guarda dados transacionais como informação de utilizadores e de \textit{tokens} de acesso na base de dados. Ou seja, nem sempre é necessário o uso da base de dados, depende do caso de uso.
@@ -84,17 +85,17 @@ Quanto ao desenvolvimento de \textit{plugins} para o \textit{Express Gateway} o 
 
 O \textit{Kong} é uma \textit{\acrshort{api} Gateway} \textit{open-source} escalável, escrita em \textit{Lua} e que pode correr à frente de qualquer \acrshort{api}. O \textit{Kong} é construído em cima do \textit{Nginx}, \textit{OpenResty} e \textit{Apache Cassandra} ou \textit{PostgreSQL}. O \textit{core} do \textit{Kong} pode ser expandido em termos de funcionalidades e serviços através de \textit{plugins}.
 
-Algumas das funcionalidades presentes são:~\cite{kong}
+Algumas das funcionalidades presentes são~\cite{kong}:
 \begin{itemize}
-    \item Tarefas de configuração e administração divididas entre \acrshort{rest} \acrshort{api} e \acrshort{cli}
-    \item Extensível através de 36 \textit{plugins} disponíveis (6 deles são comerciais, o resto é \textit{open-source})
-    \item Corre em qualquer lado (\textit{Kubernetes}, \textit{Docker}, etc)
-    \item Escala ao apenas adicionar mais máquinas
-    \item Realiza balanceamento de carga dinamicamente através dos vários serviços de \textit{backend}
-    \item Suporte para um conjunto de políticas para todos os \textit{endpoints} da \acrshort{api} que pode ser modificado com fluxo condicional
-    \item Suporta qualquer \textit{framework} e linguagem
-    \item Suporta todos os casos de uso de microserviços, padrões e arquiteturas
-    \item Suporte para \acrshort{https}, \acrshort{cors}, \acrshort{jwt} entre outros
+    \item Tarefas de configuração e administração divididas entre \acrshort{rest} \acrshort{api} e \acrshort{cli};
+    \item Extensível através de 36 \textit{plugins} disponíveis (6 deles são comerciais, o resto é \textit{open-source});
+    \item Corre em qualquer lado (\textit{Kubernetes}, \textit{Docker}, etc);
+    \item Escala ao apenas adicionar mais máquinas;
+    \item Realiza balanceamento de carga dinamicamente através dos vários serviços de \textit{backend};
+    \item Suporte para um conjunto de políticas para todos os \textit{endpoints} da \acrshort{api} que pode ser modificado com fluxo condicional;
+    \item Suporta qualquer \textit{framework} e linguagem;
+    \item Suporta todos os casos de uso de microserviços, padrões e arquiteturas;
+    \item Suporta \acrshort{https}, \acrshort{cors}, e \acrshort{jwt} entre outros.
 \end{itemize}
 
 A forma mais fácil de instalar (\textit{deploy}) o \textit{Kong} é através do uso de \textit{Docker} ou de \textit{Kubernetes}.
@@ -103,7 +104,7 @@ A configuração do \textit{Kong} é armazenada no \textit{PostgreSQL} ou no \te
 
 Como o \textit{Kong} é construído sobre o \textit{Nginx} os vários \textit{plugins} necessitam de ser escritos em \textit{Lua}.
 
-Uma das principais desvantagens do \textit{Kong} é que muitas das funcionalidades tem de ser ativadas através da configuração obrigando a um tempo inicial de \textit{setup}.
+Uma das principais desvantagens do \textit{Kong} é que muitas das funcionalidades têm de ser ativadas através da configuração obrigando a um tempo inicial de \textit{setup}.
 
 \subsubsection{Moleculer \glsentryshort{api} Gateway}
 
@@ -111,18 +112,18 @@ Uma das principais desvantagens do \textit{Kong} é que muitas das funcionalidad
 
 Das várias funcionalidades desta \textit{framework} está presente o módulo da \textit{\acrshort{api} Gateway}.
 
-Esta \textit{\acrshort{api} Gateway} tem como funcionalidades:~\cite{moleculerAPIG}
+Esta \textit{\acrshort{api} Gateway} tem como funcionalidades~\cite{moleculerAPIG}:
 \begin{itemize}
-    \item Suporta \acrshort{http} e \acrshort{https}
-    \item Serve ficheiros estáticos
-    \item Suporta \textit{middlewares}
-    \item Suporta o \textit{upload} de ficheiros
-    \item Múltiplos \textit{body parsers} (\acrshort{json}, \textit{urlencoded})
-    \item Cabeçalhos \acrshort{cors}
-    \item \acrshort{http}2
-    \item \textit{Rate limiter}
-    \item Suporta autorização
-    \item Modo \textit{middleware}
+    \item Suporta \acrshort{http} e \acrshort{https};
+    \item Serve ficheiros estáticos;
+    \item Suporta \textit{middlewares};
+    \item Suporta o \textit{upload} de ficheiros;
+    \item Múltiplos \textit{body parsers} (\acrshort{json}, \textit{urlencoded});
+    \item Cabeçalhos \acrshort{cors};
+    \item \acrshort{http}2;
+    \item \textit{Rate limiter};
+    \item Suporta autorização;
+    \item Modo \textit{middleware}.
 \end{itemize}
 
 Para além disso, esta \textit{\acrshort{api} Gateway} pode ser usada como \textit{middleware} numa \acrshort{api} desenvolvida com \textit{Express} (o caso da \acrshort{api} da \acrshort{clav}). Contudo, o recomendável para usar esta \textit{\acrshort{api} Gateway} é que a \acrshort{api} tenha sido desenvolvida com a \textit{framework} \textit{Moleculer}.
