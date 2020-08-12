@@ -58,7 +58,7 @@ utilizar o \textit{Swagger \acrshort{ui}} e o \textit{Swagger Editor}. O primeir
 utilizadores a documentação gerada e o segundo permitirá validar a especificação \textit{OpenAPI} (documentação) 
 criada, verificando se não possui erros.
 
-\subsubsection{Especificação \textit{OpenAPI}}
+\subsection{Especificação \textit{OpenAPI}}
 
 A especificação \textit{OpenAPI} providencia um conjunto de propriedades que podem ser usadas para descrever 
 uma \acrshort{api} \acrshort{rest}. Com um documento de especificação válido é possível usá-lo para criar uma 
@@ -69,7 +69,7 @@ De seguida será apresentado o que é possível documentar com a especificação
 usando \acrshort{yaml}.\footnote{A especificação completa do \textit{OpenAPI} com versão igual a 3.0.0 pode 
 ser vista em \url{https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md}}
 
-\paragraph{Metadata} \mbox{} \\
+\subsubsection{Metadata}
 O primeiro passo é escolher a versão da especificação \textit{OpenAPI} que irá ser usada para documentar:
 \begin{lstlisting}[language=yaml, caption=Exemplo de indicação da versão da especificação \textit{OpenAPI}]
 openapi: 3.0.0
@@ -88,7 +88,7 @@ info:
 
 \vspace{-0.7cm}
 
-\paragraph{Servidores} \mbox{} \\
+\subsubsection{Servidores}
 Há depois uma secção com o nome de \texttt{servers} para indicar os \textit{URL}s que são os pontos de acesso 
 da \acrshort{api}. Podem ser indicados vários pontos de 
 acesso:\footnote{Para mais detalhes sobre esta secção veja \url{https://swagger.io/docs/specification/api-host-and-base-path/}}
@@ -104,7 +104,7 @@ servers:
 
 \vspace{-0.7cm}
 
-\paragraph{Caminhos/Rotas} \mbox{} \\
+\subsubsection{Caminhos/Rotas}
 De seguida apresenta-se uma das secções mais importantes da especificação, a secção \texttt{paths}. 
 Aqui são definidas as rotas que a \acrshort{api} disponibiliza. Para definir cada rota basta indicar o caminho 
 relativo aos pontos de acesso definidos na secção \texttt{servers} (\verb|<server-url>/<caminho relativo>|). 
@@ -132,6 +132,7 @@ paths:
               schema:
                 #A estrutura do JSON devolvido pode ser definido logo aqui ou num componente à parte, fazendo referência desse. Iremos aplicar o segundo caso para demonstrar que estas funcionalidades tornam a documentação mais fácil de manter
                 $ref: '#/components/schemas/User'
+        ...
     post:
       ...
     delete:
@@ -175,7 +176,7 @@ paths:
 
 \vspace{-0.7cm}
 
-\paragraph{Parâmetros}\label{sec:paramSwagger} \mbox{} \\
+\subsubsection{Parâmetros}\label{sec:paramSwagger}
 Como já exemplificado no exemplo~\ref{exem:oapiRota} os parâmetros de uma rota são definidos na 
 secção \texttt{parameters} de cada rota. 
 Existem quatro tipo de parâmetros que variam de acordo com o local onde se encontram. 
@@ -187,7 +188,7 @@ O tipo de um parâmetro é definido na propriedade \texttt{in} de um parâmetro 
     caminho. A propriedade \texttt{in} tem o valor de \textit{path};
     \item Parâmetros na \textit{query string}: A propriedade \texttt{in} tem o valor de \textit{query}. 
     No caso de tokens passados em parâmetros da \textit{query string} devem-se usar esquemas de segurança, 
-    veja a secção~\ref{sec:authSwagger} Autenticação;
+    veja a secção~\ref{sec:authSwagger};
     \item Parâmetros no cabeçalho: A propriedade \texttt{in} tem o valor de \textit{header}. 
     Contudo os cabeçalhos \textit{Accept}, \textit{Content-Type} e \textit{Authorization} não são aqui definidos;
     \item Parâmetros no cabeçalho da \textit{Cookie}: A propriedade \texttt{in} tem o valor de \textit{cookie}.
@@ -213,7 +214,7 @@ Cada parâmetro tem várias propriedades que permitem defini-lo:\footnote{Mais d
     \textit{true} ou \textit{false}.
 \end{itemize}
 
-\paragraph{\textit{Request Body}} \mbox{} \\
+\subsubsection{\textit{Request Body}}
 O \textit{request body} é definido em cada rota na secção \texttt{requestBody} sendo usado essencialmente em 
 rotas com o método \acrshort{http} igual a POST ou a PUT, ou seja, em casos que há necessidade de criar ou alterar 
 um objeto de acordo com a informação fornecida no pedido. As propriedades que podem ser definidas no 
@@ -226,7 +227,7 @@ um objeto de acordo com a informação fornecida no pedido. As propriedades que 
     o \texttt{schema} para cada \textit{media type}.
 \end{itemize}
 
-\paragraph{Respostas} \mbox{} \\
+\subsubsection{Respostas}
 Nesta secção, propriedade \texttt{responses} de cada rota, é descrita as possíveis respostas de cada rota. 
 Na propriedade serão definidas as várias respostas, uma resposta por cada \acrshort{http} \textit{status code} 
 possível de ser devolvido pela rota. Cada resposta pode possuir as seguintes propriedades:\footnote{Mais detalhes em \url{https://swagger.io/docs/specification/describing-responses/}}
@@ -237,8 +238,8 @@ possível de ser devolvido pela rota. Cada resposta pode possuir as seguintes pr
     \item \texttt{headers}: Opcional, define as \textit{headers} que são devolvidas na resposta.
 \end{itemize}
 
-\paragraph{Adição de Exemplos} \mbox{} \\
-Na secção~\ref{sec:paramSwagger} Parâmetros já se referiu como é possível adicionar exemplos aos parâmetros. 
+\subsubsection{Adição de Exemplos}
+Na secção~\ref{sec:paramSwagger} já se referiu como é possível adicionar exemplos aos parâmetros. 
 De forma semelhante o mesmo pode ser realizado tanto no \textit{request body} como nas respostas através da 
 propriedade \texttt{example} (um exemplo) ou \texttt{examples} (múltiplos exemplos) aninhado(s) na propriedade 
 \texttt{schema} ou aninhado(s) na ``propriedade'' \textit{media type} no caso do \texttt{schema} ser uma 
@@ -263,12 +264,12 @@ content:
           value: '<html><body><ul><li>item 1</li><li>item 2</li></ul></body></html>'
 \end{lstlisting}
 
-\paragraph{Modelos} \mbox{} \\
+\subsubsection{Modelos}
 A secção \texttt{schemas} presente na secção \texttt{components} permite definir estruturas de dados 
 (modelo) a serem usados na \acrshort{api}. 
 Estes modelos podem ser referenciados usando a funcionalidade \texttt{\$ref}.\footnote{Mais detalhes em \url{https://swagger.io/docs/specification/data-models/}}
 
-\paragraph{Autenticação e Autorização}\label{sec:authSwagger} \mbox{} \\
+\subsubsection{Autenticação e Autorização}\label{sec:authSwagger}
 Nesta secção será demonstrada como se pode adicionar a autenticação e autorização à especificação \textit{OpenAPI}. 
 Para tal é necessário criar \textit{security scheme}s. Os esquemas são definidos na secção 
 \texttt{securitySchemes} dentro da secção \texttt{components}. 
@@ -295,7 +296,7 @@ por esses esquemas. Para tal em cada rota pode ser definida a propriedade \textt
 os esquemas de segurança que essa rota 
 suporta.\footnote{Mais detalhes em \url{https://swagger.io/docs/specification/authentication/}}
 
-\paragraph{Alternativas} \mbox{} \\
+\subsubsection{Alternativas}
 Em termos de alternativas à especificação \textit{OpenAPI} existem duas 
 concorrentes: \textit{\acrshort{raml}}\footnote{Ver \url{https://github.com/raml-org/raml-spec/blob/master/versions/raml-10/raml-10.md/}} e \textit{\acrshort{api} Blueprint}\footnote{Ver \url{https://github.com/apiaryio/api-blueprint/blob/master/API\%20Blueprint\%20Specification.md}}.
 
@@ -358,7 +359,7 @@ escrito em \acrshort{json} ou \acrshort{yaml}, o \acrshort{raml} é escrito em \
 \textit{\acrshort{api} Blueprint} é escrito em \textit{Markdown}. Escolheu-se a especificação \textit{OpenAPI} 
 devido à sua grande adoção e por permitir usar o ecossistema de ferramentas \textit{Swagger}.
 
-\subsubsection{\textit{Swagger \glsentryshort{ui}}}
+\subsection{\textit{Swagger \glsentryshort{ui}}}
 
 O \textit{Swagger \acrshort{ui}} permite a qualquer um visualizar uma \acrshort{api} \acrshort{rest}. 
 A partir de um documento \acrshort{json} ou \acrshort{yaml} (especificação \textit{OpenAPI}) é automaticamente 
@@ -371,7 +372,7 @@ documentação de uma \acrshort{api} através do \textit{Swagger \acrshort{ui}}.
     \caption{\textit{Swagger \acrshort{ui}} exemplo\label{fig:swaggerUI}}
 \end{figure}
 
-\paragraph{Alternativas} \mbox{} \\
+\subsubsection{Alternativas}
 Existem várias alternativas ao \textit{Swagger \acrshort{ui}}:
 \begin{savenotes}
 \begin{table}[H]
@@ -460,7 +461,7 @@ Existem várias alternativas ao \textit{Swagger \acrshort{ui}}:
 \end{table}
 \end{savenotes}
 
-\subsection{Documentação da \glsentryshort{api} da \glsentryshort{clav}}\label{sec:soaDocAPI}
+\subsection{Produção da documentação da \glsentryshort{api} da \glsentryshort{clav}}\label{sec:soaDocAPI}
 
 Neste secção são aprofundadas algumas bibliotecas que podem ser usadas para a produção da documentação com a 
 especificação \textit{OpenAPI} e o \textit{Swagger \acrshort{ui}}. 

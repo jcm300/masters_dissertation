@@ -277,8 +277,9 @@ Já os utilizadores possuem múltiplos níveis de acesso sendo que consoante o s
 rota da interface ou da \acrshort{api}. Os utilizadores podem autenticar-se através de \textit{email} e 
 \textit{password} ou com recurso ao \acrfull{cc} através do Autenticação.gov, este último apenas disponível através da interface da \acrshort{clav}.
 
-A hierarquia dos níveis de acesso, do nível que permite menor para o maior acesso, é a seguinte:
+A hierarquia dos níveis de acesso na \acrshort{api} de dados, do nível que permite menor para o maior acesso, é a seguinte:
 \begin{itemize}
+    \item Nível -1: Qualquer pessoa (sem proteção),
     \item Nível 0: Chaves API,
     \item Nível 1: Representante Entidade,
     \item Nível 2: Utilizador Simples,
@@ -289,6 +290,8 @@ A hierarquia dos níveis de acesso, do nível que permite menor para o maior ace
     \item Nível 6: Administrador de Perfil Funcional,
     \item Nível 7: Administrador de Perfil Tecnológico.
 \end{itemize}
+
+Na interface da \acrshort{clav} esta hierarquia é semelhante sendo que a única diferença são os dois primeiros níveis (-1 e 0) serem substituídos por um único nível 0 que dá acesso a Qualquer pessoa.
 
 As chaves \acrshort{api} poderão aceder a algumas rotas com método \texttt{GET}.
 Já os utilizadores poderão realizar todos os pedidos que as chaves \acrshort{api} podem realizar mas quanto 
@@ -356,7 +359,7 @@ com o objetivo de permitir a autenticação simples, segura e padrão entre apli
 Assim as aplicações que usam o \textit{Passport} não terão um peso adicional devido a estratégias que nem sequer usam.
 
 No caso do \textit{login} através do Autenticação.gov, o utilizador tem de se autenticar na interface do 
-Autenticação.gov (a partir do botão disponível na área de autenticação da interface do \acrshort{clav}). 
+Autenticação.gov (a partir do botão disponível na área de autenticação da interface da \acrshort{clav}). 
 O fluxo do \textit{login} antes da limitação do registo de utilizadores apenas por pessoal autorizado pode ser observado na figura~\ref{fig:authgov}:
 
 \begin{figure}[H]

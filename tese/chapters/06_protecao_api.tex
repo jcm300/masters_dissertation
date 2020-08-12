@@ -344,7 +344,7 @@ Por outro lado, se for usado o \texttt{isLoggedInKey} significa que podem aceder
 os utilizadores. Para além disso, quando o \texttt{checkLevel} é usado após o \texttt{isLoggedInUser}, sabe-se que 
 apenas parte dos utilizadores pode aceder, sendo que este \textit{middleware} recebe como argumento os níveis de 
 utilizadores que podem aceder à rota. A informação do nível do utilizador está presente no \acrshort{jwt} 
-(\textit{token}) enviado.
+(\textit{token}) enviado. Se não for usado nenhum dos \textit{middlewares} significa que qualquer pessoa pode aceder a rota.
 
 Cumprem-se assim, quase todos os requisitos com a exceção dos da validade dos \textit{token}s. 
 Estes são atingidos na geração dos \acrshort{jwt}'s no qual o \textit{token} de um utilizador é gerado para 
