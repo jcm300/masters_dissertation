@@ -4,9 +4,11 @@ No decorrer desta dissertação foram também desenvolvidos os mecanismos de \te
 
 \subsection{Primeira instalação}\label{sec:inst-prim}
 
-Para uma primeira instalação deve-se garantir que a máquina de instalação tem instalado o \texttt{git}, o \texttt{docker} e o \texttt{docker-compose}. A especificação do \texttt{docker-compose} usada é a versão 3.5 pelo que é necessário a versão 17.06.0 ou superior do \texttt{docker} e a versão 1.18.0 ou superior do \texttt{docker-compose}. 
+Para uma primeira instalação deve-se garantir que a máquina de instalação tem instalado o \texttt{git}, o \texttt{docker} e o \texttt{docker-compose}. 
+A especificação do \texttt{docker-compose} está  na versão 3.5 pelo que é necessário a versão 17.06.0 ou superior do \texttt{docker} e a versão 1.18.0 ou superior do \texttt{docker-compose}. 
 
 A instalação do \textit{software} depende do \acrshort{os} pelo que numa máquina \textit{Ubuntu} o \textit{software} pode ser instalado através das seguintes linhas de comando~\cite{installDocker,installDC}:
+
 \begin{lstlisting}[caption=Instalar \textit{docker} e \textit{docker-compose}]
 sudo apt-get update
 sudo apt-get install -y git
@@ -26,7 +28,7 @@ sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 O passo seguinte é abrir as portas na máquina de instalação que serão usadas para a \acrshort{api} dados e/ou interface (É necessário abrir duas portas para a \acrshort{api} de dados (\acrshort{http} e \acrshort{https}) e duas para a interface (\acrshort{http} e \acrshort{https}). Se instalar a \acrshort{api} de dados e a interface na mesma máquina as 4 portas têm de ser diferentes.
 
-De seguida realiza-se a clonagem dos repositórios \texttt{git} que se pretende instalar, posiciona-se na raíz da pasta correta e muda-se de \textit{branch}:
+A seguir, é necessário realizar a clonagem dos repositórios \texttt{git} que se vão instalar. Posicionamo-nos na raíz da pasta respetiva e mudamos para o \textit{branch}da versão que queremos  instalar:
 
 \footnotesize
 \begin{center}
@@ -76,20 +78,24 @@ cp config/keys/apiKey.pub config/keys/userKey.pub \
 \end{center}
 \normalsize
 
-Sem estes passos qualquer utilizador que saiba as chaves privadas usadas pode gerar um \textit{token} e assim ter acesso indevido à \acrshort{clav}. Portanto as chaves privadas devem estar apenas acessíveis na máquina de produção da \acrshort{api} de dados (não partilhe nem faça \textit{push} destas chaves).
+Sem estes passos qualquer utilizador que saiba as chaves privadas usadas pode gerar um \textit{token} e assim ter acesso indevido à \acrshort{clav}. Portanto as chaves privadas devem estar apenas acessíveis na máquina de produção da \acrshort{api} de dados (não partilhe nem faça \textit{push} no repositório Git destas chaves).
 
 Antes de avançar posicionamo-nos na pasta \texttt{deploy} (\verb|cd deploy|) para a realização dos próximos passos.
 
 \subsubsection{Criação de Imagens}\label{sec:int-imagens}
 
-As imagens usadas na instalação podem ser geradas com antecedência, fora da máquina de instalação. Para isso essas imagens geradas devem ser registadas no (\textit{push} para o) \textit{DockerHub} para posterior uso.
+As imagens usadas na instalação podem ser geradas com antecedência, fora da máquina de instalação. Para isso essas imagens geradas devem ser registadas no  \textit{DockerHub} para posterior uso (\textit{push}).
 
 \begin{description}
     \item \textbf{\acrshort{api} de dados}
 
-    Necessário realizar a criação de duas imagens: \texttt{graphdb} e \texttt{server}.
+    É necessário criar duas imagens: \texttt{graphdb} e \texttt{server}.
 
-    Para criar a imagem \texttt{graphdb} é necessário dois ficheiros adicionais: um ficheiro zip com a distribuição do \textit{GraphDB} e um ficheiro \textit{Turtle} com a ontologia a carregar para o \textit{GraphDB}. A distribuição do \textit{GraphDB} deve ser obtida através do site do \textit{GraphDB}\footnote{Versão gratuita: \url{https://www.ontotext.com/products/graphdb/graphdb-free/}} ao preencher o formulário. Após o preenchimento do formulário irá receber um email do \textit{GraphDB}, como na figura~\ref{fig:graphdb_email}, de onde deve realizar o \textit{download} da versão ``stand-alone server''. O ficheiro zip tem um nome parecido com ``graphdb-free-8.11.0-dist.zip'' onde ``free-8.11.0'' indica a versão do \textit{GraphDB} que deve colocar na variável ambiente \texttt{GRAPHDB\_VERSION} do ficheiro \textit{.env} da pasta \texttt{deploy}. Deve colocar o ficheiro zip na pasta \texttt{graphdb} da pasta \texttt{deploy}. Nesta pasta (\texttt{graphdb}) deve também colocar o ficheiro \textit{Turtle} e indicar na variável ambiente \texttt{GRAPHDB\_DATA\_FILE} o nome deste ficheiro (ex: clav-2020-01-04-false.ttl). Sempre que um destes ficheiros é alterado é necessário criar de novo a imagem.
+    Para criar a imagem \texttt{graphdb} são necessários dois ficheiros adicionais: um ficheiro zip com a distribuição do \textit{GraphDB} e um ficheiro \textit{Turtle} com a ontologia a carregar para o \textit{GraphDB}. 
+    
+    A distribuição do \textit{GraphDB} deve ser obtida através do site do \textit{GraphDB}\footnote{Versão gratuita: \url{https://www.ontotext.com/products/graphdb/graphdb-free/}} ao preencher o formulário. Após o preenchimento do formulário irá receber um email do \textit{GraphDB}, como na figura~\ref{fig:graphdb_email}, de onde deve realizar o \textit{download} da versão ``stand-alone server''. O ficheiro zip tem um nome parecido com ``graphdb-free-8.11.0-dist.zip'' onde ``free-8.11.0'' indica a versão do \textit{GraphDB} que deve colocar na variável ambiente \texttt{GRAPHDB\_VERSION} do ficheiro \textit{.env} da pasta \texttt{deploy}. 
+    
+    Deve colocar o ficheiro zip na pasta \texttt{graphdb} da pasta \texttt{deploy}. Nesta pasta (\texttt{graphdb}) deve também colocar o ficheiro \textit{Turtle} e indicar na variável ambiente \texttt{GRAPHDB\_DATA\_FILE} o nome deste ficheiro (ex: clav-2020-01-04-false.ttl). Sempre que um destes ficheiros é alterado é necessário criar de novo a imagem.
 
     \begin{figure}[H]
         \centering
