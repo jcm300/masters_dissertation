@@ -2,7 +2,16 @@ A \acrlong{ap} portuguesa tem desmaterializado processos e tem promovido a adoç
 
 Com o propósito de atingir estes objetivos e simplificar a gestão documental na \acrlong{ap}, a \acrfull{clav} nasce como uma das medidas. A \acrshort{clav} tem como finalidade a classificação e a avaliação da informação pública por forma a auxiliar os sistemas de informação das entidades públicas alertando-as quando determinado documento deve ser arquivado ou eliminado. Para tal esta possui um referencial comum, a \acrlong{lc}, com as funções e processos de negócio das entidades públicas associadas a um catálogo de legislação e de organismos.
 
-Esta dissertação tem como principais objetivos a proteção da \acrshort{api} da \acrshort{clav}, a documentação desta \acrshort{api}, a adição de formatos exportação a esta bem como a continuação da integração do Autenticação.gov na \acrshort{clav} ao adicionar a possibilidade de autenticação com a \acrlong{cmd}. Tem ainda como objetivo a criação de uma \acrshort{api} Gateway na \acrshort{clav}.
+Nos últimos dois anos, a \acrshort{clav} tem vindo a ser desenvolvida no departamento de informática da \acrlong{um} em estreita colaboração com a equipa de investigação da área na \acrlong{dglab}.
+
+À data de início deste trabalho, a \acrshort{clav} era constituída por dois servidores de bases de dados que tinham como interlocutor o servidor da \acrshort{api} de dados da \acrshort{clav}. Era com este servidor da \acrshort{api} de dados que toda a interação com o exterior passava: acesso de aplicações de terceiras partes e acessos da interface cliente desenvolvida para a \acrshort{clav}.
+
+Nesta dissertação, o grande objetivo era fazer evoluir a arquitetura aplicacional dando resposta a uma série de requisitos e tentando simplificar ao máximo o processo da sua manutenção futura. 
+
+Nesse sentido, especificou-se e implementou-se um serviço para a proteção da \acrshort{api} de dados da \acrshort{clav},  especificou-se a documentação desta \acrshort{api} de dados, definiram-se os formatos de exportação e implementaram-se os exportadores desta \acrshort{api} por forma a permitir uma maior interoperabilidade dos dados, implementou-se a autenticação com a \acrlong{cmd} recorrendo ao Autenticação.gov, 
+criaram-se os mecanismos necessários à migração de \acrshort{http} para \acrshort{https} e, por fim, adicionou-se uma \textit{\acrshort{api} Gateway} na \acrshort{clav} por forma a simplificar o funcionamento e gestão da plataforma.
+
+Todos estes desenvolvimentos estão em produção e podem ser observados acedendo ao sítio Web oficial da \acrshort{clav}: \url{https://clav.dglab.gov.pt}
 
 \vspace{1cm}
 

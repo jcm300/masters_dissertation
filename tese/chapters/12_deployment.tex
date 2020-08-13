@@ -109,7 +109,13 @@ As imagens usadas na instalação podem ser geradas com antecedência, fora da m
 
     \item \textbf{Interface}
 
-    Existe apenas uma imagem (\texttt{interface}) que deve ser recriada sempre que a versão da \acrshort{api} de dados (variável ambiente \texttt{API\_VERSION} do ficheiro \textit{.env} da pasta \textit{deploy}) ou o \acrshort{url} da \acrshort{api} de dados para onde a interface irá fazer os pedidos (variável ambiente \texttt{API\_URL} do ficheiro \textit{.env} da pasta \textit{deploy}) ou a versão da interface (variável ambiente \texttt{INTERFACE\_VERSION} do ficheiro \textit{.env} da pasta \textit{deploy} ou o código mude.
+    Existe apenas uma imagem (\texttt{interface}) que deve ser recriada sempre que:
+    \begin{itemize}
+        \item a versão da \acrshort{api} de dados (variável ambiente \texttt{API\_VERSION} do ficheiro \textit{.env} da pasta \textit{deploy}) mude;
+        \item o \acrshort{url} da \acrshort{api} de dados para onde a interface irá fazer os pedidos (variável ambiente \texttt{API\_URL} do ficheiro \textit{.env} da pasta \textit{deploy}) mude;
+        \item a versão da interface (variável ambiente \texttt{INTERFACE\_VERSION} do ficheiro \textit{.env} da pasta \textit{deploy}) mude;
+        \item o código mude.
+    \end{itemize}
 \end{description}
 
 Pode associar uma \textit{tag} a cada imagem a criar, no ficheiro \textit{.env} da \acrshort{api} de dados, nas variáveis ambiente \texttt{GRAPHDB\_IMG} (imagem \texttt{graphdb}) e \texttt{SERVER\_IMG} (imagem \texttt{server}) onde deve inserir o nome do repositório do \textit{DockerHub} e a \textit{tag} a usar (\verb|<repositório>:<tag>|). Já no ficheiro \textit{.env} da interface está presente a variável ambiente \texttt{INTERFACE\_IMG} com o mesmo intuito mas para a imagem da interface. Para criar estas imagens basta correr na pasta \texttt{deploy} da \acrshort{api} de dados (para criar as imagens da \acrshort{api} de dados) ou da interface (para criar a imagem da interface):
@@ -184,12 +190,14 @@ Caso as imagens (\texttt{server} e \texttt{graphdb} ou \texttt{interface}) ainda
     docker-compose -f docker-compose-build.yml up
 \end{lstlisting}
 
-Na \acrshort{api} de dados se pretende manter os dados entre atualizações (criação de novas imagens e reinícios dos \textit{containers}) não deve eliminar os volumes \texttt{clav-mongodb-data} (dados da \acrshort{bd} \textit{MongoDB}) e \texttt{clav-graphdb-data} (dados da \acrshort{bd} \textit{GraphDB}). Além disso, não deve eliminar os volumes \texttt{acme-data} e \texttt{crontabs}, o primeiro para não ser necessário gerar novos certificados (podendo atingir o limite de geração de certificados do \textit{Let's Encrypt}) e o segundo visto ser o ficheiro de configuração que permite que execute periodicamente (diariamente) o \texttt{acme.sh} para verificar se os certificados tem apenas 30 dias de validade e como tal proceder à renovação destes.
+Na \acrshort{api} de dados se pretende manter os dados entre atualizações (criação de novas imagens e reinícios dos \textit{containers}) não deve eliminar os volumes \texttt{clav-mongodb-data} (dados do \acrshort{bd} \textit{MongoDB}) e \texttt{clav-graphdb-data} (dados do \acrshort{bd} \textit{GraphDB}). 
+
+Além disso, não deve eliminar os volumes \texttt{acme-data} e \texttt{crontabs}, o primeiro para não ser necessário gerar novos certificados (podendo atingir o limite de geração de certificados do \textit{Let's Encrypt}) e o segundo visto ser o ficheiro de configuração que permite que execute periodicamente (diariamente) o \texttt{acme.sh} para verificar se os certificados têm apenas 30 dias de validade e como tal proceder à renovação destes.
 
 Do lado da interface os volumes que não deve eliminar são \texttt{acme-interface-data} e \texttt{crontabs-interface} pelas mesmas razões já referidas para os volumes \texttt{acme-data} e \texttt{crontabs}. 
 
 \subsubsection{Povoamento do \textit{MongoDB}}\label{sec:inst-povMDB}
-Até ao momento nesta instalação a \acrshort{bd} \textit{MongoDB} continua vazia. Se já possui uma \acrshort{bd} do \textit{MongoDB} já povoada é possível proceder à migração. Caso contrário precisará de pelo menos inserir à mão (através do cliente do \textit{MongoDB}) um utilizador com o nível de Administrador de Perfil Tecnológico à coleção \texttt{users} caso contrário será impossível registar/inserir utilizadores pela interface já que apenas pessoal registado e com determinado nível pode registar/inserir utilizadores.
+Até ao momento, nesta instalação, a \acrshort{bd} \textit{MongoDB} continua vazia. Se já possui uma \acrshort{bd} do \textit{MongoDB} já povoada é possível proceder à migração. Caso contrário precisará de pelo menos inserir à mão (através do cliente do \textit{MongoDB}) um utilizador com o nível de Administrador de Perfil Tecnológico à coleção \texttt{users} caso contrário será impossível registar/inserir utilizadores pela interface já que apenas pessoal registado e com determinado nível pode registar/inserir utilizadores.
 
 \begin{description}
     \item \textbf{Backup}
@@ -198,22 +206,26 @@ Até ao momento nesta instalação a \acrshort{bd} \textit{MongoDB} continua vaz
     \begin{lstlisting}[language=bash]
     mongodump --db <nome da BD> --out <caminho a guardar o backup>
     \end{lstlisting}
+    
     No destino final será criada uma pasta com o nome da \acrshort{bd} que irá possuir o backup da \acrshort{bd}.
     Para se poder realizar backup é necessário que o \textit{MongoDB} esteja a correr.
+    
     \item \textbf{Importação da informação}
 
-    Primeiro, é necessário parar \textit{containers}:
+    Primeiro, é necessário parar os \textit{containers}:
     \begin{lstlisting}[language=bash]
     docker stop clav_nginx
     docker stop clav_server
     docker stop clav_mongo clav_graphdb
     \end{lstlisting}
+    
     Para importar os dados nesta instalação basta executar o seguinte comando:
     \begin{lstlisting}[language=bash]
     docker run --rm -v clav-mongodb-data:/data/db \
         -v <caminho absoluto onde foi guardado o backup>/<nome da BD>:/backup mongo \
         bash -c "(mongod &) && mongorestore --db <nome da BD> --drop /backup"
     \end{lstlisting}
+    
     No fim, é necessário voltar a iniciar os \textit{containers}:
     \begin{lstlisting}[language=bash]
     docker start clav_mongo clav_graphdb
@@ -223,15 +235,19 @@ Até ao momento nesta instalação a \acrshort{bd} \textit{MongoDB} continua vaz
 \end{description}
 
 \subsubsection{Melhorias de segurança do \glsentryshort{https}}\label{sec:inst-melhorias}
-Após concluir a instalação recomenda-se duas melhorias de segurança do \acrshort{https} onde uma delas apenas se pode realizar agora. Nesta secção quando se refere o domínio ou domínios pretende-se fazer referência aos presentes nos \texttt{DOMAINS} dos ficheiros de configuração \textit{.env} da \acrshort{api} de dados e da interface.
+
+Após a conclusão  da instalação, recomenda-se a realização de duas melhorias de segurança do \acrshort{https}. Uma delas apenas se pode realizar neste momento. 
+
+Nesta secção quando se refere o domínio ou domínios pretende-se fazer referência aos presentes nos \texttt{DOMAINS} dos ficheiros de configuração \textit{.env} da \acrshort{api} de dados e da interface.
 
 A melhoria apenas agora possível é a adição dos domínios à \textit{\acrshort{hsts} preload list}. Para isso deve aceder a \url{https://hstspreload.org/}, começar por inserir um dos domínios e seguir os passos indicados. Repita para os restantes domínios. O \textit{\acrshort{hsts} preloading} permite que os \textit{browsers} saibam à partida que dominíos devem ser acedidos apenas por \acrshort{https}.\footnote{Ver \url{https://scotthelme.co.uk/hsts-preloading/} para perceber esta melhoria de segurança} 
 
-A outra melhoria de segurança é a adição de \textit{\acrshort{caa} records} associados aos domínios no \acrshort{dns} (tem de suportar \textit{\acrshort{caa} records}) no qual os domínios estão indexados. Os \textit{\acrshort{caa} records} a adicionar podem ser obtidos em \url{https://sslmate.com/caa/} indicando o nome do domínio e escolhendo como \textit{Authorized Certificate Authorities} o \textit{Let's Encrypt}. Na secção 4 da página Web estará presente os \textit{\acrshort{caa} records} a adicionar. Repita para os restantes domínios. Estes \textit{\acrshort{caa} records} indicam a(s) autoridade(s) emissora(s) de certificados permitida(s) para o(s) domínio(s) por forma a impedir a emissão de um certificado para o(s) mesmo(s) domínio(s) noutra autoridade emissora de certificados.\footnote{Ver \url{https://sslmate.com/caa/about} para perceber esta melhoria de segurança} 
+A outra melhoria de segurança é a adição de \textit{\acrshort{caa} records} associados aos domínios no \acrshort{dns} (tem de suportar \textit{\acrshort{caa} records}) no qual os domínios estão indexados. Os \textit{\acrshort{caa} records} a adicionar podem ser obtidos em \url{https://sslmate.com/caa/} indicando o nome do domínio e escolhendo como \textit{Authorized Certificate Authorities} o \textit{Let's Encrypt}. 
+Na secção 4 da página Web estão presentes os \textit{\acrshort{caa} records} a adicionar. Repita para os restantes domínios. Estes \textit{\acrshort{caa} records} indicam a(s) autoridade(s) emissora(s) de certificados permitida(s) para o(s) domínio(s) por forma a impedir a emissão de um certificado para o(s) mesmo(s) domínio(s) noutra autoridade emissora de certificados.\footnote{Ver \url{https://sslmate.com/caa/about} para perceber esta melhoria de segurança} 
 
 \subsection{Atualizações}\label{sec:inst-update}
 
-Tal como a instalação, as atualizações podem ser feitas de forma separada, ou seja, é possível atualizar apenas a \acrshort{api} de dados ou apenas a interface ou até as duas se assim o pretender.
+Tal como a instalação, as atualizações podem ser feitas de forma separada, ou seja, é possível atualizar apenas a \acrshort{api} de dados ou apenas a interface ou até as duas se assim se pretender.
 
 Para tal, deve-se primeiro parar os \textit{containers}:
 
@@ -255,9 +271,9 @@ docker stop interface
 \end{center}
 \normalsize
 
-Antes de recriar as imagens se pretender colocá-las no \textit{DockerHub} deve alterar as \textit{tags} nos ficheiros de configuração \textit{.env} da(s) imagem(s) que precisará de recriar por forma a não sobescrever \textit{tags}. Fica à escolha do utilizador. Apenas tem de ter em conta que as variáveis ambiente \texttt{GRAPHDB\_IMG}, \texttt{SERVER\_IMG} e \texttt{INTERFACE\_IMG} podem ser utilizadas para gerir as imagens da forma que pretender.
+Antes de recriar as imagens se pretender colocá-las no \textit{DockerHub} deve alterar as \textit{tags} nos ficheiros de configuração \textit{.env} da(s) imagem(s) que precisará de recriar por forma a não sobrescrever \textit{tags}. Fica à escolha do utilizador. Apenas tem de ter em conta que as variáveis ambiente \texttt{GRAPHDB\_IMG}, \texttt{SERVER\_IMG} e \texttt{INTERFACE\_IMG} podem ser utilizadas para gerir as imagens da forma que pretender.
 
-De seguida recria-se os \textit{containers} necessários:
+De seguida recriam-se os \textit{containers} necessários:
 \begin{itemize}
     \item Caso tenha mudado a ontologia ou pretenda atualizar a distribuição do \textit{GraphDB} recria-se a imagem do \texttt{clav\_graphdb} após as devidas alterações no ficheiro \textit{.env} da pasta \textit{deploy}:
     \begin{lstlisting}[language=bash]

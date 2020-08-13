@@ -16,7 +16,12 @@ Apesar de o projeto ter em mente a disponibilização aberta de informação pú
 
 Este controlo de acesso exige a existência de formas de autenticação. Como um cofre para o qual ninguém tem a chave não é útil pelo facto de que algo lá guardado ficará eternamente inacessível, também algo com controlo de acesso seria inútil caso não fosse possível ultrapassar esse controlo de alguma forma. Assim, uma das formas de autenticação usadas, Autenticação.gov, criada pelo Estado português, permite a autenticação dos cidadãos portugueses nos vários serviços públicos~\cite{authgov} entre os quais, a Segurança Social, o Serviço Nacional de Saúde e a Autoridade Tributária Aduaneira. Sendo este um projeto do Governo Português, a autenticação na \acrshort{clav} através do Autenticação.gov é um requisito.
 
-Por forma a contrariar o aumento da complexidade da \acrshort{api} de dados com a adição do controlo de acesso e da autenticação pretende-se investigar se a criação de um \textit{\acrshort{api} Gateway} simplifica a comunicação entre interface/utilizadores e a \acrshort{api} de dados.
+Por forma a contrariar o aumento da complexidade da \acrshort{api} de dados com a adição do controlo de acesso e da autenticação pretende-se investigar se a criação de uma \textit{\acrshort{api} Gateway} simplifica a comunicação entre interface/utilizadores e a \acrshort{api} de dados.
+
+Por fim, um dos requisitos para usar o Autenticação.gov em produção é a plataforma \acrshort{clav} estar com
+\acrshort{https}. Além disso, o Centro Nacional de Cibersegurança avisou para a necessidade da plataforma \acrshort{clav}
+estar com \acrshort{https} aumentando a segurança da plataforma. Assim, é necessário nesta dissertação realizar a 
+migração de \acrshort{http} para \acrshort{https} da plataforma \acrshort{clav}.
 
 \section{Objetivos}
 Resumidamente, os objetivos desta dissertação são:
@@ -24,12 +29,43 @@ Resumidamente, os objetivos desta dissertação são:
 \begin{itemize}
     \item Documentação em \textit{Swagger} da \acrshort{api} de dados da \acrshort{clav}
     \item Adição de formatos de exportação à \acrshort{api} de dados da \acrshort{clav} (para além do já presente \acrshort{json}, adicionar \acrshort{csv}, \acrshort{xml} e \acrshort{rdf})
-    \item (Continuação da) Integração do Autenticação.gov na \acrshort{clav}
+    \item (Continuação da) Integração do Autenticação.gov na \acrshort{clav} (adição da autenticação através de \acrlong{cmd})
     \item Proteção da \acrshort{api} de dados da \acrshort{clav} com múltiplos níveis de acesso
-    \item Criação de uma \textit{\acrshort{api} Gateway} na \acrshort{clav}
+    \item Migração da plataforma \acrshort{clav} de \acrshort{http} para \acrshort{https}
+    \item Criação de uma arquitetura aplicacional mais eficiente em termos de funcionamento e gestão (que inclui uma \textit{\acrshort{api} Gateway})
     \item Integração da \acrshort{clav} no \acrshort{iap}
 \end{itemize}
 
+\section{Questões de investigação}
+
+Nesta dissertação, durante o seu desenvolvimento, levantaram-se algumas questões de investigação.
+
+Sendo um dos objetivos a documentação da \acrshort{api} de dados, uma questão que surge desde logo é qual a melhor forma de documentar a \acrshort{api}.
+
+Por outro lado, com a investigação da criação de uma \textit{\acrshort{api} Gateway} na \acrshort{clav} surgiu a
+necessidade de autonomizar o serviço de autenticação (microserviço independente da \acrshort{api} de dados) por forma a
+respeitar os requisitos da autenticação e proteção da \acrshort{api} de dados. Será que esta autonomização traz 
+benefícios à aplicação? Além disso, com a maior modularização da \acrshort{api} de dados em microserviços será que a 
+\textit{\acrshort{api} Gateway} permite melhorar esta arquitetura?
+
+Estas questões são respondidas nesta dissertação, respondendo à primeira ao apresentar uma forma de produzir a 
+documentação da \acrshort{api} de dados e respondendo à terceira com a investigação das vantagens e desvantagens de uma 
+\textit{\acrshort{api} Gateway}.
+
+Quanto aos benefícios da autonomização do serviço de autenticação passam por:
+\begin{itemize}
+    \item os pedidos sem autenticação não chegam agora à \acrshort{api} de dados reduzindo a carga sobre esta;
+    \item o serviço de autenticação, sendo este um microserviço, pode ser colocado numa máquina à parte;
+    \item simplificação do código da \acrshort{api} de dados, melhorando a facilidade de manutenção deste;
+    \item maior facilidade na manutenção da autenticação da \acrshort{api} de dados, por exemplo na alteração das permissões de acesso de determinada rota.
+\end{itemize}
+
 \section{Estrutura da dissertação}
-%TODO
-TODO
+
+Esta dissertação começa no capítulo~\ref{cap:soa_clav} por apresentar o ponto de partida desta dissertação quanto ao estado da \acrshort{clav}. 
+
+De seguida, abordam-se os vários objetivos da dissertação, um por capítulo, a proteção da \acrshort{api} de dados no capítulo~\ref{cap:prot_api}, a adição da autenticação através de \acrshort{cmd} no capítulo~\ref{cap:cmd}, a documentação da \acrshort{api} da \acrshort{clav} no capítulo~\ref{cap:doc}, a adição de formatos exportação à \acrshort{api} de dados no capítulo~\ref{cap:exp}, a migração de \acrshort{http} para \acrshort{https} no capítulo~\ref{cap:https} e a criação de uma \textit{\acrshort{api} Gateway} no capítulo~\ref{cap:api_gateway}. Em cada um destes capítulos inicia-se com a apresentação do estado da arte e consequente solução e implementação da solução por forma a atingir o objetivo.
+
+Após a apresentação destes capítulos no capítulo~\ref{cap:deploy} apresenta-se de que forma pode ser feita a instalação das duas versões desenvolvidas durante esta tese, a versão sem a presença do \textit{Kong} e a versão com \textit{Kong}. É, além disso, realizada uma comparação das duas versões.
+
+Finalmente, no capítulo~\ref{cap:conc} são apresentadas as conclusões finais e os trabalhos futuros a efetuar.
