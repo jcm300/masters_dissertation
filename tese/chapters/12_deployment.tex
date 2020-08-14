@@ -28,7 +28,7 @@ sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 O passo seguinte é abrir as portas na máquina de instalação que serão usadas para a \acrshort{api} dados e/ou interface (É necessário abrir duas portas para a \acrshort{api} de dados (\acrshort{http} e \acrshort{https}) e duas para a interface (\acrshort{http} e \acrshort{https}). Se instalar a \acrshort{api} de dados e a interface na mesma máquina as 4 portas têm de ser diferentes.
 
-A seguir, é necessário realizar a clonagem dos repositórios \texttt{git} que se vão instalar. Posicionamo-nos na raíz da pasta respetiva e mudamos para o \textit{branch}da versão que queremos  instalar:
+A seguir, é necessário realizar a clonagem dos repositórios \texttt{git} que se vão instalar. Posicionamo-nos na raiz da pasta respetiva e mudamos para o \textit{branch} da versão que queremos instalar:
 
 \small
 \begin{center}
@@ -102,7 +102,7 @@ As imagens usadas na instalação podem ser geradas com antecedência, fora da m
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.4\textwidth]{img/graphdb_email.png}
-        \caption{Parte do email recebido pelo GraphDB\label{fig:instalacao-email}\label{fig:graphdb_email}}
+        \caption{Parte do email recebido pelo \textit{GraphDB}\label{fig:instalacao-email}\label{fig:graphdb_email}}
     \end{figure}
 
     A criação da imagem \texttt{server} é necessária quando não existe ou quando o código da \acrshort{api} de dados muda.
@@ -240,7 +240,7 @@ Após a conclusão  da instalação, recomenda-se a realização de duas melhori
 
 Nesta secção quando se refere o domínio ou domínios pretende-se fazer referência aos presentes nos \texttt{DOMAINS} dos ficheiros de configuração \textit{.env} da \acrshort{api} de dados e da interface.
 
-A melhoria apenas agora possível é a adição dos domínios à \textit{\acrshort{hsts} preload list}. Para isso deve aceder a \url{https://hstspreload.org/}, começar por inserir um dos domínios e seguir os passos indicados. Repita para os restantes domínios. O \textit{\acrshort{hsts} preloading} permite que os \textit{browsers} saibam à partida que dominíos devem ser acedidos apenas por \acrshort{https}.\footnote{Ver \url{https://scotthelme.co.uk/hsts-preloading/} para perceber esta melhoria de segurança} 
+A melhoria apenas agora possível é a adição dos domínios à \textit{\acrshort{hsts} preload list}. Para isso deve aceder a \url{https://hstspreload.org/}, começar por inserir um dos domínios e seguir os passos indicados. Repita para os restantes domínios. O \textit{\acrshort{hsts} preloading} permite que os \textit{browsers} saibam à partida que domínios devem ser acedidos apenas por \acrshort{https}.\footnote{Ver \url{https://scotthelme.co.uk/hsts-preloading/} para perceber esta melhoria de segurança} 
 
 A outra melhoria de segurança é a adição de \textit{\acrshort{caa} records} associados aos domínios no \acrshort{dns} (tem de suportar \textit{\acrshort{caa} records}) no qual os domínios estão indexados. Os \textit{\acrshort{caa} records} a adicionar podem ser obtidos em \url{https://sslmate.com/caa/} indicando o nome do domínio e escolhendo como \textit{Authorized Certificate Authorities} o \textit{Let's Encrypt}. 
 Na secção 4 da página Web estão presentes os \textit{\acrshort{caa} records} a adicionar. Repita para os restantes domínios. Estes \textit{\acrshort{caa} records} indicam a(s) autoridade(s) emissora(s) de certificados permitida(s) para o(s) domínio(s) por forma a impedir a emissão de um certificado para o(s) mesmo(s) domínio(s) noutra autoridade emissora de certificados.\footnote{Ver \url{https://sslmate.com/caa/about} para perceber esta melhoria de segurança} 
@@ -302,7 +302,7 @@ Por fim, inicia-se os \textit{containers} da \acrshort{api} de dados ou da inter
     docker-compose up -d
 \end{lstlisting}
 
-Note que, a opção \texttt{-d} é necessária para o comando libertar novamente a consola e colocar os \textit{containers} a correr em background.
+Note que, a opção \texttt{-d} é necessária para o comando libertar novamente a consola e colocar os \textit{containers} a correr em \textit{background}.
 
 \subsection{Backup}\label{sec:inst-backup}
 

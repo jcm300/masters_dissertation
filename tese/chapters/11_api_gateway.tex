@@ -276,10 +276,10 @@ uma resposta com o erro correspondente (erro de autenticação ou de autorizaç�
 
 \section{Implementação}
 
-Nesta secção irá ser abordada a configuração do \textit{Kong} além do desenvolvimento do Serviço de Auth adicional para a proteção da \acrshort{api} de dados.
+Nesta secção irá ser abordada a configuração do \textit{Kong} além do desenvolvimento do Serviço de \textit{Auth} adicional para a proteção da \acrshort{api} de dados.
 
 \subsection{Serviço de \textit{Auth}}
-Este serviço, desenvolvido em \textit{Node.js}, tem como principal papel a autenticação e autorização dos pedidos recebidos na plataforma CLAV. Além disso, este serviço irá tratar de verificar e gerar \textit{tokens} (\acrshort{jwt}s). 
+Este serviço, desenvolvido em \textit{Node.js}, tem como principal papel a autenticação e autorização dos pedidos recebidos na plataforma \acrshort{clav}. Além disso, este serviço irá tratar de verificar e gerar \textit{tokens} (\acrshort{jwt}s). 
 
 Para saber quem pode aceder determinada rota, o Serviço de \textit{Auth} possui um dicionário em que cada chave é um verbo \acrshort{http} e em cada verbo existe um dicionário com os vários caminhos desse verbo. A cada caminho é associado um valor que indica quem pode aceder a rota. Este valor é:
 \begin{itemize}
@@ -339,7 +339,7 @@ Para usar esta configuração declarativa é necessário no ficheiro de configur
 
 Na configuração declarativa são usados vários \textit{plugins} a maioria desenvolvidos pelo \textit{Kong} exceto o \textit{external-auth}. 
 
-Por predefinição os \textit{plugins} do \textit{Kong} estão disponíveis. Para se puder usar \textit{plugins} externos é necessário indicá-los no ficheiro \textit{.conf} na diretiva \texttt{plugins}. Assim o valor aqui colocado foi \texttt{blunded,external-auth} indicando que se pretende usar os plugins do \textit{Kong} (\texttt{blunded}) e o \textit{external-auth}. 
+Por predefinição os \textit{plugins} do \textit{Kong} estão disponíveis. Para se puder usar \textit{plugins} externos é necessário indicá-los no ficheiro \textit{.conf} na diretiva \texttt{plugins}. Assim o valor aqui colocado foi \texttt{blunded,external-auth} indicando que se pretende usar os \textit{plugins} do \textit{Kong} (\texttt{blunded}) e o \textit{external-auth}. 
 
 Antes de iniciar o \textit{Kong} será depois necessário instalar o \textit{plugin} \textit{external-auth}. 
 
@@ -505,7 +505,7 @@ services:
     ...
 \end{lstlisting}
 
-Para ativar também o uso do \textit{plugin} \texttt{acme} é necessário no ficheiro \texttt{.conf} indicar onde estão os certificados confiáveis por forma a ser possível o \textit{Kong} iniciar para depois puder obter os certificados do \textit{Let's Encrypt}. Para tal, é indicado na diretiva \texttt{nginx\_proxy\_lua\_ssl\_trusted\_certificate} o valor \texttt{/etc/ssl/certs/ca-certificates.crt} (esta é a localização no caso de uma distribuição Ubuntu, poderá ser diferente noutras distribuições e \acrshort{os}'s). Quando o \textit{Kong} iniciar para acionar a criação do certificado é necessário fazer um pedido ao \textit{Kong} correndo o seguinte comando:
+Para ativar também o uso do \textit{plugin} \texttt{acme} é necessário no ficheiro \texttt{.conf} indicar onde estão os certificados confiáveis por forma a ser possível o \textit{Kong} iniciar para depois puder obter os certificados do \textit{Let's Encrypt}. Para tal, é indicado na diretiva \texttt{nginx\_proxy\_lua\_ssl\_trusted\_certificate} o valor \texttt{/etc/ssl/certs/ca-certificates.crt} (esta é a localização no caso de uma distribuição \textit{Ubuntu}, poderá ser diferente noutras distribuições e \acrshort{os}'s). Quando o \textit{Kong} iniciar para acionar a criação do certificado é necessário fazer um pedido ao \textit{Kong} correndo o seguinte comando:
 
 \begin{lstlisting}[language=bash]
 curl https://<domain> -k
@@ -539,7 +539,7 @@ routes:
 
 A propriedade \texttt{protocols} indica que protocolos deverão estar disponíveis na rota e a propriedade \texttt{https\_redirect\_status\_code} indica o \textit{status code} nos casos em que os pedidos são efetuados para o \acrshort{http}. Como este \textit{status code} é 301 os clientes serão redirecionados para o \acrshort{https}.
 
-Por fim, por forma a melhorar a segurança do \acrshort{https} e cumprir as recomendações de seguranção são adicionadas no ficheiro de configuração \texttt{.conf} algumas diretivas de configuração do \textit{Nginx}:
+Por fim, por forma a melhorar a segurança do \acrshort{https} e cumprir as recomendações de segurança são adicionadas no ficheiro de configuração \texttt{.conf} algumas diretivas de configuração do \textit{Nginx}:
 
 \begin{lstlisting}[caption=Configurações do \textit{Nginx} no ficheiro de configuração \texttt{.conf}]
 #Indicar que se pretende usar ciphers personalizados
@@ -573,7 +573,7 @@ nginx_http_ssl_session_timeout = 1d
 nginx_upstream_keepalive_timeout = 65
 \end{lstlisting}
 
-Uma pequena nota. As variáveis ambiente (\verb|${var}| ou \verb|$var|) serão substituidas antes de serem usadas pelo \textit{Kong} ao aplicar o comando \texttt{envsubst} ao ficheiro da configuração declarativa.
+Uma pequena nota. As variáveis ambiente (\verb|${var}| ou \verb|$var|) serão substituídas antes de serem usadas pelo \textit{Kong} ao aplicar o comando \texttt{envsubst} ao ficheiro da configuração declarativa.
 
 Convém também referir que, esta versão da \acrshort{api} de dados com \textit{Kong} respeita todos os requisitos enunciados na migração de \acrshort{http} para \acrshort{https} (\ref{sec:sol_httpsReq}) com o objetivo primordial de melhorar a segurança. Para o \textit{deployment} foi também usado o \textit{docker} e o \textit{docker-compose} o que é descrito na secção~\ref{sec:deployKong}.
 

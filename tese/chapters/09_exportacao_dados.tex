@@ -373,13 +373,13 @@ De seguida, apresenta-se a especificação do documento final em \acrshort{xml}:
     só existe um elemento \textit{root} no documento \acrshort{xml} gerado respeitando as regras do \acrshort{xml}
     \item Cada tipo de dados do \acrshort{json} deve ser convertido da seguinte forma:
     \begin{itemize}
-        \item \textit{string}: Mantem-se igual tirando os caracteres ``\texttt{<}'', ``\texttt{>}'', 
+        \item \textit{string}: Mantém-se igual tirando os caracteres ``\texttt{<}'', ``\texttt{>}'', 
         ``\texttt{\&}'', ``\texttt{'}'' e ``\texttt{"}'' que devem ser convertidos para a 
         \textit{Entity Reference}\footnote{``\texttt{<}'' para ``\texttt{\&lt;}'', ``\texttt{>}'' 
         para ``\texttt{\&gt;}'', ``\texttt{\&}'' para ``\texttt{\&amp;}'', ``\texttt{'}'' para ``\texttt{\&apos;}'' 
         e ``\texttt{"}'' para ``\texttt{\&quot;}''} correspondente;
-        \item \textit{number}: Mantem-se igual;
-        \item \textit{boolean}: Mantem-se igual;
+        \item \textit{number}: Mantém-se igual;
+        \item \textit{boolean}: Mantém-se igual;
         \item \textit{null}: Origina uma \textit{string} vazia;
         \item \textit{array}: Cada item do \textit{array} deve ser encapsulado numa \textit{tag} \texttt{item} 
         que possui um atributo \texttt{index} que indica a posição do elemento no \textit{array} e um atributo 
@@ -809,6 +809,6 @@ Esta página de exportação está acessível em \url{https://clav.dglab.gov.pt/
 
 \section{Resumo}
 
-Recapitulando, neste capítulo são inicialmente aprofundadas, no estado da arte, algumas bibliotecas disponíveis no \acrshort{npm} que têm como objetivo exportar de \acrshort{json} para \acrshort{xml} ou de \acrshort{json} para \acrshort{csv}. É por fim, investigado como poderá ser exportada a ontologia (exportação para \acrshort{rdf}) a partir do GraphDB.
+Recapitulando, neste capítulo são inicialmente aprofundadas, no estado da arte, algumas bibliotecas disponíveis no \acrshort{npm} que têm como objetivo exportar de \acrshort{json} para \acrshort{xml} ou de \acrshort{json} para \acrshort{csv}. É por fim, investigado como poderá ser exportada a ontologia (exportação para \acrshort{rdf}) a partir do \textit{GraphDB}.
 
 Já na secção da solução são apresentados as especificações das conversões a realizar bem como escolhidos que conversores serão usados enquanto que na secção da implementação são apresentados exemplos das conversões que os conversores realizam.
