@@ -338,7 +338,7 @@ A partir daqui pode armazenar estes onde achar mais conveniente e seguro.
 
 Para realizar a migração para outra máquina é necessário primeiro realizar o backup dos volumes da máquina atual. Pode para isso seguir a descrição dada na secção~\ref{sec:inst-backup}. Depois deve copiar os ficheiros comprimidos (\acrshort{tar}) para a nova máquina de instalação.
 
-Os passos seguintes serão a realização da primeira instalação na nova máquina, bastando para isso seguir descrição dada na secção~\ref{sec:inst-prim} mas sem realizar o povoamento do \textit{MongoDB}.
+Os passos seguintes serão a realização da primeira instalação na nova máquina, bastando para isso seguir a descrição dada na secção~\ref{sec:inst-prim} mas sem realizar o povoamento do \textit{MongoDB}.
 
 O passo final é restaurar os volumes através dos backups (ficheiros comprimidos). Para tal siga os seguintes passos para restaurar os volumes:
 \begin{lstlisting}[language=bash, caption=Restauro dos volumes do \textit{docker}]
@@ -517,6 +517,31 @@ No backup as únicas diferenças em relação à versão sem \textit{Kong} (ver~
 \subsection{Migração}
 
 Na migração será seguir a primeira instalação desta versão. De resto, os passos serão iguais aos apresentados na versão sem \textit{Kong} (ver~\ref{sec:inst-migracao}) tirando o código para parar e para iniciar os \textit{containers}.
+
+\subsection{Forçar renovação do certificado \acrshort{https}}
+
+Caso necessite de forçar a renovação do certificado \acrshort{https} nesta versão com \textit{Kong} deve primeiro apagar a configuração do \acrshort{https} presente no \textit{Redis}:
+
+\begin{lstlisting}[language=bash]
+    # Aceder o Redis
+    docker exec -it clav_redis redis-cli
+    #Autenticar
+    auth redisPass123
+    # Ver todas as entradas no Redis
+    keys *
+    # Apagar todas as entradas no Redis
+    del <key1> <key2> ... 
+    # Sair
+    exit
+\end{lstlisting}
+
+E depois deve reiniciar o \textit{Kong}, onde este irá obter o novo certificado do \textit{Let's Encrypt}:
+\begin{lstlisting}[language=bash]
+    # Reiniciar Kong
+    docker restart clav_kong
+\end{lstlisting}
+
+Esta renovação só funciona caso tenha os \textit{containers} a correr.
 
 \section{Versão sem \textit{Kong} vs com \textit{Kong}}
 

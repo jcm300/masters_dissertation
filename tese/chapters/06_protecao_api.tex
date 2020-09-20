@@ -413,7 +413,7 @@ function isLoggedInKey(req, res, next)
     if key then
         keyBD = getKeyFromMongoDB(key)
         if keyBD then
-            res = jwt.verify(key, { algorithms: ["RS256"] }, secretForAPIkey)
+            res = jwt.verify(key, publicKeyForAPIkey, { algorithms: ["RS256"] })
             if res != expired then
                 if keyBD.active == True then
                     return next()
@@ -436,7 +436,7 @@ No seguimento, para validar se um determinado \textit{token} de um utilizador po
 JWTstrategy = passport-jwt.Strategy
 
 passport.use("jwt", new JWTstrategy(
-    secretOrKey: secret,
+    secretOrKey: publicKeyForUser,
     algorithms: ["RS256"],
     jwtFromRequest: getJWTfromHeaderOrQueryString('token')
 , (token, done) => done(null, token)))
