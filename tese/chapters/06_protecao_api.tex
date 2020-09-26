@@ -1,5 +1,5 @@
 A proteção da \acrshort{api} de dados é bastante importante já que impede que pessoal não autorizado por esta
-não efetue alterações nos dados fornecidos por esta \acrshort{api} mantendo esta informação correta e consistente.
+efetue alterações nos dados fornecidos por esta \acrshort{api} mantendo esta informação correta e consistente.
 Assim apenas pessoal autorizado poderá ler, adicionar, editar ou eliminar dados da \acrshort{api} de dados entre os
 quais dados de utilizadores, de entidades, de tipologias, etc.
 
@@ -254,7 +254,7 @@ remover o \textit{sessionID} da base de dados.
 
 Por fim, uma outra alternativa bastante semelhante ao \acrshort{jwt} é \textit{Branca}. 
 \textit{Branca} usa o algoritmo simétrico \textit{\acrshort{ietf} XChaCha20-Poly1305 \acrshort{aead}} que permite 
-criar \textit{tokens} encriptados com a garantia de integridade. Tem também uma região de \textit{payload} como 
+criar \textit{tokens} encriptados com a garantia de integridade. Tem também uma região de \textit{payload} como o 
 \acrshort{jwt} com a única diferença é que este \textit{payload} não tem uma estrutura definida. Não necessita da 
 \textit{header} visto que o algoritmo usado não varia. Em vez de usar codificação em \texttt{Base64 URL-safe} 
 usa \texttt{Base62} que também é \textit{URL-safe}. Para além disso o \textit{token} gerado é geralmente de menor 

@@ -289,7 +289,7 @@ De seguida recriam-se os \textit{containers} necessários:
     git pull #obter novos commits
     docker-compose -f docker-compose-build.yml build server
     \end{lstlisting}
-    \item Caso tenha sido alterado código da interface (\verb|git pull|) ou uma das variáveis ambientes \texttt{API\_URL} e/ou \texttt{API\_VERSION} tenham sido alteradas recria-se a imagem da \texttt{interface}:
+    \item Caso tenha sido alterado código da interface (\verb|git pull|) ou uma das variáveis ambientes \texttt{API\_URL}, \texttt{INTERFACE\_VERSION} e/ou \texttt{API\_VERSION} tenham sido alteradas recria-se a imagem da \texttt{interface}:
     \begin{lstlisting}[language=bash]
     git pull #obter novos commits
     docker-compose -f docker-compose-build.yml build interface
@@ -389,7 +389,7 @@ Além disso, obtém-se o conteúdo dos submódulos do repositório ao correr:
     git submodule update --init
 \end{lstlisting}
 
-Tal como na versão sem \textit{Kong}, numa versão de produção é necessário gerar dois novos pares de chaves pública/privada e copiar as novas chaves públicas para interface:
+Tal como na versão sem \textit{Kong}, numa versão de produção é necessário gerar dois novos pares de chaves pública/privada e copiar as novas chaves públicas para a interface:
 
 \small
 \begin{center}
