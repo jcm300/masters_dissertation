@@ -495,7 +495,8 @@ De resto as únicas diferenças em relação à versão sem \textit{Kong} (ver~\
 \begin{lstlisting}[language=bash]
     #assumindo que se encontra na pasta docker-clav
     cd CLAV-auth
-    git pull origin master #obter novos commits
+    git checkout master
+    git pull #obter novos commits
     cd ..
     docker-compose -f docker-compose-build.yml build clav-auth
 \end{lstlisting}
@@ -505,7 +506,8 @@ Por fim, outra diferença é que para recriar a imagem do \texttt{clav\_server} 
 \begin{lstlisting}[language=bash]
     #assumindo que se encontra na pasta docker-clav
     cd CLAV2018
-    git pull origin kong #obter novos commits
+    git checkout kong
+    git pull #obter novos commits
     cd ..
     docker-compose -f docker-compose-build.yml build server
 \end{lstlisting}
