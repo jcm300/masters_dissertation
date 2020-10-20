@@ -53,11 +53,11 @@ De seguida serão apresentadas, de forma simplificada, as regras de sintaxe apli
     \end{itemize}
     \item \textbf{Referências \acrshort{xml}} \\
     \verb|&amp;| ou \verb|&#65| \\
-    Há dois tipos de referências, Referências Entidade ou Referências Caractere. A primeira existe por forma a serem representadas por estas referências os caracteres não permitidos no texto anotado visto representarem parte da sintaxe do \acrshort{xml}.
+    Há dois tipos de referências, Referências Entidade ou Referências Carácter. A primeira existe por forma a serem representadas por estas referências os caracteres não permitidos no texto anotado visto representarem parte da sintaxe do \acrshort{xml}.
     \begin{center}
         \begin{tabular}{|c|c|}
             \hline
-            Caractere não permitido & Entidade \\ \hline
+            Carácter não permitido & Entidade \\ \hline
             < & \&lt; \\ \hline
             > & \&gt; \\ \hline
             \& & \&amp; \\ \hline
@@ -65,7 +65,7 @@ De seguida serão apresentadas, de forma simplificada, as regras de sintaxe apli
             " & \&quot; \\ \hline
         \end{tabular}
     \end{center}
-    O segundo tipo de referências tem o mesmo intuito mas permite que seja representado qualquer caractere representável em \textit{Unicode}. O número que se segue ao \textit{hashtag} é referente ao código decimal em \textit{Unicode}. Assim \verb|&#65| representa o caractere `A'.
+    O segundo tipo de referências tem o mesmo intuito mas permite que seja representado qualquer carácter representável em \textit{Unicode}. O número que se segue ao \textit{hashtag} é referente ao código decimal em \textit{Unicode}. Assim \verb|&#65| representa o carácter `A'.
     \item \textbf{Texto anotado} \\
     Espaços em branco, \textit{tabs}, ou novas linhas, são ignoradas quando presentes entre elementos e entre atributos. Como já referido há caracteres reservados pelo que se pretende usá-los no texto anotado deve trocar esses caracteres pelas suas referências.
 \end{itemize}
@@ -211,7 +211,7 @@ Após esta pequena introdução ao \acrshort{csv} apresenta-se as regras de sint
     \item Cada registo deve estar numa linha. Cada registo deve começar numa linha, mas cada registo pode ter várias linhas, desde que os campos multi linha sejam encapsulados por aspas
     \item Após o último registo não deve estar presente um \textit{carriage return}
     \item Opcionalmente, na primeira linha do documento, deve estar presente o cabeçalho com os nomes das colunas separados pelo separador usado no resto do documento
-    \item O caractere de encapsulamento deve ser usado para encapsular um campo quando necessário (pode ser usado sempre), isto é, quando o caractere separador ou uma nova linha (`\backslash{}n') são usados num campo de um registo
+    \item O carácter de encapsulamento deve ser usado para encapsular um campo quando necessário (pode ser usado sempre), isto é, quando o carácter separador ou uma nova linha (`\backslash{}n') são usados num campo de um registo
 \end{itemize}
 
 \begin{lstlisting}[caption=Pequeno exemplo em \acrshort{csv}, label=exem:csvEx]
@@ -233,7 +233,7 @@ Maria,22,[object Object]
 João,24,[object Object]
 \end{lstlisting}
 
-Olhando para o resultado~\ref{exem:papaparse} consegue-se perceber que o conversor não consegue converter objetos aninhados. Para além disso, apesar de haver a possibilidade de alterar o caractere separador, o caractere de \textit{escape}, o caractere de nova linha bem como definir o nome das colunas no cabeçalho, não é possível definir uma função por forma a alterar a conversão dos campos de cada propriedade.
+Olhando para o resultado~\ref{exem:papaparse} consegue-se perceber que o conversor não consegue converter objetos aninhados. Para além disso, apesar de haver a possibilidade de alterar o carácter separador, o carácter de \textit{escape}, o carácter de nova linha bem como definir o nome das colunas no cabeçalho, não é possível definir uma função por forma a alterar a conversão dos campos de cada propriedade.
 
 \paragraph{\href{https://www.npmjs.com/package/json2csv}{\texttt{json2csv}}} \mbox{} \\
 
