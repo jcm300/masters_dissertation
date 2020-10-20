@@ -529,14 +529,14 @@ poder receber o documento com a especificação \textit{OpenAPI} pode também re
 que o utilizador pode definir para a apresentação interativa da documentação com o 
 \textit{Swagger \acrshort{ui}}\footnote{As opções possíveis estão presentes em \url{https://github.com/scottie1984/swagger-ui-express}. Para o atributo (opção) \texttt{swaggerOptions} as opções possíveis estão presentes em \url{https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/configuration.md}}.
 
-Agora há duas abordagens possíveis de realizar a documentação:
+Agora há duas abordagens possíveis para realizar a documentação:
 \begin{itemize}
     \item Documentação de cada rota nos comentários da rota através da utilização da 
     \textit{package} \texttt{swagger-jsdoc}\footnote{Ver \url{https://github.com/Surnet/swagger-jsdoc}};
-    \item Documentação à parte do código.
+    \item Documentação separada do código.
 \end{itemize}
 
-A abordagem da documentação à parte do código permite modularizar a documentação. A modularização da documentação 
+A abordagem que mantem a documentação separada do código permite modularizar a documentação. A modularização da documentação 
 pode ser realizada através do uso da \textit{package} \texttt{yaml-include}\footnote{Ver \url{https://github.com/claylo/yaml-include}}. Esta \textit{package} permite que o documento \acrshort{yaml} da especificação \textit{OpenAPI} possa ser dividida por vários ficheiros. A \textit{package} permite a inclusão de arquivos \acrshort{yaml} externos ou a inclusão de pastas de ficheiros \acrshort{yaml}. Esta funcionalidade é desaprovada pela equipa de desenvolvimento do \acrshort{yaml} contudo ajuda e simplifica a construção do ficheiro de especificação \textit{OpenAPI}.
 
 \begin{lstlisting}[language=yaml, caption=Exemplo de uso do \texttt{yaml-include} no documento de especificação \textit{OpenAPI}(\textit{index.yaml}), label=exem:yamli]

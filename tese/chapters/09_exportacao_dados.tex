@@ -201,7 +201,7 @@ Se se pretende que um determinado elemento possua atributos é necessário que o
 
 \subsection{\glsentryshort{csv}}
 
-\acrfull{csv} como a sua sigla indica é um documento em que os campos de um registo são separados por uma vírgula. Contudo, os campos não precisam de ser obrigatoriamente separados por vírgula já que podem também ser separados por ponto e vírgula, \textit{tabs}, \textit{pipes} (`|') ou ainda outro qualquer caractere que se pretenda usar. Quando se usa o caractere separador ou uma nova linha (`\backslash{}n') no campo de um registo, por forma a não ser considerado como um separador de campos ou de registos respetivamente, pode-se encapsular os valores por aspas (`"') sendo que também se pode usar outro caractere em vez das aspas. Já quando se usa o caractere de encapsulamento no campo de um registo este deve ser protegido (\texttt{escaped}) repetindo o mesmo caractere de encapsulamento.
+O \acrfull{csv} como a sua sigla indica é um formato em que os campos de um registo são separados por uma vírgula. Contudo, os campos não precisam de ser obrigatoriamente separados por vírgula já que podem também ser separados por ponto e vírgula, \textit{tabs}, \textit{pipes} (`|') ou ainda outro qualquer carácter que se pretenda usar. Quando se usa o carácter separador ou uma nova linha (`\backslash{}n') no campo de um registo, por forma a não ser considerado como um separador de campos ou de registos respetivamente, pode-se encapsular os valores por aspas (`"') sendo que também se pode usar outro carácter em vez das aspas. Já quando se usa o carácter de encapsulamento no campo de um registo este deve ser protegido (\texttt{escaped}) repetindo o mesmo carácter de encapsulamento.
 
 Um documento \acrshort{csv} é nada mais que uma tabela que guarda dados em texto. É usado essencialmente para a troca de dados.
 
@@ -793,7 +793,11 @@ De seguida apresenta-se um exemplo de uma conversão, onde o ficheiro \acrshort{
 
 \subsection{Exportação na \glsentryshort{api} de dados}
 
-As conversões de \acrshort{json} para \acrshort{xml} ou \acrshort{csv} são realizadas por um \textit{middleware} após a obtenção dos dados em \acrshort{json}. Ou seja, apenas após se obter os dados pretendidos é que é feita a conversão para o formato de saída pretendido permitindo assim uma maior facilidade de desenvolvimento. Além disso, apenas nas rotas onde for usado este \textit{middleware} é que há a possibilidade de exportação nestes formatos, não sendo garantida para o caso do \acrshort{csv} já que não suporta qualquer objeto \acrshort{json}. Caso o conversor do \acrshort{csv} não suporte deve ser adicionado o suporte ao conversor através da edição do dicionário já referido. Nas rotas, antes de passar para o \textit{middleware} de conversão, o objeto a converter deve ser armazenado em \texttt{res.locals.dados} e o tipo deste objeto (por exemplo ``entidade'') ser definido em \texttt{res.locals.tipo} por forma aos conversores, mais especificamente o conversor de \acrshort{json} para \acrshort{csv}, saber que objeto se pretende converter.
+As conversões de \acrshort{json} para \acrshort{xml} ou \acrshort{csv} são realizadas por um \textit{middleware} após a obtenção dos dados em \acrshort{json}. Ou seja, primeiro obtêm-se os dados pretendidos e só depois é que é feita a conversão para o formato de saída pretendido permitindo assim uma maior facilidade de desenvolvimento. Além disso, apenas nas rotas onde for usado este \textit{middleware} é que há a possibilidade de exportação nestes formatos, não sendo garantida para o caso do \acrshort{csv} já que não suporta todos os objetos \acrshort{json}. 
+
+Caso uma determinada conversão não seja suportada pelo conversor \acrshort{csv}, esse suporte pode ser adicionado através da edição do dicionário já referido. 
+
+Nas rotas, antes de passar para o \textit{middleware} de conversão, o objeto a converter deve ser armazenado em \texttt{res.locals.dados} e o tipo deste objeto (por exemplo ``entidade'') ser definido em \texttt{res.locals.tipo} por forma aos conversores, mais especificamente o conversor de \acrshort{json} para \acrshort{csv}, saber que objeto se pretende converter.
 
 \subsection{Interface de Exportação}
 
